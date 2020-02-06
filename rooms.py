@@ -4,7 +4,7 @@
 class Room(object):
     """Room class for dungeon."""
 
-    def __init__(self, type=0):
+    def __init__(self, roomType=0, pos=(0, 0), doors={0: True, 1: False, 2: False, 3: False}):  # noqa: E501
         """Initialise the Room class.
 
         Args:
@@ -15,9 +15,21 @@ class Room(object):
           2 = Treasure
           3 = Boss
           4 = Shop
+          Defaults to Start.
+
+          Pos: (Tuple (X, Y))
+          The rooms position in the dungeon.
+          Defaults to (0, 0).
+
+          Doors: (Dict {DoorID: True/False})
+          The open doors of the room.
+          Defaults to the top door only.
+
 
         """
-        self.type = type
+        self.type = roomType
+        self.pos = pos
+        self.doors = doors
         self.groundTiles = {  # TODO
 
         }
