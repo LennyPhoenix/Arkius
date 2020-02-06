@@ -1,0 +1,5 @@
+{
+    "python.pythonPath": "e:\\Projects\\Arkius\\.env\\Scripts\\python.exe",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
+}
