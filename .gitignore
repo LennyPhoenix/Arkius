@@ -1,1 +1,3 @@
 *.code-workspace
+.vscode/
+.vscode/settings.json
