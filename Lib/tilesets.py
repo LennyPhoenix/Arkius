@@ -83,7 +83,7 @@ def bossRoom():
     return tileset
 
 
-def generateRandom(wallChance=15, pitChance=5, wallSize=15, pitSize=45):
+def generateRandom(wallChance=10, pitChance=15, wallSize=15, pitSize=40):
     """Generate a random tileset."""
     tileset = {
         (0, 0): 0, (1, 0): 0, (2, 0): 0, (3, 0): 0, (4, 0): 0, (5, 0): 0, (6, 0): 0,  # noqa: E501
@@ -97,7 +97,7 @@ def generateRandom(wallChance=15, pitChance=5, wallSize=15, pitSize=45):
 
     originalWallChance = wallChance
     originalPitChance = pitChance
-    ignore = [
+    nearDoor = [
         (6, 2), (6, 3), (6, 4),
         (2, 6), (3, 6), (4, 6),
         (0, 2), (0, 3), (0, 4),
@@ -106,36 +106,41 @@ def generateRandom(wallChance=15, pitChance=5, wallSize=15, pitSize=45):
 
     for y in range(7):
         for x in range(7):
-            if (x, y) not in ignore:
-                if x != 6 and tileset[(x+1, y)] == 1:
-                    wallChance += wallSize
-                if x != 0 and tileset[(x-1, y)] == 1:
-                    wallChance += wallSize
-                if y != 6 and tileset[(x, y+1)] == 1:
-                    wallChance += wallSize
-                if y != 0 and tileset[(x, y-1)] == 1:
-                    wallChance += wallSize
+            if x != 6 and tileset[(x+1, y)] == 2:
+                pitChance += pitSize
+            if x != 0 and tileset[(x-1, y)] == 2:
+                pitChance += pitSize
+            if y != 6 and tileset[(x, y+1)] == 2:
+                pitChance += pitSize
+            if y != 0 and tileset[(x, y-1)] == 2:
+                pitChance += pitSize
 
-                if random.random() * 100 < wallChance:
-                    tileset[(x, y)] = 1
+            if x == 0 or x == 6 or y == 0 or y == 6:
+                pitChance = pitChance / 2
 
-                wallChance = originalWallChance
+            if (x, y) in nearDoor:
+                pitChance = pitChance / 4
 
-                if x != 6 and tileset[(x+1, y)] == 2:
-                    pitChance += pitSize
-                if x != 0 and tileset[(x-1, y)] == 2:
-                    pitChance += pitSize
-                if y != 6 and tileset[(x, y+1)] == 2:
-                    pitChance += pitSize
-                if y != 0 and tileset[(x, y-1)] == 2:
-                    pitChance += pitSize
+            if random.random() * 100 < pitChance:
+                tileset[(x, y)] = 2
 
-                if x == 0 or x == 6 or y == 0 or y == 6:
-                    pitChance = pitChance / 2
+            pitChance = originalPitChance
 
-                if random.random() * 100 < pitChance:
-                    tileset[(x, y)] = 2
+            if x != 6 and tileset[(x+1, y)] == 1:
+                wallChance += wallSize
+            if x != 0 and tileset[(x-1, y)] == 1:
+                wallChance += wallSize
+            if y != 6 and tileset[(x, y+1)] == 1:
+                wallChance += wallSize
+            if y != 0 and tileset[(x, y-1)] == 1:
+                wallChance += wallSize
 
-                pitChance = originalPitChance
+            if (x, y) in nearDoor:
+                wallChance = wallChance / 4
+
+            if random.random() * 100 < wallChance:
+                tileset[(x, y)] = 1
+
+            wallChance = originalWallChance
 
     return tileset
