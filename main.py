@@ -13,8 +13,9 @@ Copyright (C) 2020    Contributers of Arkius.
 """
 
 from Lib.dungeon import Room
+from Lib import tilesets
 
-room = Room(roomType=3)
+room = Room(roomType=1, tileset=tilesets.generateRandom())
 tileset = room.groundTiles
 
 
