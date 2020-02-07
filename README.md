@@ -1,4 +1,4 @@
-[![Run on Repl.it](https://repl.it/badge/github/DoAltPlusF4/Arkius)](https://repl.it/DoAltPlusF4/Arkius)
+[![Run on Repl.it](https://repl.it/badge/github/DoAltPlusF4/Arkius)](https://repl.it/@Alt_Plus_F4/Arkius)
 # Arkius
 
 An open source project.
