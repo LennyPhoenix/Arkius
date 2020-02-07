@@ -3,3 +3,5 @@
 .env/
 .replit
 requirements.txt
+*.pyc
+__pycache__/

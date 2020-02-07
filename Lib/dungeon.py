@@ -1,7 +1,6 @@
 """Contains class objects for Room."""
 
-import tilesets
-
+from . import tilesets
 
 class Room(object):
     """Room class for dungeon."""
@@ -25,10 +24,7 @@ class Room(object):
 
           Doors: (Dict {DoorID: True/False})
           The open doors of the room.
-          Defaults to the top door only.
-
-
-        """
+          Defaults to the top door only."""
         self.type = roomType
         self.pos = pos
         self.doors = doors
