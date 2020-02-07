@@ -21,23 +21,27 @@ class Room(object):
             Defaults to Start.
 
             Pos: (Tuple (X, Y))
-            The rooms position in the dungeon.
+            The room's position in the dungeon.
             Defaults to (0, 0).
 
             Doors: (Dict {DoorID: True/False})
             The open doors of the room.
             Defaults to the top door only.
+
+            Tileset: (Dict {(X, Y): TileValue})
         """
         self.type = roomType
         self.pos = pos
         self.doors = doors
-        if type == 0:
+        self.groundTiles = {}
+
+        if self.type == 0:
             self.groundTiles = tilesets.startRoom()
-        elif type == 1:
+        elif self.type == 1:
             self.groundTiles = tileset
-        elif type == 2:
+        elif self.type == 2:
             self.groundTiles = tilesets.treasureRoom()
-        elif type == 3:
+        elif self.type == 3:
             self.groundTiles = tilesets.bossRoom()
-        elif type == 4:
+        elif self.type == 4:
             self.groundTiles = tilesets.basic()
