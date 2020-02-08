@@ -23,8 +23,8 @@ tileset = room.groundTiles
 
 
 string = ""
-for y in range(7):
-    for x in range(7):
+for y in range(15):
+    for x in range(15):
         string += f"{tileset[(x, y)]} "
     string += "\n"
 
