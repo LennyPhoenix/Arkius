@@ -1,6 +1,5 @@
 *.code-workspace
 .vscode/
 .env/
-requirements.txt
 *.pyc
 __pycache__/
