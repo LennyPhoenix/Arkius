@@ -139,7 +139,8 @@ def bossRoom():
     }
 
     tileset = toSet(tilearray)
-    return tileset
+    randomTileset = generateRandom(wallChance=0, pitChance=0, tileset=tileset)
+    return randomTileset
 
 
 def generateRandom(wallChance=10, pitChance=5, wallSize=15, pitSize=35, tileset=basic()):  # noqa: E501
