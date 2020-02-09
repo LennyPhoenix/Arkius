@@ -93,9 +93,9 @@ def on_key_press(symbol, modifiers):
         room = Room(roomType=1, tileset=tilesets.generateRandom())
     # elif symbol == key._2:
     #     room = Room(roomType=2, tileset=tilesets.generateRandom())
-    # elif symbol == key._3:
-    #     room = Room(roomType=3, tileset=tilesets.generateRandom())
     elif symbol == key._2:
+        room = Room(roomType=3, tileset=tilesets.generateRandom())
+    elif symbol == key._3:
         room = Room(roomType=4, tileset=tilesets.generateRandom())
 
 
