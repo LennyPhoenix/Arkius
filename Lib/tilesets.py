@@ -143,8 +143,11 @@ def bossRoom():
     return randomTileset
 
 
-def generateRandom(wallChance=10, pitChance=5, wallSize=15, pitSize=35, tileset=basic()):  # noqa: E501
+def generateRandom(wallChance=10, pitChance=5, wallSize=15, pitSize=35, tileset=None):  # noqa: E501
     """Generate a random tileset."""
+    if tileset is None:
+        tileset = basic()
+
     originalWallChance = wallChance
     originalPitChance = pitChance
     nearDoor = [
