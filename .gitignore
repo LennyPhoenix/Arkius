@@ -5,3 +5,4 @@
 __pycache__/
 TMP/
 pack.py
+build/
