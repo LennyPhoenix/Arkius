@@ -15,17 +15,83 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import pyglet
+from pyglet.window import Window
+
 from Lib.dungeon import Room
 from Lib import tilesets
 
+
+def toString(tileset):
+    string = ""
+    for y in range(15):
+        for x in range(15):
+            string += f"{tileset[(x, y)]} "
+        string += "\n"
+    return string
+
+
 room = Room(roomType=1, tileset=tilesets.generateRandom())
-tileset = room.groundTiles
+string = toString(room.groundTiles)
+
+window = Window()
+tiles = pyglet.text.Label(
+    string,
+    font_name="Times New Roman",
+    font_size=10,
+    x=window.width/2, y=window.height/2,
+    anchor_x="center", anchor_y="center",
+    multiline=True,
+    width=window.width/3
+)
+
+helptext = pyglet.text.Label(
+    "Left click to generate random room, right click to generate boss room.",
+    font_name="Times New Roman",
+    font_size=20,
+    x=window.width/2, y=window.height - 40,
+    anchor_x="center",
+    multiline=True,
+    width=window.width/1.5
+)
 
 
-string = ""
-for y in range(15):
-    for x in range(15):
-        string += f"{tileset[(x, y)]} "
-    string += "\n"
+@window.event
+def on_draw():
+    window.clear()
+    tiles.draw()
+    helptext.draw()
 
-print(string)
+
+@window.event
+def on_mouse_press(x, y, button, modifiers):
+    global tiles
+    if button == 1:
+        room = Room(roomType=1, tileset=tilesets.generateRandom())
+        string = toString(room.groundTiles)
+        tiles = pyglet.text.Label(
+            string,
+            font_name="Times New Roman",
+            font_size=10,
+            x=window.width/2, y=window.height/2,
+            anchor_x="center", anchor_y="center",
+            multiline=True,
+            width=window.width/3
+        )
+    elif button == 4:
+        room = Room(roomType=3)
+        string = toString(room.groundTiles)
+        tiles = pyglet.text.Label(
+            string,
+            font_name="Times New Roman",
+            font_size=10,
+            x=window.width/2, y=window.height/2,
+            anchor_x="center", anchor_y="center",
+            multiline=True,
+            width=window.width/3
+        )
+    window.clear()
+    tiles.draw()
+
+
+pyglet.app.run()
