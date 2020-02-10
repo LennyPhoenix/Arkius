@@ -29,7 +29,7 @@ class Room(object):
         The tiles that make up the room's ground.
     """
 
-    def __init__(self, roomType=0, pos=(0, 0), doors={0: True, 1: False, 2: False, 3: False}, tileset=tilesets.basic()):  # noqa: E501
+    def __init__(self, roomType=0, pos=(0, 0), doors={0: False, 1: False, 2: False, 3: False}, tileset=tilesets.basic()):  # noqa: E501
         """Initialise the Room class."""
         self.type = roomType
         self.pos = pos
