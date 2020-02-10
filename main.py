@@ -24,15 +24,6 @@ from Lib.dungeon import Room
 from Lib import tilesets
 
 
-def toString(tileset):
-    string = ""
-    for y in range(15):
-        for x in range(15):
-            string += f"{tileset[(x, y)]} "
-        string += "\n"
-    return string
-
-
 def getValue(tileset, x, y):
     """Returns the bitmasking value of a tile."""
     tileID = tileset[(x, y)]
@@ -76,7 +67,7 @@ def getValue(tileset, x, y):
 
 
 room = Room(roomType=1, tileset=tilesets.generateRandom())
-print(toString(room.groundTiles))
+print(room)
 
 print("\n\n\n")
 

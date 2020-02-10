@@ -46,3 +46,12 @@ class Room(object):
             self.groundTiles = tilesets.bossRoom()
         elif self.type == 4:
             self.groundTiles = tilesets.basic()
+
+    def __str__(self):
+        string = ""
+        for y in range(15):
+            for x in range(15):
+                y = 14 - y
+                string += f"{self.groundTiles[(x, y)]} "
+            string += "\n"
+        return string
