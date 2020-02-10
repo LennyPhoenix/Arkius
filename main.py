@@ -34,29 +34,29 @@ def getValue(tileset, x, y):
         32: False,  16: False,  8: False
     }
 
-    if y != 0 and tileset[(x, y-1)] != tileID:
+    if y != 14 and tileset[(x, y+1)] != tileID:
         sides[128] = True
         sides[1] = True
         sides[2] = True
-    if y != 0 and x != 14 and tileset[(x+1, y-1)] != tileID:
+    if y != 14 and x != 14 and tileset[(x+1, y+1)] != tileID:
         sides[2] = True
     if x != 14 and tileset[(x+1, y)] != tileID:
         sides[2] = True
         sides[4] = True
         sides[8] = True
-    if x != 14 and y != 14 and tileset[(x+1, y+1)] != tileID:
+    if x != 14 and y != 0 and tileset[(x+1, y-1)] != tileID:
         sides[8] = True
-    if y != 14 and tileset[(x, y+1)] != tileID:
+    if y != 0 and tileset[(x, y-1)] != tileID:
         sides[8] = True
         sides[16] = True
         sides[32] = True
-    if y != 14 and x != 0 and tileset[(x-1, y+1)] != tileID:
+    if y != 0 and x != 0 and tileset[(x-1, y-1)] != tileID:
         sides[32] = True
     if x != 0 and tileset[(x-1, y)] != tileID:
         sides[32] = True
         sides[64] = True
         sides[128] = True
-    if x != 0 and y != 0 and tileset[(x-1, y-1)] != tileID:
+    if x != 0 and y != 14 and tileset[(x-1, y+1)] != tileID:
         sides[128] = True
 
     for side in sides.keys():
@@ -106,7 +106,7 @@ def on_draw():
             else:
                 tileImage = image.load(f"Images/Tiles/1-0.png")
             tileImage.anchor_x = 0
-            tileImage.anchor_y = tileImage.height
+            tileImage.anchor_y = 0
             tile = pyglet.sprite.Sprite(
                 tileImage,
                 batch=tileBatch,
