@@ -19,6 +19,7 @@ import pyglet
 from pyglet.window import Window
 from pyglet.window import key
 from pyglet import image
+from pyglet import gl
 
 from Lib.dungeon import Room
 from Lib import tilesets
@@ -73,6 +74,8 @@ print("\n\n\n")
 
 window = Window(caption="Arkius", resizable=True)
 tileBatch = pyglet.graphics.Batch()
+pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
+pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
 
 
 @window.event
