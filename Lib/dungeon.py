@@ -29,29 +29,29 @@ class Room(object):
         The tiles that make up the room's ground.
     """
 
-    def __init__(self, roomType=0, pos=(0, 0), doors={0: False, 1: False, 2: False, 3: False}, tileset=tilesets.basic()):  # noqa: E501
+    def __init__(self, room_type=0, pos=(0, 0), doors={0: False, 1: False, 2: False, 3: False}, tileset=tilesets.basic()):  # noqa: E501
         """Initialise the Room class."""
-        self.type = roomType
+        self.type = room_type
         self.pos = pos
         self.doors = doors
-        self.groundTiles = {}
+        self.ground_tiles = {}
 
         if self.type == 0:
-            self.groundTiles = tilesets.startRoom()
+            self.ground_tiles = tilesets.startRoom()
         elif self.type == 1:
-            self.groundTiles = tileset
+            self.ground_tiles = tileset
         elif self.type == 2:
-            self.groundTiles = tilesets.treasureRoom()
+            self.ground_tiles = tilesets.treasureRoom()
         elif self.type == 3:
-            self.groundTiles = tilesets.bossRoom()
+            self.ground_tiles = tilesets.bossRoom()
         elif self.type == 4:
-            self.groundTiles = tilesets.basic()
+            self.ground_tiles = tilesets.basic()
 
     def __str__(self):
         string = ""
         for y in range(15):
             for x in range(15):
                 y = 14 - y
-                string += f"{self.groundTiles[(x, y)]} "
+                string += f"{self.ground_tiles[(x, y)]} "
             string += "\n"
         return string
