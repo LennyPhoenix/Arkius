@@ -72,30 +72,30 @@ print(room)
 
 print("\n\n\n")
 
-window = Window(caption="Arkius", resizable=True)
+window = Window(caption="Arkius", resizable=True, fullscreen=True)
+scalefactor = window.height/320
 tileBatch = pyglet.graphics.Batch()
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
 
 
-@window.event
-def on_key_press(symbol, modifiers):
-    global room
-    # if symbol == key._0:
-    #     room = Room(roomType=0, tileset=tilesets.generateRandom())
-    if symbol == key._1:
-        room = Room(roomType=1, tileset=tilesets.generateRandom())
-    # elif symbol == key._2:
-    #     room = Room(roomType=2, tileset=tilesets.generateRandom())
-    elif symbol == key._2:
-        room = Room(roomType=3, tileset=tilesets.generateRandom())
-    elif symbol == key._3:
-        room = Room(roomType=4, tileset=tilesets.generateRandom())
+def makeTile(image, batch, x, y, scalefactor):
+    tile = pyglet.sprite.Sprite(
+        image,
+        batch=batch,
+        x=(x*16*scalefactor)+(2.5*16*scalefactor) +
+        (window.width/2)-(20*16*scalefactor/2),
+        y=(y*16*scalefactor)+(2.5*16*scalefactor) +
+        (window.height/2)-(20*16*scalefactor/2),
+        usage="static"
+    )
+    tile.scale = scalefactor
+    return tile
 
 
-@window.event
-def on_draw():
-    tiles = []
+def drawTiles(dt=None):
+    global room, scalefactor
+    tiles = {}
 
     for x in range(15):
         for y in range(15):
@@ -105,23 +105,80 @@ def on_draw():
             if tileID != 0:
                 value = getValue(roomTiles, x, y)
                 tileImage = image.load(f"Images/Tiles/1-{tileID}/{value}.png")
-                tiles.append(tileImage)
             else:
                 tileImage = image.load(f"Images/Tiles/1-0.png")
             tileImage.anchor_x = 0
             tileImage.anchor_y = 0
-            tile = pyglet.sprite.Sprite(
-                tileImage,
-                batch=tileBatch,
-                x=x*16*window.height/240 +
-                (window.width/2-120*window.height/240),
-                y=window.height-y*16*window.height/240
-            )
-            tile.scale = window.height/240
-            tiles.append(tile)
+            tile = makeTile(tileImage, tileBatch, x, y, scalefactor)
+            tiles[(x, y)] = tile
+
+    # Render room borders.
+    for x in range(15):
+        y = -1
+        tileImage = image.load(f"Images/Tiles/1-1/124.png")
+        tileImage.anchor_x = 0
+        tileImage.anchor_y = 0
+        tile = makeTile(tileImage, tileBatch, x, y, scalefactor)
+        tiles[(x, y)] = tile
+    for x in range(15):
+        y = 15
+        tileImage = image.load(f"Images/Tiles/1-1/199.png")
+        tileImage.anchor_x = 0
+        tileImage.anchor_y = 0
+        tile = makeTile(tileImage, tileBatch, x, y, scalefactor)
+        tiles[(x, y)] = tile
+    for y in range(15):
+        x = -1
+        tileImage = image.load(f"Images/Tiles/1-1/241.png")
+        tileImage.anchor_x = 0
+        tileImage.anchor_y = 0
+        tile = makeTile(tileImage, tileBatch, x, y, scalefactor)
+        tiles[(x, y)] = tile
+    for y in range(15):
+        x = 15
+        tileImage = image.load(f"Images/Tiles/1-1/31.png")
+        tileImage.anchor_x = 0
+        tileImage.anchor_y = 0
+        tile = makeTile(tileImage, tileBatch, x, y, scalefactor)
+        tiles[(x, y)] = tile
 
     window.clear()
     tileBatch.draw()
+
+
+@window.event
+def on_show():
+    global room, scalefactor
+    scalefactor = window.height/320
+    drawTiles()
+
+
+@window.event
+def on_key_press(symbol, modifiers):
+    global room, scalefactor
+    if symbol == key._0:
+        room = Room(roomType=0, tileset=tilesets.generateRandom())
+    if symbol == key._1:
+        room = Room(roomType=1, tileset=tilesets.generateRandom())
+    elif symbol == key._2:
+        room = Room(roomType=2, tileset=tilesets.generateRandom())
+    elif symbol == key._3:
+        room = Room(roomType=3, tileset=tilesets.generateRandom())
+    elif symbol == key._4:
+        room = Room(roomType=4, tileset=tilesets.generateRandom())
+    drawTiles()
+
+
+@window.event
+def on_resize(width, height):
+    global scalefactor, room
+    scalefactor = window.height/320
+    pyglet.clock.schedule_once(drawTiles, 0.1)
+
+
+@window.event
+def on_draw():
+    pass
 
 
 pyglet.app.run()
