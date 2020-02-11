@@ -116,34 +116,37 @@ def drawTiles(dt=None):
             tiles[(x, y)] = tile
 
     # Render room borders.
-    for x in range(15):
-        y = -1
-        tile_image = image.load(f"Images/Tiles/1-1/124.png")
-        tile_image.anchor_x = 0
-        tile_image.anchor_y = 0
-        tile = makeTileSprite(tile_image, tile_batch, x, y)
-        tiles[(x, y)] = tile
-    for x in range(15):
-        y = 15
-        tile_image = image.load(f"Images/Tiles/1-1/199.png")
-        tile_image.anchor_x = 0
-        tile_image.anchor_y = 0
-        tile = makeTileSprite(tile_image, tile_batch, x, y)
-        tiles[(x, y)] = tile
-    for y in range(15):
-        x = -1
-        tile_image = image.load(f"Images/Tiles/1-1/241.png")
-        tile_image.anchor_x = 0
-        tile_image.anchor_y = 0
-        tile = makeTileSprite(tile_image, tile_batch, x, y)
-        tiles[(x, y)] = tile
-    for y in range(15):
-        x = 15
-        tile_image = image.load(f"Images/Tiles/1-1/31.png")
-        tile_image.anchor_x = 0
-        tile_image.anchor_y = 0
-        tile = makeTileSprite(tile_image, tile_batch, x, y)
-        tiles[(x, y)] = tile
+    for k in range(17):
+        for j in range(17):
+            x = k-1
+            y = j-1
+
+            value = None
+
+            if x == -1 and y == -1:
+                value = 253
+            elif x == -1 and y == 15:
+                value = 247
+            elif x == 15 and y == -1:
+                value = 127
+            elif x == 15 and y == 15:
+                value = 223
+            elif x == -1:
+                value = 241
+            elif x == 15:
+                value = 31
+            elif y == -1:
+                value = 124
+            elif y == 15:
+                value = 199
+
+            if value is not None:
+                image_path = f"Images/Tiles/1-1/{value}.png"
+                tile_image = image.load(image_path)
+                tile_image.anchor_x = 0
+                tile_image.anchor_y = 0
+                tile = makeTileSprite(tile_image, tile_batch, x, y)
+                tiles[(x, y)] = tile
 
     window.clear()
     tile_batch.draw()
