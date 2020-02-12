@@ -98,6 +98,8 @@ def drawTiles(dt=None):
     global room
     tiles = {}
 
+    style = 1  # TMP
+
     for x in range(15):
         for y in range(15):
             room_tiles = room.ground_tiles
@@ -105,10 +107,10 @@ def drawTiles(dt=None):
 
             if tile_id != 0:
                 value = getValue(room_tiles, x, y)
-                image_path = f"Images/Tiles/1-{tile_id}/{value}.png"
+                image_path = f"Images/Tiles/{style}/{tile_id}/{value}.png"
 
             else:
-                image_path = f"Images/Tiles/1-0.png"
+                image_path = f"Images/Tiles/{style}/0.png"
             tile_image = image.load(image_path)
             tile_image.anchor_x = 0
             tile_image.anchor_y = 0
@@ -141,7 +143,7 @@ def drawTiles(dt=None):
                 value = 199
 
             if value is not None:
-                image_path = f"Images/Tiles/1-1/{value}.png"
+                image_path = f"Images/Tiles/{style}/1/{value}.png"
                 tile_image = image.load(image_path)
                 tile_image.anchor_x = 0
                 tile_image.anchor_y = 0
@@ -164,7 +166,7 @@ def on_key_press(symbol, modifiers):
     global room, SCALE_FACTOR
     if symbol == key._0:
         room = Room(room_type=0, tileset=tilesets.generateRandom())
-    if symbol == key._1:
+    elif symbol == key._1:
         room = Room(room_type=1, tileset=tilesets.generateRandom())
     elif symbol == key._2:
         room = Room(room_type=2, tileset=tilesets.generateRandom())
