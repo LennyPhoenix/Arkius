@@ -7,3 +7,4 @@ TMP/
 pack.py
 build/
 dist/
+*.xcf
