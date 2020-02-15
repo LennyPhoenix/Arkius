@@ -35,6 +35,7 @@ class Room(object):
         self.pos = pos
         self.doors = doors
         self.ground_tiles = {}
+        self.cleared = room_type == 0
 
         if self.type == 0:
             self.ground_tiles = tilesets.startRoom()
