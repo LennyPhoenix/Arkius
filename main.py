@@ -25,7 +25,7 @@ from Lib.dungeon import Room
 from Lib import tilesets
 
 
-room = Room(room_type=1, tileset=tilesets.generateRandom())
+room = Room(room_type=1, tileset=tilesets.fightRoom())
 print(room)
 
 print("\n\n\n")
@@ -165,15 +165,15 @@ def on_show():
 def on_key_press(symbol, modifiers):
     global room, SCALE_FACTOR
     if symbol == key._0:
-        room = Room(room_type=0, tileset=tilesets.generateRandom())
+        room = Room(room_type=0)
     elif symbol == key._1:
-        room = Room(room_type=1, tileset=tilesets.generateRandom())
+        room = Room(room_type=1, tileset=tilesets.fightRoom())
     elif symbol == key._2:
-        room = Room(room_type=2, tileset=tilesets.generateRandom())
+        room = Room(room_type=2)
     elif symbol == key._3:
-        room = Room(room_type=3, tileset=tilesets.generateRandom())
+        room = Room(room_type=3)
     elif symbol == key._4:
-        room = Room(room_type=4, tileset=tilesets.generateRandom())
+        room = Room(room_type=4)
     drawTiles()
 
 

@@ -94,8 +94,33 @@ def treasureRoom():
     return tileset
 
 
+def fightRoom():
+    """Wall seeds and pits."""
+    tilearray = {
+        14: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        13: [0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0],
+        12: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        11: [0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
+        10: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        9:  [0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0],
+        8:  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        7:  [0, 0, 0, 0, 0, 2, 0, 1, 0, 2, 0, 0, 0, 0, 0],
+        6:  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        5:  [0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0],
+        4:  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        3:  [0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
+        2:  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        1:  [0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0],
+        0:  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    }
+
+    tileset = toSet(tilearray)
+    randomTileset = generateRandom(wallChance=0, pitChance=0, tileset=tileset)
+    return randomTileset
+
+
 def bossRoom():
-    """8 walls."""
+    """8 walls. 5 pits."""
     tilearray = {
         14: [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
         13: [1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1],
@@ -119,10 +144,8 @@ def bossRoom():
     return randomTileset
 
 
-def generateRandom(wallChance=7, pitChance=5, wallSize=20, pitSize=35, tileset=None):  # noqa: E501
+def generateRandom(tileset, wallChance=7, pitChance=5, wallSize=15, pitSize=35):  # noqa: E501
     """Generate a random tileset."""
-    if tileset is None:
-        tileset = basic()
 
     originalWallChance = wallChance
     originalPitChance = pitChance
