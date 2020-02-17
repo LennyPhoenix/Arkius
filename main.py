@@ -34,7 +34,10 @@ print("\n\n\n")
 
 window = Window(caption="Arkius", resizable=True, fullscreen=True)
 SCALE_FACTOR = window.height/320
-tile_batch = pyglet.graphics.Batch()
+tile_batches = {}
+for i in range(17):
+    y = i - 1
+    tile_batches[y] = pyglet.graphics.Batch()
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
 
@@ -42,7 +45,12 @@ pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
 def getValue(tileset, x, y):
     """Returns the bitmasking value of a tile."""
     tileID = tileset[(x, y)]
-    value = 255
+
+    if tileID == 1:
+        value = 0
+    else:
+        value = 255
+
     sides = {
         128: False, 1: False,   2: False,
         64: False,              4: False,
@@ -76,7 +84,10 @@ def getValue(tileset, x, y):
 
     for side in sides.keys():
         if sides[side]:
-            value -= side
+            if tileID == 1:
+                value += side
+            else:
+                value -= side
 
     return value
 
@@ -115,7 +126,7 @@ def drawTiles(dt=None):
             tile_image = image.load(image_path)
             tile_image.anchor_x = 0
             tile_image.anchor_y = 0
-            tile = makeTileSprite(tile_image, tile_batch, x, y)
+            tile = makeTileSprite(tile_image, tile_batches[y], x, y)
             tiles[(x, y)] = tile
 
     # Render room borders.
@@ -127,32 +138,34 @@ def drawTiles(dt=None):
             value = None
 
             if x == -1 and y == -1:
-                value = 253
+                value = 2
             elif x == -1 and y == 15:
-                value = 247
+                value = 8
             elif x == 15 and y == -1:
-                value = 127
+                value = 128
             elif x == 15 and y == 15:
-                value = 223
+                value = 32
             elif x == -1:
-                value = 241
+                value = 14
             elif x == 15:
-                value = 31
+                value = 224
             elif y == -1:
-                value = 124
+                value = 131
             elif y == 15:
-                value = 199
+                value = 56
 
             if value is not None:
                 image_path = f"Images/Tiles/{style}/1/{value}.png"
                 tile_image = image.load(image_path)
                 tile_image.anchor_x = 0
                 tile_image.anchor_y = 0
-                tile = makeTileSprite(tile_image, tile_batch, x, y)
+                tile = makeTileSprite(tile_image, tile_batches[y], x, y)
                 tiles[(x, y)] = tile
 
     window.clear()
-    tile_batch.draw()
+    for i in range(17):
+        y = 15 - i
+        tile_batches[y].draw()
 
 
 @window.event
