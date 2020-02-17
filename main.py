@@ -21,6 +21,8 @@ from pyglet.window import key
 from pyglet import image
 from pyglet import gl
 
+from random import randint
+
 from Lib.dungeon import Room
 from Lib import tilesets
 
@@ -98,7 +100,7 @@ def drawTiles(dt=None):
     global room
     tiles = {}
 
-    style = 1  # TMP
+    style = 0  # TMP
 
     for x in range(15):
         for y in range(15):
@@ -108,9 +110,8 @@ def drawTiles(dt=None):
             if tile_id != 0:
                 value = getValue(room_tiles, x, y)
                 image_path = f"Images/Tiles/{style}/{tile_id}/{value}.png"
-
             else:
-                image_path = f"Images/Tiles/{style}/0.png"
+                image_path = f"Images/Tiles/{style}/0/{randint(0, 3)}.png"
             tile_image = image.load(image_path)
             tile_image.anchor_x = 0
             tile_image.anchor_y = 0
