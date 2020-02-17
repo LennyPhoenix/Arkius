@@ -45,11 +45,7 @@ pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
 def getValue(tileset, x, y):
     """Returns the bitmasking value of a tile."""
     tileID = tileset[(x, y)]
-
-    if tileID == 1:
-        value = 0
-    else:
-        value = 255
+    value = 0
 
     sides = {
         128: False, 1: False,   2: False,
@@ -84,10 +80,7 @@ def getValue(tileset, x, y):
 
     for side in sides.keys():
         if sides[side]:
-            if tileID == 1:
-                value += side
-            else:
-                value -= side
+            value += side
 
     return value
 
