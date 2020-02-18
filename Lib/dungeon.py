@@ -2,6 +2,8 @@
 
 from . import tilesets
 
+import random
+
 
 class Room(object):
     """
@@ -35,6 +37,7 @@ class Room(object):
         self.pos = pos
         self.doors = doors
         self.ground_tiles = {}
+        self.floor_tiles = {}  # For use with tile variation.
         self.cleared = room_type == 0
 
         if self.type == 0:
@@ -48,6 +51,8 @@ class Room(object):
         elif self.type == 4:
             self.ground_tiles = tilesets.basic()
 
+        self.randomiseFloor()
+
     def __str__(self):
         string = ""
         for y in range(15):
@@ -56,3 +61,11 @@ class Room(object):
                 string += f"{self.ground_tiles[(x, y)]} "
             string += "\n"
         return string
+
+    def randomiseFloor(self):
+        """Makes variation in the floor tiles."""
+
+        for x in range(15):
+            for y in range(15):
+                if self.ground_tiles[(x, y)] == 0:
+                    self.floor_tiles[(x, y)] = random.randint(0, 3)
