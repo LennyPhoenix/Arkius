@@ -184,6 +184,10 @@ def on_key_press(symbol, modifiers):
         room = Room(room_type=3)
     elif symbol == key._4:
         room = Room(room_type=4)
+
+    elif symbol == key.F11:
+        window.set_fullscreen(not window.fullscreen)
+
     drawTiles()
 
 
