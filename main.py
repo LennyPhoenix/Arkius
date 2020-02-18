@@ -30,7 +30,14 @@ print(room)
 
 print("\n\n\n")
 
-window = Window(caption="Arkius", resizable=True, fullscreen=True)
+window = Window(
+    caption="Arkius",
+    resizable=True,
+    fullscreen=True
+)
+
+window.set_minimum_size(1280, 720)
+
 SCALE_FACTOR = window.height/320
 tile_batches = {}
 for i in range(17):
