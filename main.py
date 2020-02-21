@@ -15,9 +15,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+from sys import platform as PLATFORM
+
 import pyglet
 from pyglet.window import Window
 from pyglet.window import key
+from pyglet.text import Label
 from pyglet import image
 from pyglet import gl
 
@@ -45,6 +48,8 @@ for i in range(17):
     tile_batches[y] = pyglet.graphics.Batch()
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
+
+resized_recently = False
 
 
 def getValue(tileset, x, y):
@@ -110,7 +115,8 @@ def makeTileSprite(image, batch, x, y):
 
 
 def drawTiles(dt=None):
-    global room
+    global room, resized_recently
+    resized_recently = False
     tiles = {}
 
     style = 0  # TMP
@@ -140,15 +146,9 @@ def drawTiles(dt=None):
 
             value = None
 
-            if x == -1 and y == -1:
-                value = 2
-            elif x == -1 and y == 15:
-                value = 8
-            elif x == 15 and y == -1:
-                value = 128
-            elif x == 15 and y == 15:
-                value = 32
-            elif x == -1:
+            values = {(-1, -1): 2, (-1, 15): 8, (15, -1): 128, (15, 15): 32}
+
+            if x == -1:
                 value = 14
             elif x == 15:
                 value = 224
@@ -156,6 +156,9 @@ def drawTiles(dt=None):
                 value = 131
             elif y == 15:
                 value = 56
+
+            if (x, y) in values.keys():
+                value = values[(x, y)]
 
             if value is not None:
                 image_path = f"Images/Tiles/{style}/1/{value}.png"
@@ -166,6 +169,15 @@ def drawTiles(dt=None):
                 tiles[(x, y)] = tile
 
     window.clear()
+
+    help_text = Label(
+        text="Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed",  # noqa: E501
+        font_name="Helvetica", font_size=7*SCALE_FACTOR,
+        x=10*SCALE_FACTOR, y=window.height-10*SCALE_FACTOR,
+        anchor_y="top"
+    )
+    help_text.draw()
+
     for i in range(17):
         y = 15 - i
         tile_batches[y].draw()
@@ -175,6 +187,7 @@ def drawTiles(dt=None):
 def on_show():
     global room, SCALE_FACTOR
     SCALE_FACTOR = window.height/320
+
     drawTiles()
 
 
@@ -199,10 +212,22 @@ def on_key_press(symbol, modifiers):
 
 
 @window.event
-def on_resize(width, height):
-    global SCALE_FACTOR, room
+def on_resize_stop(width, height):
+    global SCALE_FACTOR
     SCALE_FACTOR = window.height/320
-    pyglet.clock.schedule_once(drawTiles, 0.1)
+    drawTiles()
+
+
+@window.event
+def on_resize(width, height):
+    global SCALE_FACTOR, resized_recently
+
+    if PLATFORM == "win32":
+        return
+
+    if not resized_recently:
+        resized_recently = True
+        pyglet.clock.schedule_once(drawTiles, 0.1)
 
 
 @window.event
