@@ -57,6 +57,8 @@ help_text = Label(
     text="Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed",  # noqa: E501
     font_name="Helvetica", font_size=7*SCALE_FACTOR,
     x=10*SCALE_FACTOR, y=window.height-10*SCALE_FACTOR,
+    multiline=True,
+    width=window.width,
     anchor_y="top"
 )
 
@@ -130,6 +132,8 @@ def on_resize(width, height):
         text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(player.x)[:4]}, {str(player.y)[:4]}",  # noqa: E501
         font_name="Helvetica", font_size=7*SCALE_FACTOR,
         x=10*SCALE_FACTOR, y=window.height-10*SCALE_FACTOR,
+        multiline=True,
+        width=window.width,
         anchor_y="top"
     )
 
