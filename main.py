@@ -139,4 +139,5 @@ def on_resize(width, height):
 
 pyglet.clock.schedule_interval(update, 1/120)
 
+window.push_handlers(pyglet.window.event.WindowEventLogger())
 pyglet.app.run()
