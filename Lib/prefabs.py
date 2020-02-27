@@ -92,8 +92,8 @@ class Player():
             self.velocity_x *= 0.75
             self.velocity_y *= 0.75
 
-        self.x += self.velocity_x
-        self.y += self.velocity_y
+        self.x += self.velocity_x * dt * 60
+        self.y += self.velocity_y * dt * 60
 
         self.sprite.update(
             x=(self.x*16*scale_factor)+(2.5*16*scale_factor) +
