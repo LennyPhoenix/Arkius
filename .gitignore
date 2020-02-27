@@ -8,3 +8,4 @@ pack.py
 build/
 dist/
 *.xcf
+nohup.out
