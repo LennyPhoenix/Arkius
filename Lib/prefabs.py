@@ -43,7 +43,7 @@ class Player():
     Contains a sprite renderer and a collision box.
     """
 
-    def __init__(self, window, scale_factor):
+    def __init__(self, window, scale_factor, batch):
         self.x = 7.0
         self.y = 7.0
 
@@ -58,6 +58,7 @@ class Player():
 
         self.sprite = pyglet.sprite.Sprite(
             player_image,
+            batch=batch,
             x=(self.x*16*scale_factor)+(2.5*16*scale_factor) +
             (window.width/2)-(20*16*scale_factor/2),
             y=(self.y*16*scale_factor)+(2.5*16*scale_factor) +

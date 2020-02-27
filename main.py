@@ -60,7 +60,7 @@ help_text = Label(
     anchor_y="top"
 )
 
-player = prefabs.Player(window, SCALE_FACTOR)
+player = prefabs.Player(window, SCALE_FACTOR, MAIN_BATCH)
 
 
 @window.event
@@ -116,7 +116,6 @@ def update(dt):
     player.update(window, SCALE_FACTOR, dt, Y_GROUPS)
 
     MAIN_BATCH.draw()
-    player.sprite.draw()
     help_text.text = f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(player.x)[:4]}, {str(player.y)[:4]}"  # noqa: E501
     help_text.draw()
     fps_display.draw()
