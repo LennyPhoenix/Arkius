@@ -15,224 +15,129 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from sys import platform as PLATFORM
-
 import pyglet
 from pyglet.window import Window
 from pyglet.window import key
 from pyglet.text import Label
-from pyglet import image
 from pyglet import gl
 
 from Lib.dungeon import Room
 from Lib import tilesets
+from Lib import prefabs
 
-
-room = Room(room_type=1, tileset=tilesets.fightRoom())
-print(room)
-
-print("\n\n\n")
 
 window = Window(
     caption="Arkius",
     resizable=True,
     fullscreen=True
 )
+pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
+pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
+MAIN_BATCH = pyglet.graphics.Batch()
 
+Y_GROUPS = {}
+for y in range(-1, 16):
+    Y_GROUPS[y] = pyglet.graphics.OrderedGroup(y)
+
+fps_display = pyglet.window.FPSDisplay(window=window)
 window.set_minimum_size(1280, 720)
 
 SCALE_FACTOR = window.height/320
-tile_batches = {}
-for i in range(17):
-    y = i - 1
-    tile_batches[y] = pyglet.graphics.Batch()
-pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
-pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
 
-resized_recently = False
+room = Room(
+    room_type=1,
+    tileset=tilesets.fightRoom(),
+    window=window,
+    batch=MAIN_BATCH,
+    groups=Y_GROUPS
+)
+print(room)
 
+help_text = Label(
+    text="Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed",  # noqa: E501
+    font_name="Helvetica", font_size=7*SCALE_FACTOR,
+    x=10*SCALE_FACTOR, y=window.height-10*SCALE_FACTOR,
+    anchor_y="top"
+)
 
-def getValue(tileset, x, y):
-    """Returns the bitmasking value of a tile."""
-    tileID = tileset[(x, y)]
-    value = 0
-
-    sides = {
-        128: False, 1: False,   2: False,
-        64: False,              4: False,
-        32: False,  16: False,  8: False
-    }
-
-    edges = [tileID]
-    if tileID == 2:
-        edges.append(1)
-
-    if y != 14 and tileset[(x, y+1)] not in edges:
-        sides[128] = True
-        sides[1] = True
-        sides[2] = True
-    if y != 14 and x != 14 and tileset[(x+1, y+1)] not in edges:
-        sides[2] = True
-    if x != 14 and tileset[(x+1, y)] not in edges:
-        sides[2] = True
-        sides[4] = True
-        sides[8] = True
-    if x != 14 and y != 0 and tileset[(x+1, y-1)] not in edges:
-        sides[8] = True
-    if y != 0 and tileset[(x, y-1)] not in edges:
-        sides[8] = True
-        sides[16] = True
-        sides[32] = True
-    if y != 0 and x != 0 and tileset[(x-1, y-1)] not in edges:
-        sides[32] = True
-    if x != 0 and tileset[(x-1, y)] not in edges:
-        sides[32] = True
-        sides[64] = True
-        sides[128] = True
-    if x != 0 and y != 14 and tileset[(x-1, y+1)] not in edges:
-        sides[128] = True
-
-    for side in sides.keys():
-        if sides[side]:
-            value += side
-
-    return value
-
-
-def makeTileSprite(image, batch, x, y):
-    global SCALE_FACTOR
-    tile = pyglet.sprite.Sprite(
-        image,
-        batch=batch,
-        x=(x*16*SCALE_FACTOR)+(2.5*16*SCALE_FACTOR) +
-        (window.width/2)-(20*16*SCALE_FACTOR/2),
-        y=(y*16*SCALE_FACTOR)+(2.5*16*SCALE_FACTOR) +
-        (window.height/2)-(20*16*SCALE_FACTOR/2),
-        usage="static"
-    )
-    tile.scale = SCALE_FACTOR
-    return tile
-
-
-def drawTiles(dt=None):
-    global room, resized_recently
-    resized_recently = False
-    tiles = {}
-
-    style = 0  # TMP
-
-    for x in range(15):
-        for y in range(15):
-            room_tiles = room.ground_tiles
-            tile_id = room_tiles[(x, y)]
-
-            if tile_id != 0:
-                value = getValue(room_tiles, x, y)
-                image_path = f"Images/Tiles/{style}/{tile_id}/{value}.png"
-            else:
-                floor_type = room.floor_tiles[(x, y)]
-                image_path = f"Images/Tiles/{style}/0/{floor_type}.png"
-            tile_image = image.load(image_path)
-            tile_image.anchor_x = 0
-            tile_image.anchor_y = 0
-            tile = makeTileSprite(tile_image, tile_batches[y], x, y)
-            tiles[(x, y)] = tile
-
-    # Render room borders.
-    for k in range(17):
-        for j in range(17):
-            x = k-1
-            y = j-1
-
-            value = None
-
-            values = {(-1, -1): 2, (-1, 15): 8, (15, -1): 128, (15, 15): 32}
-
-            if x == -1:
-                value = 14
-            elif x == 15:
-                value = 224
-            elif y == -1:
-                value = 131
-            elif y == 15:
-                value = 56
-
-            if (x, y) in values.keys():
-                value = values[(x, y)]
-
-            if value is not None:
-                image_path = f"Images/Tiles/{style}/1/{value}.png"
-                tile_image = image.load(image_path)
-                tile_image.anchor_x = 0
-                tile_image.anchor_y = 0
-                tile = makeTileSprite(tile_image, tile_batches[y], x, y)
-                tiles[(x, y)] = tile
-
-    window.clear()
-
-    help_text = Label(
-        text="Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed",  # noqa: E501
-        font_name="Helvetica", font_size=7*SCALE_FACTOR,
-        x=10*SCALE_FACTOR, y=window.height-10*SCALE_FACTOR,
-        anchor_y="top"
-    )
-    help_text.draw()
-
-    for i in range(17):
-        y = 15 - i
-        tile_batches[y].draw()
-
-
-@window.event
-def on_show():
-    global room, SCALE_FACTOR
-    SCALE_FACTOR = window.height/320
-
-    drawTiles()
+player = prefabs.Player(window, SCALE_FACTOR)
 
 
 @window.event
 def on_key_press(symbol, modifiers):
-    global room, SCALE_FACTOR
+    global room, MAIN_BATCH
     if symbol == key._0:
-        room = Room(room_type=0)
+        room = Room(
+            room_type=0,
+            window=window,
+            batch=MAIN_BATCH,
+            groups=Y_GROUPS
+        )
     elif symbol == key._1:
-        room = Room(room_type=1, tileset=tilesets.fightRoom())
+        room = Room(
+            room_type=1,
+            tileset=tilesets.fightRoom(),
+            window=window,
+            batch=MAIN_BATCH,
+            groups=Y_GROUPS
+        )
     elif symbol == key._2:
-        room = Room(room_type=2)
+        room = Room(
+            room_type=2,
+            window=window,
+            batch=MAIN_BATCH,
+            groups=Y_GROUPS
+        )
     elif symbol == key._3:
-        room = Room(room_type=3)
+        room = Room(
+            room_type=3,
+            window=window,
+            batch=MAIN_BATCH,
+            groups=Y_GROUPS
+        )
     elif symbol == key._4:
-        room = Room(room_type=4)
-
+        room = Room(
+            room_type=4,
+            window=window,
+            batch=MAIN_BATCH,
+            groups=Y_GROUPS
+        )
     elif symbol == key.F11:
         window.set_fullscreen(not window.fullscreen)
 
-    drawTiles()
 
+def update(dt):
+    global room, help_text, player, SCALE_FACTOR, MAIN_BATCH
 
-@window.event
-def on_resize_stop(width, height):
-    global SCALE_FACTOR
-    SCALE_FACTOR = window.height/320
-    drawTiles()
+    window.clear()
+
+    window.push_handlers(player.key_handler)
+
+    player.update(window, SCALE_FACTOR, dt, Y_GROUPS)
+
+    MAIN_BATCH.draw()
+    player.sprite.draw()
+    help_text.text = f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(player.x)[:4]}, {str(player.y)[:4]}"  # noqa: E501
+    help_text.draw()
+    fps_display.draw()
 
 
 @window.event
 def on_resize(width, height):
-    global SCALE_FACTOR, resized_recently
+    global room, SCALE_FACTOR, help_text, player
+    SCALE_FACTOR = height/320
 
-    if PLATFORM == "win32":
-        return
+    help_text = Label(
+        text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(player.x)[:4]}, {str(player.y)[:4]}",  # noqa: E501
+        font_name="Helvetica", font_size=7*SCALE_FACTOR,
+        x=10*SCALE_FACTOR, y=window.height-10*SCALE_FACTOR,
+        anchor_y="top"
+    )
 
-    if not resized_recently:
-        resized_recently = True
-        pyglet.clock.schedule_once(drawTiles, 0.1)
+    room.resize(window, SCALE_FACTOR)
+    player.resize(window, SCALE_FACTOR)
 
 
-@window.event
-def on_draw():
-    pass
-
+pyglet.clock.schedule_interval(update, 1/120)
 
 pyglet.app.run()
