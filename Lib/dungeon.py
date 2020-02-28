@@ -106,7 +106,7 @@ class Room():
                     )
                     self.tiles[(x, y)] = tile
 
-    def resize(self, window, scale_factor):
+    def resize(self, window):
         for x in range(-1, 16):
             for y in range(-1, 16):
-                self.tiles[(x, y)].resize(window, scale_factor)
+                self.tiles[(x, y)].update(window)

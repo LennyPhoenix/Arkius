@@ -1,5 +1,7 @@
 """Contains classes for tiles, the player, enemies, etc."""
 
+from . import worldToScreen
+
 import pyglet
 from pyglet import image
 from pyglet.window import key
@@ -15,26 +17,26 @@ class Tile():
         scale_factor = window.height/320
         self.x = x
         self.y = y
+
+        self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
+
         self.sprite = pyglet.sprite.Sprite(
             tile_image,
             group=tile_group,
             batch=batch,
-            x=(self.x*16*scale_factor)+(2.5*16*scale_factor) +
-            (window.width/2)-(20*16*scale_factor/2),
-            y=(self.y*16*scale_factor)+(2.5*16*scale_factor) +
-            (window.height/2)-(20*16*scale_factor/2),
+            x=self.screen_x,
+            y=self.screen_y,
             usage="static"
         )
         self.sprite.scale = scale_factor
 
-    def resize(self, window, scale_factor):
+    def update(self, window):
+        self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
         self.sprite.update(
-            x=(self.x*16*scale_factor)+(2.5*16*scale_factor) +
-            (window.width/2)-(20*16*scale_factor/2),
-            y=(self.y*16*scale_factor)+(2.5*16*scale_factor) +
-            (window.height/2)-(20*16*scale_factor/2)
+            x=self.screen_x,
+            y=self.screen_y
         )
-        self.sprite.scale = scale_factor
+        self.sprite.scale = window.height / 340
 
 
 class Player():
@@ -43,7 +45,7 @@ class Player():
     Contains a sprite renderer and a collision box.
     """
 
-    def __init__(self, window, scale_factor, batch):
+    def __init__(self, window, batch):
         self.x = 7.0
         self.y = 7.0
 
@@ -56,26 +58,20 @@ class Player():
         player_image.anchor_x = 7
         player_image.anchor_y = 0
 
+        scale_factor = window.height / 340
+
+        self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
+
         self.sprite = pyglet.sprite.Sprite(
             player_image,
             batch=batch,
-            x=(self.x*16*scale_factor)+(2.5*16*scale_factor) +
-            (window.width/2)-(20*16*scale_factor/2),
-            y=(self.y*16*scale_factor)+(2.5*16*scale_factor) +
-            (window.height/2)-(20*16*scale_factor/2),
+            x=self.screen_x,
+            y=self.screen_y,
             usage="dynamic"
-        )
-
-    def resize(self, window, scale_factor):
-        self.sprite.update(
-            x=(self.x*16*scale_factor)+(2.5*16*scale_factor) +
-            (window.width/2)-(20*16*scale_factor/2),
-            y=(self.y*16*scale_factor)+(2.5*16*scale_factor) +
-            (window.height/2)-(20*16*scale_factor/2)
         )
         self.sprite.scale = scale_factor
 
-    def update(self, window, scale_factor, dt, groups):
+    def update(self, window, dt, groups):
         self.velocity_x, self.velocity_y = 0, 0
         if self.key_handler[key.W]:
             self.velocity_y += 0.1
@@ -96,10 +92,13 @@ class Player():
         self.x += self.velocity_x * dt * 60
         self.y += self.velocity_y * dt * 60
 
+        self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
+
+        scale_factor = window.height / 340
+
         self.sprite.update(
-            x=(self.x*16*scale_factor)+(2.5*16*scale_factor) +
-            (window.width/2)-(20*16*scale_factor/2),
-            y=(self.y*16*scale_factor)+(2.5*16*scale_factor) +
-            (window.height/2)-(20*16*scale_factor/2)
+            x=self.screen_x,
+            y=self.screen_y
         )
+        self.sprite.scale = scale_factor
         self.sprite.group = groups[14-round(self.y-0.5)]

@@ -62,7 +62,7 @@ help_text = Label(
     anchor_y="top"
 )
 
-player = prefabs.Player(window, SCALE_FACTOR, MAIN_BATCH)
+player = prefabs.Player(window, MAIN_BATCH)
 
 
 @window.event
@@ -115,7 +115,7 @@ def update(dt):
 
     window.push_handlers(player.key_handler)
 
-    player.update(window, SCALE_FACTOR, dt, Y_GROUPS)
+    player.update(window, dt, Y_GROUPS)
 
     MAIN_BATCH.draw()
     help_text.text = f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(player.x)[:4]}, {str(player.y)[:4]}"  # noqa: E501
@@ -137,8 +137,7 @@ def on_resize(width, height):
         anchor_y="top"
     )
 
-    room.resize(window, SCALE_FACTOR)
-    player.resize(window, SCALE_FACTOR)
+    room.resize(window)
 
 
 pyglet.clock.schedule_interval(update, 1/120)
