@@ -1,3 +1,6 @@
+"""Contains some frequently used functions."""
+
+
 def getBitValue(tileset, x, y):
     """Returns the bitmasking value of a tile."""
     tileID = tileset[(x, y)]
