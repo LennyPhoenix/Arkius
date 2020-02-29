@@ -36,9 +36,13 @@ pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
 MAIN_BATCH = pyglet.graphics.Batch()
 
-Y_GROUPS = {}
+TILE_Y_GROUPS = {}
 for y in range(-1, 16):
-    Y_GROUPS[y] = pyglet.graphics.OrderedGroup(y)
+    TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(2*y)
+
+PLAYER_Y_GROUPS = {}
+for y in range(-1, 16):
+    PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(2*y+1)
 
 fps_display = pyglet.window.FPSDisplay(window=window)
 window.set_minimum_size(1280, 720)
@@ -50,7 +54,7 @@ room = Room(
     tileset=tilesets.fightRoom(),
     window=window,
     batch=MAIN_BATCH,
-    groups=Y_GROUPS
+    groups=TILE_Y_GROUPS
 )
 print(room)
 
@@ -84,7 +88,7 @@ def on_key_press(symbol, modifiers):
             tileset=tilesets.fightRoom(),
             window=window,
             batch=MAIN_BATCH,
-            groups=Y_GROUPS
+            groups=TILE_Y_GROUPS
         )
     elif symbol == key.F11:
         window.set_fullscreen(not window.fullscreen)
@@ -97,7 +101,7 @@ def update(dt):
 
     window.push_handlers(player.key_handler)
 
-    player.update(window, dt, Y_GROUPS)
+    player.update(window, dt, PLAYER_Y_GROUPS)
 
     MAIN_BATCH.draw()
     help_text.text = f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(player.x)[:4]}, {str(player.y)[:4]}"  # noqa: E501
