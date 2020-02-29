@@ -45,16 +45,40 @@ class Room():
     def createSprites(self, window, batch, groups):
         """Creates all the tile sprites."""
         style = 0
-        for x, y in product(range(15), repeat=2):
-            room_tiles = self.ground_tiles
-            tile_id = room_tiles[(x, y)]
+        for x, y in product(range(-1, 16), repeat=2):
+            values = {
+                (-1, -1): 2,
+                (-1, 15): 8,
+                (15, -1): 128,
+                (15, 15): 32,
+                (-1, None): 14,
+                (15, None): 224,
+                (None, -1): 131,
+                (None, 15): 56
+            }
 
-            if tile_id != 0:
-                value = getBitValue(room_tiles, x, y)
-                image_path = f"Images/Tiles/{style}/{tile_id}/{value}.png"
-            else:
-                floor_type = random.randint(0, 3)
-                image_path = f"Images/Tiles/{style}/0/{floor_type}.png"
+            try:
+                image_path = f"Images/Tiles/{style}/1/{values[(x, y)]}.png"
+            except KeyError:
+                try:
+                    image_path = f"Images/Tiles/{style}/1/{values[(x, None)]}.png"
+                except KeyError:
+                    try:
+                        image_path = f"Images/Tiles/{style}/1/{values[(None, y)]}.png"
+                    except KeyError:
+                        room_tiles = self.ground_tiles
+                        tile_id = room_tiles[(x, y)]
+
+                        if tile_id != 0:
+                            value = getBitValue(room_tiles, x, y)
+                            image_path = f"Images/Tiles/{style}/{tile_id}/{value}.png"
+                        else:
+                            floor_type = random.randint(0, 3)
+                            image_path = f"Images/Tiles/{style}/0/{floor_type}.png"
+                        tile_image = image.load(image_path)
+                        tile_image.anchor_x = 0
+                        tile_image.anchor_y = 0
+
             tile_image = image.load(image_path)
             tile_image.anchor_x = 0
             tile_image.anchor_y = 0
@@ -67,42 +91,6 @@ class Room():
                 tile_image=tile_image
             )
             self.tiles[(x, y)] = tile
-
-        for x, y in product(range(-1, 16), repeat=2):
-            value = None
-            values = {
-                (-1, -1): 2,
-                (-1, 15): 8,
-                (15, -1): 128,
-                (15, 15): 32
-            }
-
-            if x == -1:
-                value = 14
-            elif x == 15:
-                value = 224
-            elif y == -1:
-                value = 131
-            elif y == 15:
-                value = 56
-
-            if (x, y) in values.keys():
-                value = values[(x, y)]
-
-            if value is not None:
-                image_path = f"Images/Tiles/{style}/1/{value}.png"
-                tile_image = image.load(image_path)
-                tile_image.anchor_x = 0
-                tile_image.anchor_y = 0
-
-                tile = prefabs.Tile(
-                    window=window,
-                    tile_group=groups[14-y],
-                    batch=batch,
-                    x=x, y=y,
-                    tile_image=tile_image
-                )
-                self.tiles[(x, y)] = tile
 
     def resize(self, window):
         for x, y in product(range(-1, 16), repeat=2):
