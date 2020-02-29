@@ -35,9 +35,10 @@ class Room():
 
     def __str__(self):
         string = ""
-        for x, y in product(range(15), repeat=2):
-            y = 14 - y
-            string += f"{self.ground_tiles[(x, y)]} "
+        for y in range(15):
+            for x in range(15):
+                y = 14 - y
+                string += f"{self.ground_tiles[(x, y)]} "
             string += "\n"
         return string
 
