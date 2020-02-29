@@ -24,6 +24,7 @@ from pyglet import gl
 from Lib.dungeon import Room
 from Lib import tilesets
 from Lib import prefabs
+from Lib import scaleFactor
 
 
 window = Window(
@@ -42,7 +43,7 @@ for y in range(-1, 16):
 fps_display = pyglet.window.FPSDisplay(window=window)
 window.set_minimum_size(1280, 720)
 
-SCALE_FACTOR = window.height/320
+SCALE_FACTOR = scaleFactor(window)
 
 room = Room(
     room_type=1,
@@ -126,7 +127,7 @@ def update(dt):
 @window.event
 def on_resize(width, height):
     global room, SCALE_FACTOR, help_text, player
-    SCALE_FACTOR = height/320
+    SCALE_FACTOR = scaleFactor(window)
 
     help_text = Label(
         text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(player.x)[:4]}, {str(player.y)[:4]}",  # noqa: E501

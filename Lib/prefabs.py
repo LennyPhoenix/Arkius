@@ -1,6 +1,7 @@
 """Contains classes for tiles, the player, enemies, etc."""
 
 from . import worldToScreen
+from . import scaleFactor
 
 import pyglet
 from pyglet import image
@@ -14,7 +15,6 @@ class Tile():
     """
 
     def __init__(self, window, tile_group, batch, x, y, tile_image):
-        scale_factor = window.height/320
         self.x = x
         self.y = y
 
@@ -28,7 +28,7 @@ class Tile():
             y=self.screen_y,
             usage="static"
         )
-        self.sprite.scale = scale_factor
+        self.sprite.scale = scaleFactor(window)
 
     def update(self, window):
         self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
@@ -36,7 +36,7 @@ class Tile():
             x=self.screen_x,
             y=self.screen_y
         )
-        self.sprite.scale = window.height / 340
+        self.sprite.scale = scaleFactor(window)
 
 
 class Player():
@@ -58,8 +58,6 @@ class Player():
         player_image.anchor_x = 7
         player_image.anchor_y = 0
 
-        scale_factor = window.height / 340
-
         self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
 
         self.sprite = pyglet.sprite.Sprite(
@@ -69,7 +67,7 @@ class Player():
             y=self.screen_y,
             usage="dynamic"
         )
-        self.sprite.scale = scale_factor
+        self.sprite.scale = scaleFactor(window)
 
     def update(self, window, dt, groups):
         self.velocity_x, self.velocity_y = 0, 0
@@ -94,7 +92,7 @@ class Player():
 
         self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
 
-        scale_factor = window.height / 340
+        scale_factor = scaleFactor(window)
 
         self.sprite.update(
             x=self.screen_x,
