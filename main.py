@@ -69,38 +69,19 @@ player = prefabs.Player(window, MAIN_BATCH)
 @window.event
 def on_key_press(symbol, modifiers):
     global room, MAIN_BATCH
-    if symbol == key._0:
+
+    room_keys = {
+        key._0: 0,
+        key._1: 1,
+        key._2: 2,
+        key._3: 3,
+        key._4: 4,
+    }
+
+    if symbol in room_keys.keys():
         room = Room(
-            room_type=0,
-            window=window,
-            batch=MAIN_BATCH,
-            groups=Y_GROUPS
-        )
-    elif symbol == key._1:
-        room = Room(
-            room_type=1,
+            room_type=room_keys[symbol],
             tileset=tilesets.fightRoom(),
-            window=window,
-            batch=MAIN_BATCH,
-            groups=Y_GROUPS
-        )
-    elif symbol == key._2:
-        room = Room(
-            room_type=2,
-            window=window,
-            batch=MAIN_BATCH,
-            groups=Y_GROUPS
-        )
-    elif symbol == key._3:
-        room = Room(
-            room_type=3,
-            window=window,
-            batch=MAIN_BATCH,
-            groups=Y_GROUPS
-        )
-    elif symbol == key._4:
-        room = Room(
-            room_type=4,
             window=window,
             batch=MAIN_BATCH,
             groups=Y_GROUPS
