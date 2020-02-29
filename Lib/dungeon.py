@@ -5,6 +5,7 @@ from . import prefabs
 from . import getBitValue
 
 import random
+from itertools import product
 from pyglet import image
 
 
@@ -34,27 +35,61 @@ class Room():
 
     def __str__(self):
         string = ""
-        for y in range(15):
-            for x in range(15):
-                y = 14 - y
-                string += f"{self.ground_tiles[(x, y)]} "
+        for x, y in product(range(15), repeat=2):
+            y = 14 - y
+            string += f"{self.ground_tiles[(x, y)]} "
             string += "\n"
         return string
 
     def createSprites(self, window, batch, groups):
         """Creates all the tile sprites."""
         style = 0
-        for x in range(15):
-            for y in range(15):
-                room_tiles = self.ground_tiles
-                tile_id = room_tiles[(x, y)]
+        for x, y in product(range(15), repeat=2):
+            room_tiles = self.ground_tiles
+            tile_id = room_tiles[(x, y)]
 
-                if tile_id != 0:
-                    value = getBitValue(room_tiles, x, y)
-                    image_path = f"Images/Tiles/{style}/{tile_id}/{value}.png"
-                else:
-                    floor_type = random.randint(0, 3)
-                    image_path = f"Images/Tiles/{style}/0/{floor_type}.png"
+            if tile_id != 0:
+                value = getBitValue(room_tiles, x, y)
+                image_path = f"Images/Tiles/{style}/{tile_id}/{value}.png"
+            else:
+                floor_type = random.randint(0, 3)
+                image_path = f"Images/Tiles/{style}/0/{floor_type}.png"
+            tile_image = image.load(image_path)
+            tile_image.anchor_x = 0
+            tile_image.anchor_y = 0
+
+            tile = prefabs.Tile(
+                window=window,
+                tile_group=groups[14-y],
+                batch=batch,
+                x=x, y=y,
+                tile_image=tile_image
+            )
+            self.tiles[(x, y)] = tile
+
+        for x, y in product(range(-1, 16), repeat=2):
+            value = None
+            values = {
+                (-1, -1): 2,
+                (-1, 15): 8,
+                (15, -1): 128,
+                (15, 15): 32
+            }
+
+            if x == -1:
+                value = 14
+            elif x == 15:
+                value = 224
+            elif y == -1:
+                value = 131
+            elif y == 15:
+                value = 56
+
+            if (x, y) in values.keys():
+                value = values[(x, y)]
+
+            if value is not None:
+                image_path = f"Images/Tiles/{style}/1/{value}.png"
                 tile_image = image.load(image_path)
                 tile_image.anchor_x = 0
                 tile_image.anchor_y = 0
@@ -68,45 +103,6 @@ class Room():
                 )
                 self.tiles[(x, y)] = tile
 
-        for x in range(-1, 16):
-            for y in range(-1, 16):
-
-                value = None
-                values = {
-                    (-1, -1): 2,
-                    (-1, 15): 8,
-                    (15, -1): 128,
-                    (15, 15): 32
-                }
-
-                if x == -1:
-                    value = 14
-                elif x == 15:
-                    value = 224
-                elif y == -1:
-                    value = 131
-                elif y == 15:
-                    value = 56
-
-                if (x, y) in values.keys():
-                    value = values[(x, y)]
-
-                if value is not None:
-                    image_path = f"Images/Tiles/{style}/1/{value}.png"
-                    tile_image = image.load(image_path)
-                    tile_image.anchor_x = 0
-                    tile_image.anchor_y = 0
-
-                    tile = prefabs.Tile(
-                        window=window,
-                        tile_group=groups[14-y],
-                        batch=batch,
-                        x=x, y=y,
-                        tile_image=tile_image
-                    )
-                    self.tiles[(x, y)] = tile
-
     def resize(self, window):
-        for x in range(-1, 16):
-            for y in range(-1, 16):
-                self.tiles[(x, y)].update(window)
+        for x, y in product(range(-1, 16), repeat=2):
+            self.tiles[(x, y)].update(window)
