@@ -126,7 +126,7 @@ def on_resize(width, height):
     room.resize(window)
 
 
-pyglet.clock.schedule_interval(update, 1/120)
-
-window.push_handlers(pyglet.window.event.WindowEventLogger())
-pyglet.app.run()
+if __name__ == "__main__":
+    pyglet.clock.schedule_interval(update, 1/120)
+    window.push_handlers(pyglet.window.event.WindowEventLogger())
+    pyglet.app.run()
