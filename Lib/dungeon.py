@@ -80,7 +80,7 @@ class Room():
 
             tile = prefabs.Tile(
                 window=window,
-                tile_group=groups[14-y],
+                tile_group=groups[y],
                 batch=batch,
                 x=x, y=y,
                 tile_image=tile_image

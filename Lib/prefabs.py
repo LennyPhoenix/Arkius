@@ -99,4 +99,4 @@ class Player():
             y=self.screen_y
         )
         self.sprite.scale = scale_factor
-        self.sprite.group = groups[14-round(self.y-0.5)]
+        self.sprite.group = groups[round(self.y-0.5)]

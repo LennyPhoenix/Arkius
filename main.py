@@ -37,12 +37,12 @@ pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
 MAIN_BATCH = pyglet.graphics.Batch()
 
 TILE_Y_GROUPS = {}
-for y in range(-1, 16):
-    TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(2*y)
+for y in range(-3, 19):
+    TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y)
 
 PLAYER_Y_GROUPS = {}
-for y in range(-1, 16):
-    PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(2*y+1)
+for y in range(-3, 19):
+    PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y+1)
 
 fps_display = pyglet.window.FPSDisplay(window=window)
 window.set_minimum_size(1280, 720)
