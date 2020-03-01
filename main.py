@@ -40,7 +40,7 @@ for y in range(-3, 19):
     PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y+1)
 
 fps_display = pyglet.window.FPSDisplay(window=window)
-window.set_minimum_size(1280, 720)
+window.set_minimum_size(768, 480)
 
 SCALE_FACTOR = scaleFactor(window)
 
@@ -53,16 +53,8 @@ room = Room(
 )
 print(room)
 
-help_text = Label(
-    text="Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed",  # noqa: E501
-    font_name="Helvetica", font_size=7*SCALE_FACTOR,
-    x=10*SCALE_FACTOR, y=window.height-10*SCALE_FACTOR,
-    multiline=True,
-    width=window.width,
-    anchor_y="top"
-)
-
 player = prefabs.Player(window, MAIN_BATCH)
+help_text = None
 
 
 @window.event
@@ -111,10 +103,10 @@ def on_resize(width, height):
 
     help_text = Label(
         text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(player.x)[:4]}, {str(player.y)[:4]}",  # noqa: E501
-        font_name="Helvetica", font_size=7*SCALE_FACTOR,
+        font_name="Helvetica", font_size=6.5*SCALE_FACTOR,
         x=10*SCALE_FACTOR, y=window.height-10*SCALE_FACTOR,
         multiline=True,
-        width=window.width,
+        width=window.width-10*SCALE_FACTOR,
         anchor_y="top"
     )
 
