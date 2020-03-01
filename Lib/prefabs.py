@@ -83,8 +83,8 @@ class Player():
             (self.key_handler[key.A] or self.key_handler[key.D]) and
             (self.key_handler[key.W] or self.key_handler[key.S])
         ):
-            self.velocity_x *= 0.75
-            self.velocity_y *= 0.75
+            self.velocity_x *= 0.7
+            self.velocity_y *= 0.7
 
         self.x += self.velocity_x * dt * 60
         self.y += self.velocity_y * dt * 60
