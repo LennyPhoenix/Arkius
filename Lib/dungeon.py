@@ -45,39 +45,34 @@ class Room():
     def createSprites(self, window, batch, groups):
         """Creates all the tile sprites."""
         style = 0
+        room_tiles = self.ground_tiles
+        borders = {
+            (-1, -1): 2,
+            (-1, 15): 8,
+            (15, -1): 128,
+            (15, 15): 32,
+            (-1, None): 14,
+            (15, None): 224,
+            (None, -1): 131,
+            (None, 15): 56
+        }
         for x, y in product(range(-1, 16), repeat=2):
-            values = {
-                (-1, -1): 2,
-                (-1, 15): 8,
-                (15, -1): 128,
-                (15, 15): 32,
-                (-1, None): 14,
-                (15, None): 224,
-                (None, -1): 131,
-                (None, 15): 56
-            }
-
-            try:
-                image_path = f"Images/Tiles/{style}/1/{values[(x, y)]}.png"
-            except KeyError:
-                try:
-                    image_path = f"Images/Tiles/{style}/1/{values[(x, None)]}.png"  # noqa: E501
-                except KeyError:
-                    try:
-                        image_path = f"Images/Tiles/{style}/1/{values[(None, y)]}.png"  # noqa: E501
-                    except KeyError:
-                        room_tiles = self.ground_tiles
-                        tile_id = room_tiles[(x, y)]
-
-                        if tile_id != 0:
-                            value = getBitValue(room_tiles, x, y)
-                            image_path = f"Images/Tiles/{style}/{tile_id}/{value}.png"  # noqa: E501
-                        else:
-                            floor_type = random.randint(0, 3)
-                            image_path = f"Images/Tiles/{style}/0/{floor_type}.png"  # noqa: E501
-                        tile_image = image.load(image_path)
-                        tile_image.anchor_x = 0
-                        tile_image.anchor_y = 0
+            if (x, y) in borders.keys():
+                image_path = f"Images/Tiles/{style}/1/{borders[(x, y)]}.png"
+            elif (x, None) in borders.keys():
+                image_path = f"Images/Tiles/{style}/1/{borders[(x, None)]}.png"
+            elif (None, y) in borders.keys():
+                image_path = f"Images/Tiles/{style}/1/{borders[(None, y)]}.png"
+            elif (x, y) in room_tiles.keys():
+                tile_id = room_tiles[(x, y)]
+                if tile_id != 0:
+                    value = getBitValue(room_tiles, x, y)
+                    image_path = f"Images/Tiles/{style}/{tile_id}/{value}.png"
+                else:
+                    floor_type = random.randint(0, 3)
+                    image_path = f"Images/Tiles/{style}/0/{floor_type}.png"
+            else:
+                continue
 
             tile_image = image.load(image_path)
             tile_image.anchor_x = 0
