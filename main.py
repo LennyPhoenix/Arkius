@@ -16,16 +16,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import pyglet
-from pyglet.window import Window
-from pyglet.window import key
-from pyglet.text import Label
-from pyglet import gl
-
+from Lib import prefabs, scaleFactor, tilesets
 from Lib.dungeon import Room
-from Lib import tilesets
-from Lib import prefabs
-from Lib import scaleFactor
-
+from pyglet import gl
+from pyglet.text import Label
+from pyglet.window import Window, key
 
 window = Window(
     caption="Arkius",

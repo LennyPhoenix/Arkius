@@ -1,12 +1,11 @@
 """Contains class objects for Room."""
 
-from . import tilesets
-from . import prefabs
-from . import getBitValue
-
 import random
 from itertools import product
+
 from pyglet import image
+
+from . import getBitValue, prefabs, tilesets
 
 
 class Room():

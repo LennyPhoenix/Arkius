@@ -1,11 +1,10 @@
 """Contains classes for tiles, the player, enemies, etc."""
 
-from . import worldToScreen
-from . import scaleFactor
-
 import pyglet
 from pyglet import image
 from pyglet.window import key
+
+from . import scaleFactor, worldToScreen
 
 
 class Tile():
