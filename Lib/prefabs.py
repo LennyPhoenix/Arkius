@@ -90,6 +90,9 @@ class Player():
         self.x += self.velocity_x * dt * 60
         self.y += self.velocity_y * dt * 60
 
+        if self.x <= -3 or self.x >= 18 or self.y <= -3 or self.y >= 18:
+            self.x, self.y = 7.5, 7.5
+
         self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
 
         scale_factor = scaleFactor(window)
