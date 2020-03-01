@@ -1,2 +1,2 @@
-language = "bash"
+language = "pygame"
 run = "bash -c polygott-x11-vnc q && DISPLAY=:0 run-project"
