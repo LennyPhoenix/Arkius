@@ -86,7 +86,8 @@ class Window(pyglet.window.Window):
 window = Window(
     caption="Arkius",
     resizable=True,
-    fullscreen=True
+    fullscreen=True,
+    vsync=True
 )
 
 
