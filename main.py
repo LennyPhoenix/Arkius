@@ -109,15 +109,13 @@ class Window(pyglet.window.Window):
         return scale_factor
 
 
-window = Window(
-    caption="Arkius",
-    resizable=True,
-    fullscreen=True,
-    vsync=True
-)
-
-
 if __name__ == "__main__":
+    window = Window(
+        caption="Arkius",
+        resizable=True,
+        fullscreen=True,
+        vsync=True
+    )
     pyglet.clock.schedule_interval(window.update, 1/120)
     window.push_handlers(pyglet.window.event.WindowEventLogger())
     pyglet.app.run()
