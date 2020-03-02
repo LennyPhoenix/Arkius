@@ -77,6 +77,11 @@ class Window(pyglet.window.Window):
         elif symbol == key.ESCAPE:
             self.close()
 
+    def on_resize(self, width, height):
+        viewport_width, viewport_height = self.get_framebuffer_size()
+        self._projection.set(width, height, viewport_width, viewport_height)
+        self.room.resize(self)
+
     def update(self, dt):
         scale_factor = self.scaleFactor()
 
@@ -110,11 +115,6 @@ window = Window(
     fullscreen=True,
     vsync=True
 )
-
-
-@window.event
-def on_resize(width, height):
-    window.room.resize(window)
 
 
 if __name__ == "__main__":
