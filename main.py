@@ -81,8 +81,7 @@ class Window(pyglet.window.Window):
 
     def on_resize(self, width, height):
         """Run on every window resize."""
-        viewport_width, viewport_height = self.get_framebuffer_size()
-        self._projection.set(width, height, viewport_width, viewport_height)
+        super().on_resize(width, height)
         self.room.resize(self)
 
     def update(self, dt):
