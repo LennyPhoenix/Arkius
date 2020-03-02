@@ -44,6 +44,28 @@ class Window(pyglet.window.Window):
         for y in range(-3, 19):
             self.PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y+1)
 
+    def on_key_press(self, symbol, modifiers):
+        global room
+
+        room_keys = {
+            key._0: 0,
+            key._1: 1,
+            key._2: 2,
+            key._3: 3,
+            key._4: 4,
+        }
+
+        if symbol in room_keys.keys():
+            room = Room(
+                room_type=room_keys[symbol],
+                tileset=tilesets.fightRoom(),
+                window=window
+            )
+        elif symbol == key.F11:
+            window.set_fullscreen(not window.fullscreen)
+        elif symbol == key.ESCAPE:
+            window.close()
+
     def scaleFactor(self):
         """Returns the scale factor of the window."""
         scale_factor = self.height / 320
@@ -67,28 +89,6 @@ print(room)
 
 player = prefabs.Player(window)
 help_text = None
-
-
-@window.event
-def on_key_press(symbol, modifiers):
-    global room
-
-    room_keys = {
-        key._0: 0,
-        key._1: 1,
-        key._2: 2,
-        key._3: 3,
-        key._4: 4,
-    }
-
-    if symbol in room_keys.keys():
-        room = Room(
-            room_type=room_keys[symbol],
-            tileset=tilesets.fightRoom(),
-            window=window
-        )
-    elif symbol == key.F11:
-        window.set_fullscreen(not window.fullscreen)
 
 
 def update(dt):
