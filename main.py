@@ -16,12 +16,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import pyglet
-from Lib import prefabs, tilesets
-from Lib.dungeon import Room
 from pyglet import gl
 from pyglet.text import Label
 from pyglet.window import key
 
+from Lib import prefabs, tilesets
+from Lib.dungeon import Room
 
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
