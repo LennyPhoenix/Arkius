@@ -16,104 +16,110 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import pyglet
-from Lib import prefabs, scaleFactor, tilesets
+from Lib import prefabs, tilesets
 from Lib.dungeon import Room
 from pyglet import gl
 from pyglet.text import Label
-from pyglet.window import Window, key
+from pyglet.window import key
 
-window = Window(
-    caption="Arkius",
-    resizable=True,
-    fullscreen=True
-)
+
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
-MAIN_BATCH = pyglet.graphics.Batch()
-
-TILE_Y_GROUPS = {}
-for y in range(-3, 19):
-    TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y)
-
-PLAYER_Y_GROUPS = {}
-for y in range(-3, 19):
-    PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y+1)
-
-fps_display = pyglet.window.FPSDisplay(window=window)
-window.set_minimum_size(768, 480)
-
-SCALE_FACTOR = scaleFactor(window)
-
-room = Room(
-    room_type=1,
-    tileset=tilesets.fightRoom(),
-    window=window,
-    batch=MAIN_BATCH,
-    groups=TILE_Y_GROUPS
-)
-print(room)
-
-player = prefabs.Player(window, MAIN_BATCH)
-help_text = None
 
 
-@window.event
-def on_key_press(symbol, modifiers):
-    global room, MAIN_BATCH
+class Window(pyglet.window.Window):
+    """
+    Custom window class for application.
+    Derived from pyglet.window.Window.
+    """
 
-    room_keys = {
-        key._0: 0,
-        key._1: 1,
-        key._2: 2,
-        key._3: 3,
-        key._4: 4,
-    }
+    def __init__(self, *args, **kwargs):
+        """Creates the dungeon and player etc."""
+        super().__init__(*args, **kwargs)
+        self.set_minimum_size(768, 480)
 
-    if symbol in room_keys.keys():
-        room = Room(
-            room_type=room_keys[symbol],
+        self.BATCH = pyglet.graphics.Batch()
+        self.fps_display = pyglet.window.FPSDisplay(window=self)
+
+        self.TILE_Y_GROUPS = {}
+        for y in range(-3, 19):
+            self.TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y)
+
+        self.PLAYER_Y_GROUPS = {}
+        for y in range(-3, 19):
+            self.PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y+1)
+
+        self.room = Room(
+            room_type=1,
             tileset=tilesets.fightRoom(),
-            window=window,
-            batch=MAIN_BATCH,
-            groups=TILE_Y_GROUPS
+            window=self
         )
-    elif symbol == key.F11:
-        window.set_fullscreen(not window.fullscreen)
+        print(self.room)
 
+        self.player = prefabs.Player(self)
 
-def update(dt):
-    global room, help_text, player, SCALE_FACTOR, MAIN_BATCH
+    def on_key_press(self, symbol, modifiers):
+        """Run on every key press."""
+        room_keys = {
+            key._0: 0,
+            key._1: 1,
+            key._2: 2,
+            key._3: 3,
+            key._4: 4,
+        }
 
-    window.clear()
+        if symbol in room_keys.keys():
+            self.room = Room(
+                room_type=room_keys[symbol],
+                tileset=tilesets.fightRoom(),
+                window=self
+            )
+        elif symbol == key.F11:
+            self.set_fullscreen(not self.fullscreen)
+        elif symbol == key.ESCAPE:
+            self.close()
 
-    window.push_handlers(player.key_handler)
+    def on_resize(self, width, height):
+        """Run on every window resize."""
+        viewport_width, viewport_height = self.get_framebuffer_size()
+        self._projection.set(width, height, viewport_width, viewport_height)
+        self.room.resize(self)
 
-    player.update(window, dt, PLAYER_Y_GROUPS)
+    def update(self, dt):
+        """Run 120 times per second."""
+        scale_factor = self.scaleFactor()
 
-    MAIN_BATCH.draw()
-    help_text.text = f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(player.x)[:4]}, {str(player.y)[:4]}"  # noqa: E501
-    help_text.draw()
-    fps_display.draw()
+        self.clear()
 
+        self.push_handlers(self.player.key_handler)
 
-@window.event
-def on_resize(width, height):
-    global room, SCALE_FACTOR, help_text, player
-    SCALE_FACTOR = scaleFactor(window)
+        self.player.update(self, dt)
 
-    help_text = Label(
-        text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(player.x)[:4]}, {str(player.y)[:4]}",  # noqa: E501
-        font_name="Helvetica", font_size=6.5*SCALE_FACTOR,
-        x=10*SCALE_FACTOR, y=window.height-10*SCALE_FACTOR,
-        multiline=True,
-        width=window.width-10*SCALE_FACTOR,
-        anchor_y="top"
-    )
+        self.BATCH.draw()
+        help_text = Label(
+            text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(self.player.x)[:4]}, {str(self.player.y)[:4]}",  # noqa: E501
+            font_name="Helvetica", font_size=6.5*scale_factor,
+            x=10*scale_factor, y=self.height-10*scale_factor,
+            multiline=True,
+            width=self.width-10*scale_factor,
+            anchor_y="top"
+        )
+        help_text.draw()
+        self.fps_display.draw()
 
-    room.resize(window)
+    def scaleFactor(self):
+        """Returns the scale factor of the window."""
+        scale_factor = self.height / 320
+        return scale_factor
 
 
 if __name__ == "__main__":
-    pyglet.clock.schedule_interval(update, 1/120)
+    window = Window(
+        caption="Arkius",
+        resizable=True,
+        fullscreen=True,
+        vsync=True
+    )
+    pyglet.clock.schedule_interval(window.update, 1/120)
     window.push_handlers(pyglet.window.event.WindowEventLogger())
     pyglet.app.run()

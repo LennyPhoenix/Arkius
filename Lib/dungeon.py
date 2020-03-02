@@ -11,7 +11,7 @@ from . import getBitValue, prefabs, tilesets
 class Room():
     """Room class for dungeon."""
 
-    def __init__(self, window, batch, groups, room_type=0, pos=(0, 0), doors={0: False, 1: False, 2: False, 3: False}, tileset=tilesets.basic()):  # noqa: E501
+    def __init__(self, window, room_type=0, pos=(0, 0), doors={0: False, 1: False, 2: False, 3: False}, tileset=tilesets.basic()):  # noqa: E501
         """Initialise the Room class."""
         self.type = room_type
         self.pos = pos
@@ -30,7 +30,7 @@ class Room():
 
         self.ground_tiles = types[room_type]
 
-        self.createSprites(window, batch, groups)
+        self.createSprites(window)
 
     def __str__(self):
         string = ""
@@ -41,7 +41,7 @@ class Room():
             string += "\n"
         return string
 
-    def createSprites(self, window, batch, groups):
+    def createSprites(self, window):
         """Creates all the tile sprites."""
         style = 0
         room_tiles = self.ground_tiles
@@ -79,8 +79,6 @@ class Room():
 
             tile = prefabs.Tile(
                 window=window,
-                tile_group=groups[y],
-                batch=batch,
                 x=x, y=y,
                 tile_image=tile_image
             )

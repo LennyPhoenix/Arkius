@@ -50,7 +50,7 @@ def getBitValue(tileset, x, y):
 
 def worldToScreen(x, y, window):
     """Converts a world postion to the screen position."""
-    scale_factor = scaleFactor(window)
+    scale_factor = window.scaleFactor()
 
     screen_x = (x + 2.5) * 16 * scale_factor  # With buffer
     screen_x += window.width/2 - 20*16*scale_factor/2  # Center
@@ -59,9 +59,3 @@ def worldToScreen(x, y, window):
     screen_y += window.height/2 - 20*16*scale_factor/2  # Center
 
     return (screen_x, screen_y)
-
-
-def scaleFactor(window):
-    """Returns the global scale factor of the window."""
-    scale_factor = window.height / 320
-    return scale_factor
