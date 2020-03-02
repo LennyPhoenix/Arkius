@@ -44,7 +44,6 @@ class Room():
     def createSprites(self, window):
         """Creates all the tile sprites."""
         style = 0
-        groups = window.TILE_Y_GROUPS
         room_tiles = self.ground_tiles
         borders = {
             (-1, -1): 2,
@@ -80,8 +79,6 @@ class Room():
 
             tile = prefabs.Tile(
                 window=window,
-                tile_group=groups[y],
-                batch=window.BATCH,
                 x=x, y=y,
                 tile_image=tile_image
             )

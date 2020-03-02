@@ -13,7 +13,7 @@ class Tile():
     Contains a sprite renderer and a collision box.
     """
 
-    def __init__(self, window, tile_group, batch, x, y, tile_image):
+    def __init__(self, window, x, y, tile_image):
         self.x = x
         self.y = y
 
@@ -21,8 +21,8 @@ class Tile():
 
         self.sprite = pyglet.sprite.Sprite(
             tile_image,
-            group=tile_group,
-            batch=batch,
+            group=window.TILE_Y_GROUPS[y],
+            batch=window.BATCH,
             x=self.screen_x,
             y=self.screen_y,
             usage="static"
