@@ -60,6 +60,7 @@ class Window(pyglet.window.Window):
 
     def on_key_press(self, symbol, modifiers):
         """Run on every key press."""
+        super().on_key_press(symbol, modifiers)
         room_keys = {
             key._0: 0,
             key._1: 1,
@@ -76,8 +77,6 @@ class Window(pyglet.window.Window):
             )
         elif symbol == key.F11:
             self.set_fullscreen(not self.fullscreen)
-        elif symbol == key.ESCAPE:
-            self.close()
 
     def on_resize(self, width, height):
         """Run on every window resize."""
