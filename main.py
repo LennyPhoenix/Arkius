@@ -48,9 +48,14 @@ class Window(pyglet.window.Window):
         for y in range(-3, 19):
             self.PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y+1)
 
-    def on_key_press(self, symbol, modifiers):
-        global room
+        self.room = Room(
+            room_type=1,
+            tileset=tilesets.fightRoom(),
+            window=self
+        )
+        print(self.room)
 
+    def on_key_press(self, symbol, modifiers):
         room_keys = {
             key._0: 0,
             key._1: 1,
@@ -60,7 +65,7 @@ class Window(pyglet.window.Window):
         }
 
         if symbol in room_keys.keys():
-            room = Room(
+            self.room = Room(
                 room_type=room_keys[symbol],
                 tileset=tilesets.fightRoom(),
                 window=self
@@ -112,8 +117,7 @@ def update(dt):
 
 @window.event
 def on_resize(width, height):
-    global room, player
-    room.resize(window)
+    window.room.resize(window)
 
 
 if __name__ == "__main__":
