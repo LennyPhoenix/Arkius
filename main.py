@@ -55,6 +55,8 @@ class Window(pyglet.window.Window):
         )
         print(self.room)
 
+        self.player = prefabs.Player(self)
+
     def on_key_press(self, symbol, modifiers):
         room_keys = {
             key._0: 0,
@@ -88,23 +90,18 @@ window = Window(
 )
 
 
-player = prefabs.Player(window)
-help_text = None
-
-
 def update(dt):
-    global room, player
     scale_factor = window.scaleFactor()
 
     window.clear()
 
-    window.push_handlers(player.key_handler)
+    window.push_handlers(window.player.key_handler)
 
-    player.update(window, dt)
+    window.player.update(window, dt)
 
     window.BATCH.draw()
     help_text = Label(
-        text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(player.x)[:4]}, {str(player.y)[:4]}",  # noqa: E501
+        text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(window.player.x)[:4]}, {str(window.player.y)[:4]}",  # noqa: E501
         font_name="Helvetica", font_size=6.5*scale_factor,
         x=10*scale_factor, y=window.height-10*scale_factor,
         multiline=True,
