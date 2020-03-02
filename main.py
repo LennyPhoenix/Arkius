@@ -59,12 +59,12 @@ class Window(pyglet.window.Window):
             room = Room(
                 room_type=room_keys[symbol],
                 tileset=tilesets.fightRoom(),
-                window=window
+                window=self
             )
         elif symbol == key.F11:
-            window.set_fullscreen(not window.fullscreen)
+            self.set_fullscreen(not self.fullscreen)
         elif symbol == key.ESCAPE:
-            window.close()
+            self.close()
 
     def scaleFactor(self):
         """Returns the scale factor of the window."""
