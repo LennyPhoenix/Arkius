@@ -77,6 +77,27 @@ class Window(pyglet.window.Window):
         elif symbol == key.ESCAPE:
             self.close()
 
+    def update(self, dt):
+        scale_factor = self.scaleFactor()
+
+        self.clear()
+
+        self.push_handlers(self.player.key_handler)
+
+        self.player.update(self, dt)
+
+        self.BATCH.draw()
+        help_text = Label(
+            text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(self.player.x)[:4]}, {str(self.player.y)[:4]}",  # noqa: E501
+            font_name="Helvetica", font_size=6.5*scale_factor,
+            x=10*scale_factor, y=self.height-10*scale_factor,
+            multiline=True,
+            width=self.width-10*scale_factor,
+            anchor_y="top"
+        )
+        help_text.draw()
+        self.fps_display.draw()
+
     def scaleFactor(self):
         """Returns the scale factor of the window."""
         scale_factor = self.height / 320
@@ -91,34 +112,12 @@ window = Window(
 )
 
 
-def update(dt):
-    scale_factor = window.scaleFactor()
-
-    window.clear()
-
-    window.push_handlers(window.player.key_handler)
-
-    window.player.update(window, dt)
-
-    window.BATCH.draw()
-    help_text = Label(
-        text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(window.player.x)[:4]}, {str(window.player.y)[:4]}",  # noqa: E501
-        font_name="Helvetica", font_size=6.5*scale_factor,
-        x=10*scale_factor, y=window.height-10*scale_factor,
-        multiline=True,
-        width=window.width-10*scale_factor,
-        anchor_y="top"
-    )
-    help_text.draw()
-    window.fps_display.draw()
-
-
 @window.event
 def on_resize(width, height):
     window.room.resize(window)
 
 
 if __name__ == "__main__":
-    pyglet.clock.schedule_interval(update, 1/120)
+    pyglet.clock.schedule_interval(window.update, 1/120)
     window.push_handlers(pyglet.window.event.WindowEventLogger())
     pyglet.app.run()
