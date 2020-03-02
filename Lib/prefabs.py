@@ -4,7 +4,7 @@ import pyglet
 from pyglet import image
 from pyglet.window import key
 
-from . import scaleFactor, worldToScreen
+from . import worldToScreen
 
 
 class Tile():
@@ -27,7 +27,7 @@ class Tile():
             y=self.screen_y,
             usage="static"
         )
-        self.sprite.scale = scaleFactor(window)
+        self.sprite.scale = window.scaleFactor()
 
     def update(self, window):
         self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
@@ -35,7 +35,7 @@ class Tile():
             x=self.screen_x,
             y=self.screen_y
         )
-        self.sprite.scale = scaleFactor(window)
+        self.sprite.scale = window.scaleFactor()
 
 
 class Player():
@@ -44,7 +44,7 @@ class Player():
     Contains a sprite renderer and a collision box.
     """
 
-    def __init__(self, window, batch):
+    def __init__(self, window):
         self.x = 7.0
         self.y = 7.0
 
@@ -61,14 +61,16 @@ class Player():
 
         self.sprite = pyglet.sprite.Sprite(
             player_image,
-            batch=batch,
+            batch=window.BATCH,
             x=self.screen_x,
             y=self.screen_y,
             usage="dynamic"
         )
-        self.sprite.scale = scaleFactor(window)
+        self.sprite.scale = window.scaleFactor()
 
-    def update(self, window, dt, groups):
+    def update(self, window, dt):
+        groups = window.PLAYER_Y_GROUPS
+
         self.velocity_x, self.velocity_y = 0, 0
         if self.key_handler[key.W]:
             self.velocity_y += 0.1
@@ -94,7 +96,7 @@ class Player():
 
         self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
 
-        scale_factor = scaleFactor(window)
+        scale_factor = window.scaleFactor()
 
         self.sprite.update(
             x=self.screen_x,

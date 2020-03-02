@@ -16,11 +16,39 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import pyglet
-from Lib import prefabs, scaleFactor, tilesets
+from Lib import prefabs, tilesets
 from Lib.dungeon import Room
 from pyglet import gl
 from pyglet.text import Label
-from pyglet.window import Window, key
+from pyglet.window import key
+
+
+class Window(pyglet.window.Window):
+    """
+    Custom window class for application.
+    Derived from pyglet.window.Window.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.set_minimum_size(768, 480)
+
+        self.BATCH = pyglet.graphics.Batch()
+        self.fps_display = pyglet.window.FPSDisplay(window=self)
+
+        self.TILE_Y_GROUPS = {}
+        for y in range(-3, 19):
+            self.TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y)
+
+        self.PLAYER_Y_GROUPS = {}
+        for y in range(-3, 19):
+            self.PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y+1)
+
+    def scaleFactor(self):
+        """Returns the scale factor of the window."""
+        scale_factor = self.height / 320
+        return scale_factor
+
 
 window = Window(
     caption="Arkius",
@@ -29,37 +57,21 @@ window = Window(
 )
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
-MAIN_BATCH = pyglet.graphics.Batch()
-
-TILE_Y_GROUPS = {}
-for y in range(-3, 19):
-    TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y)
-
-PLAYER_Y_GROUPS = {}
-for y in range(-3, 19):
-    PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y+1)
-
-fps_display = pyglet.window.FPSDisplay(window=window)
-window.set_minimum_size(768, 480)
-
-SCALE_FACTOR = scaleFactor(window)
 
 room = Room(
     room_type=1,
     tileset=tilesets.fightRoom(),
-    window=window,
-    batch=MAIN_BATCH,
-    groups=TILE_Y_GROUPS
+    window=window
 )
 print(room)
 
-player = prefabs.Player(window, MAIN_BATCH)
+player = prefabs.Player(window)
 help_text = None
 
 
 @window.event
 def on_key_press(symbol, modifiers):
-    global room, MAIN_BATCH
+    global room
 
     room_keys = {
         key._0: 0,
@@ -73,43 +85,38 @@ def on_key_press(symbol, modifiers):
         room = Room(
             room_type=room_keys[symbol],
             tileset=tilesets.fightRoom(),
-            window=window,
-            batch=MAIN_BATCH,
-            groups=TILE_Y_GROUPS
+            window=window
         )
     elif symbol == key.F11:
         window.set_fullscreen(not window.fullscreen)
 
 
 def update(dt):
-    global room, help_text, player, SCALE_FACTOR, MAIN_BATCH
+    global room, player
+    scale_factor = window.scaleFactor()
 
     window.clear()
 
     window.push_handlers(player.key_handler)
 
-    player.update(window, dt, PLAYER_Y_GROUPS)
+    player.update(window, dt)
 
-    MAIN_BATCH.draw()
-    help_text.text = f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(player.x)[:4]}, {str(player.y)[:4]}"  # noqa: E501
+    window.BATCH.draw()
+    help_text = Label(
+        text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(player.x)[:4]}, {str(player.y)[:4]}",  # noqa: E501
+        font_name="Helvetica", font_size=6.5*scale_factor,
+        x=10*scale_factor, y=window.height-10*scale_factor,
+        multiline=True,
+        width=window.width-10*scale_factor,
+        anchor_y="top"
+    )
     help_text.draw()
-    fps_display.draw()
+    window.fps_display.draw()
 
 
 @window.event
 def on_resize(width, height):
-    global room, SCALE_FACTOR, help_text, player
-    SCALE_FACTOR = scaleFactor(window)
-
-    help_text = Label(
-        text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(player.x)[:4]}, {str(player.y)[:4]}",  # noqa: E501
-        font_name="Helvetica", font_size=6.5*SCALE_FACTOR,
-        x=10*SCALE_FACTOR, y=window.height-10*SCALE_FACTOR,
-        multiline=True,
-        width=window.width-10*SCALE_FACTOR,
-        anchor_y="top"
-    )
-
+    global room, player
     room.resize(window)
 
 
