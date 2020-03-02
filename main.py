@@ -23,6 +23,10 @@ from pyglet.text import Label
 from pyglet.window import key
 
 
+pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
+pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
+
+
 class Window(pyglet.window.Window):
     """
     Custom window class for application.
@@ -77,15 +81,7 @@ window = Window(
     resizable=True,
     fullscreen=True
 )
-pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
-pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
 
-room = Room(
-    room_type=1,
-    tileset=tilesets.fightRoom(),
-    window=window
-)
-print(room)
 
 player = prefabs.Player(window)
 help_text = None
