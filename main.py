@@ -34,6 +34,7 @@ class Window(pyglet.window.Window):
     """
 
     def __init__(self, *args, **kwargs):
+        """Creates the dungeon and player etc."""
         super().__init__(*args, **kwargs)
         self.set_minimum_size(768, 480)
 
@@ -58,6 +59,7 @@ class Window(pyglet.window.Window):
         self.player = prefabs.Player(self)
 
     def on_key_press(self, symbol, modifiers):
+        """Run on every key press."""
         room_keys = {
             key._0: 0,
             key._1: 1,
@@ -78,11 +80,13 @@ class Window(pyglet.window.Window):
             self.close()
 
     def on_resize(self, width, height):
+        """Run on every window resize."""
         viewport_width, viewport_height = self.get_framebuffer_size()
         self._projection.set(width, height, viewport_width, viewport_height)
         self.room.resize(self)
 
     def update(self, dt):
+        """Run 120 times per second."""
         scale_factor = self.scaleFactor()
 
         self.clear()
