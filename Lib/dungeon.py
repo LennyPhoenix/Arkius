@@ -55,12 +55,12 @@ class Room():
             (None, -1): 131,
             (None, 15): 56
         }
-        for x, y in product(range(-1, 16), repeat=2):
+        for x, y in product(range(-3, 18), repeat=2):
             if (x, y) in borders.keys():
                 image_path = f"Images/Tiles/{style}/1/{borders[(x, y)]}.png"
-            elif (x, None) in borders.keys():
+            elif (x, None) in borders.keys() and -1 <= y and y <= 15:
                 image_path = f"Images/Tiles/{style}/1/{borders[(x, None)]}.png"
-            elif (None, y) in borders.keys():
+            elif (None, y) in borders.keys() and -1 <= x and x <= 15:
                 image_path = f"Images/Tiles/{style}/1/{borders[(None, y)]}.png"
             elif (x, y) in room_tiles.keys():
                 tile_id = room_tiles[(x, y)]
@@ -85,5 +85,6 @@ class Room():
             self.tiles[(x, y)] = tile
 
     def resize(self, window):
-        for x, y in product(range(-1, 16), repeat=2):
-            self.tiles[(x, y)].update(window)
+        for x, y in product(range(-3, 18), repeat=2):
+            if (x, y) in self.tiles.keys():
+                self.tiles[(x, y)].update(window)
