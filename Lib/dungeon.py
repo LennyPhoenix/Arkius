@@ -4,8 +4,9 @@ import random
 from itertools import product
 
 from pyglet import image
+from pyglet.sprite import Sprite
 
-from . import getBitValue, prefabs, tilesets
+from . import getBitValue, prefabs, tilesets, worldToScreen
 
 
 class Room():
@@ -19,6 +20,16 @@ class Room():
         self.ground_tiles = {}
         self.tiles = {}
         self.cleared = room_type == 0
+
+        borders_image = image.load("Images/borders.png")
+        borders_x, borders_y = worldToScreen(-3.5, -3.5, window)
+        self.borders = Sprite(
+            borders_image,
+            x=borders_x, y=borders_y,
+            batch=window.BATCH,
+            group=window.UI_LAYERS[0]
+        )
+        self.borders.scale = window.scaleFactor()
 
         types = {
             0: tilesets.startRoom(),
@@ -93,7 +104,7 @@ class Room():
             if (x, y) in borders.keys() and borders[(x, y)] > 0:
                 image_path = f"Images/Tiles/{style}/1/{borders[(x, y)]}.png"
             elif (x, y) in borders.keys() and borders[(x, y)] == 0:
-                image_path = f"Images/Tiles/{style}/0/{random.randint(0, 3)}.png"
+                image_path = f"Images/Tiles/{style}/0/{random.randint(0, 3)}.png"  # noqa: E501
             elif (x, None) in borders.keys() and -1 <= y and y <= 15:
                 image_path = f"Images/Tiles/{style}/1/{borders[(x, None)]}.png"
             elif (None, y) in borders.keys() and -1 <= x and x <= 15:
@@ -124,3 +135,9 @@ class Room():
         for x, y in product(range(-3, 18), repeat=2):
             if (x, y) in self.tiles.keys():
                 self.tiles[(x, y)].update(window)
+        borders_x, borders_y = worldToScreen(-3.5, -3.5, window)
+        self.borders.update(
+            x=borders_x,
+            y=borders_y
+        )
+        self.borders.scale = window.scaleFactor()
