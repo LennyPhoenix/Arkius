@@ -8,4 +8,5 @@ pack.py
 build/
 dist/
 *.xcf
+*.aseprite
 nohup.out
