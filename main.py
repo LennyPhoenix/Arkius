@@ -99,7 +99,7 @@ class Window(pyglet.window.Window):
 
         self.BATCH.draw()
         help_text = Label(
-            text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(self.player.x)[:4]}, {str(self.player.y)[:4]}",  # noqa: E501
+            text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(self.player.tile_x)[:4]}, {str(self.player.tile_y)[:4]}",  # noqa: E501
             font_name="Helvetica", font_size=6.5*scale_factor,
             x=10*scale_factor, y=self.height-10*scale_factor,
             multiline=True,

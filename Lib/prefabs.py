@@ -50,6 +50,9 @@ class Player():
         self.x = 7.0
         self.y = 7.0
 
+        self.tile_x = round(self.x-0.5)
+        self.tile_y = round(self.y-0.5)
+
         self.velocity_x = 0
         self.velocity_y = 0
 
@@ -70,8 +73,8 @@ class Player():
         )
         self.sprite.scale = window.scaleFactor()
 
-    def update(self, window, dt):
-        groups = window.PLAYER_Y_GROUPS
+        self.tile_x = round(self.x-0.5)
+        self.tile_y = round(self.y-0.5)
 
         self.velocity_x, self.velocity_y = 0, 0
         if self.key_handler[key.W]:
