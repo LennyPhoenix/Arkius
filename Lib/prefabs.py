@@ -73,6 +73,7 @@ class Player():
         )
         self.sprite.scale = window.scaleFactor()
 
+    def update(self, window, tiles, dt):
         self.tile_x = round(self.x-0.5)
         self.tile_y = round(self.y-0.5)
 
@@ -108,5 +109,6 @@ class Player():
             y=self.screen_y
         )
         self.sprite.scale = scale_factor
-        if self.sprite.group != groups[round(self.y-0.5)]:
-            self.sprite.group = groups[round(self.y-0.5)]
+
+        if self.sprite.group != window.PLAYER_Y_GROUPS[self.tile_y]:
+            self.sprite.group = window.PLAYER_Y_GROUPS[self.tile_y]
