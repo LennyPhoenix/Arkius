@@ -49,6 +49,10 @@ class Window(pyglet.window.Window):
         for y in range(-3, 19):
             self.PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y+1)
 
+        self.UI_LAYERS = {}
+        for y in range(5):
+            self.UI_LAYERS[y] = pyglet.graphics.OrderedGroup(y+100)
+
         self.room = Room(
             room_type=1,
             tileset=tilesets.fightRoom(),
