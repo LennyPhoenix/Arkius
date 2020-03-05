@@ -13,7 +13,9 @@ class Tile():
     Contains a sprite renderer and a collision box.
     """
 
-    def __init__(self, window, x, y, tile_image):
+    def __init__(self, window, x, y, type, tile_image):
+        self.type = type
+
         self.x = x
         self.y = y
 

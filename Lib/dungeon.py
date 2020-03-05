@@ -103,17 +103,21 @@ class Room():
         for x, y in product(range(-3, 18), repeat=2):
             if (x, y) in borders.keys() and borders[(x, y)] > 0:
                 image_path = f"Images/Tiles/{style}/1/{borders[(x, y)]}.png"
+                tile_type = 1
             elif (x, y) in borders.keys() and borders[(x, y)] == 0:
                 image_path = f"Images/Tiles/{style}/0/{random.randint(0, 3)}.png"  # noqa: E501
+                tile_type = 0
             elif (x, None) in borders.keys() and -1 <= y and y <= 15:
                 image_path = f"Images/Tiles/{style}/1/{borders[(x, None)]}.png"
+                tile_type = 1
             elif (None, y) in borders.keys() and -1 <= x and x <= 15:
                 image_path = f"Images/Tiles/{style}/1/{borders[(None, y)]}.png"
+                tile_type = 1
             elif (x, y) in room_tiles.keys():
-                tile_id = room_tiles[(x, y)]
-                if tile_id != 0:
+                tile_type = room_tiles[(x, y)]
+                if tile_type != 0:
                     value = getBitValue(room_tiles, x, y)
-                    image_path = f"Images/Tiles/{style}/{tile_id}/{value}.png"
+                    image_path = f"Images/Tiles/{style}/{tile_type}/{value}.png"
                 else:
                     floor_type = random.randint(0, 3)
                     image_path = f"Images/Tiles/{style}/0/{floor_type}.png"
@@ -125,9 +129,10 @@ class Room():
             tile_image.anchor_y = 0
 
             tile = prefabs.Tile(
-                window=window,
-                x=x, y=y,
-                tile_image=tile_image
+                window,
+                x, y,
+                tile_type,
+                tile_image
             )
             self.tiles[(x, y)] = tile
 
