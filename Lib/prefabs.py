@@ -7,7 +7,7 @@ from pyglet.window import key
 from . import worldToScreen
 
 
-class Tile():
+class Tile:
     """
     Prefab for a tile.
     Contains a sprite renderer and a collision box.
@@ -40,7 +40,7 @@ class Tile():
         self.sprite.scale = window.scaleFactor()
 
 
-class Player():
+class Player:
     """
     Prefab for the player.
     Contains a sprite renderer and a collision box.
@@ -77,6 +77,7 @@ class Player():
         self.tile_x = round(self.x-0.5)
         self.tile_y = round(self.y-0.5)
 
+        # Position
         self.velocity_x, self.velocity_y = 0, 0
         if self.key_handler[key.W]:
             self.velocity_y += 0.1
@@ -102,6 +103,7 @@ class Player():
 
         self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
 
+        # Sprite
         scale_factor = window.scaleFactor()
 
         self.sprite.update(

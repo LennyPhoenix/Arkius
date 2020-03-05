@@ -9,7 +9,7 @@ from pyglet.sprite import Sprite
 from . import getBitValue, prefabs, tilesets, worldToScreen
 
 
-class Room():
+class Room:
     """Room class for dungeon."""
 
     def __init__(self, window, room_type=0, pos=(0, 0), doors={0: True, 1: True, 2: True, 3: True}, tileset=tilesets.basic()):  # noqa: E501
@@ -117,7 +117,7 @@ class Room():
                 tile_type = room_tiles[(x, y)]
                 if tile_type != 0:
                     value = getBitValue(room_tiles, x, y)
-                    image_path = f"Images/Tiles/{style}/{tile_type}/{value}.png"
+                    image_path = f"Images/Tiles/{style}/{tile_type}/{value}.png"  # noqa: E501
                 else:
                     floor_type = random.randint(0, 3)
                     image_path = f"Images/Tiles/{style}/0/{floor_type}.png"
