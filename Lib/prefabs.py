@@ -47,6 +47,8 @@ class Player:
     """
 
     def __init__(self, window):
+        self.room = (0, 0)
+
         self.x = 7.0
         self.y = 7.0
 

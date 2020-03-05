@@ -12,10 +12,9 @@ from . import getBitValue, prefabs, tilesets, worldToScreen
 class Room:
     """Room class for dungeon."""
 
-    def __init__(self, window, room_type=0, pos=(0, 0), doors={0: True, 1: True, 2: True, 3: True}, tileset=tilesets.basic()):  # noqa: E501
+    def __init__(self, window, room_type=0, doors={0: True, 1: True, 2: True, 3: True}, tileset=tilesets.basic()):  # noqa: E501
         """Initialise the Room class."""
         self.type = room_type
-        self.pos = pos
         self.doors = doors
         self.ground_tiles = {}
         self.tiles = {}
@@ -146,3 +145,13 @@ class Room:
             y=borders_y
         )
         self.borders.scale = window.scaleFactor()
+
+
+class Dungeon:
+    """Dungeon class, contains rooms."""
+
+    def __init__(self, window):
+        self.rooms = {}
+        self.style = 0
+
+        self.rooms[(0, 0)] = Room(window)
