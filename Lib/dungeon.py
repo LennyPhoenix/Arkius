@@ -11,7 +11,7 @@ from . import getBitValue, prefabs, tilesets
 class Room():
     """Room class for dungeon."""
 
-    def __init__(self, window, room_type=0, pos=(0, 0), doors={0: False, 1: False, 2: False, 3: False}, tileset=tilesets.basic()):  # noqa: E501
+    def __init__(self, window, room_type=0, pos=(0, 0), doors={0: True, 1: True, 2: True, 3: True}, tileset=tilesets.basic()):  # noqa: E501
         """Initialise the Room class."""
         self.type = room_type
         self.pos = pos
@@ -55,9 +55,45 @@ class Room():
             (None, -1): 131,
             (None, 15): 56
         }
+        doors = self.doors
+        if doors[0]:
+            door_tiles = {
+                (5, 17): 14, (6, 17): 0, (7, 17): 0, (8, 17): 0, (9, 17): 224,
+                (5, 16): 14, (6, 16): 0, (7, 16): 0, (8, 16): 0, (9, 16): 224,
+                (5, 15): 62, (6, 15): 0, (7, 15): 0, (8, 15): 0, (9, 15): 248,
+            }
+            borders.update(door_tiles)
+        if doors[1]:
+            door_tiles = {
+                (15, 9): 248, (16, 9): 56, (17, 9): 56,
+                (15, 8): 0, (16, 8): 0, (17, 8): 0,
+                (15, 7): 0, (16, 7): 0, (17, 7): 0,
+                (15, 6): 0, (16, 6): 0, (17, 6): 0,
+                (15, 5): 227, (16, 5): 131, (17, 5): 131,
+            }
+            borders.update(door_tiles)
+        if doors[2]:
+            door_tiles = {
+                (5, -1): 143, (6, -1): 0, (7, -1): 0, (8, -1): 0, (9, -1): 227,
+                (5, -2): 14, (6, -2): 0, (7, -2): 0, (8, -2): 0, (9, -2): 224,
+                (5, -3): 14, (6, -3): 0, (7, -3): 0, (8, -3): 0, (9, -3): 224,
+            }
+            borders.update(door_tiles)
+        if doors[3]:
+            door_tiles = {
+                (-3, 9): 56, (-2, 9): 56, (-1, 9): 62,
+                (-3, 8): 0, (-2, 8): 0, (-1, 8): 0,
+                (-3, 7): 0, (-2, 7): 0, (-1, 7): 0,
+                (-3, 6): 0, (-2, 6): 0, (-1, 6): 0,
+                (-3, 5): 131, (-2, 5): 131, (-1, 5): 143,
+            }
+            borders.update(door_tiles)
+
         for x, y in product(range(-3, 18), repeat=2):
-            if (x, y) in borders.keys():
+            if (x, y) in borders.keys() and borders[(x, y)] > 0:
                 image_path = f"Images/Tiles/{style}/1/{borders[(x, y)]}.png"
+            elif (x, y) in borders.keys() and borders[(x, y)] == 0:
+                image_path = f"Images/Tiles/{style}/0/{random.randint(0, 3)}.png"
             elif (x, None) in borders.keys() and -1 <= y and y <= 15:
                 image_path = f"Images/Tiles/{style}/1/{borders[(x, None)]}.png"
             elif (None, y) in borders.keys() and -1 <= x and x <= 15:
