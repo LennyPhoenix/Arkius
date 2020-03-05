@@ -95,7 +95,7 @@ class Window(pyglet.window.Window):
 
         self.push_handlers(self.player.key_handler)
 
-        self.player.update(self, dt)
+        self.player.update(self, self.room.tiles, dt)
 
         self.BATCH.draw()
         help_text = Label(
