@@ -4,7 +4,6 @@ import random
 from itertools import product
 
 from pyglet import image
-from pyglet.sprite import Sprite
 
 from . import getBitValue, prefabs, tilesets
 
@@ -19,16 +18,6 @@ class Room:
         self.ground_tiles = {}
         self.tiles = {}
         self.cleared = room_type == 0
-
-        borders_image = image.load("Images/borders.png")
-        borders_x, borders_y = window.worldToScreen(-3.5, -3.5)
-        self.borders = Sprite(
-            borders_image,
-            x=borders_x, y=borders_y,
-            batch=window.BATCH,
-            group=window.UI_LAYERS[0]
-        )
-        self.borders.scale = window.scaleFactor()
 
         types = {
             0: tilesets.startRoom(),
@@ -135,16 +124,15 @@ class Room:
             )
             self.tiles[(x, y)] = tile
 
-    def resize(self, window):
+    def update(self, window):
         for x, y in product(range(-3, 18), repeat=2):
             if (x, y) in self.tiles.keys():
                 self.tiles[(x, y)].update(window)
-        borders_x, borders_y = window.worldToScreen(-3.5, -3.5)
-        self.borders.update(
-            x=borders_x,
-            y=borders_y
-        )
-        self.borders.scale = window.scaleFactor()
+
+    def resize(self, window):
+        for x, y in product(range(-3, 18), repeat=2):
+            if (x, y) in self.tiles.keys():
+                self.tiles[(x, y)].resize(window)
 
 
 class Dungeon:

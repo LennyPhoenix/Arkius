@@ -16,7 +16,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import pyglet
-from pyglet import gl
+from pyglet import gl, image
+from pyglet.sprite import Sprite
 from pyglet.text import Label
 from pyglet.window import key
 
@@ -62,6 +63,19 @@ class Window(pyglet.window.Window):
 
         self.player = prefabs.Player(self)
 
+        borders_image = image.load("Images/borders.png")
+        borders_image.anchor_x = borders_image.width // 2
+        borders_image.anchor_y = borders_image.height // 2
+
+        borders_x, borders_y = self.worldToScreen(7.5, 7.5)
+        self.borders = Sprite(
+            borders_image,
+            x=borders_x, y=borders_y,
+            batch=self.BATCH,
+            group=self.UI_LAYERS[0]
+        )
+        self.borders.scale = self.scaleFactor()
+
     def on_key_press(self, symbol, modifiers):
         """Run on every key press."""
         super().on_key_press(symbol, modifiers)
@@ -87,6 +101,13 @@ class Window(pyglet.window.Window):
         super().on_resize(width, height)
         self.room.resize(self)
 
+        borders_x, borders_y = self.worldToScreen(7.5, 7.5)
+        self.borders.update(
+            x=borders_x,
+            y=borders_y
+        )
+        self.borders.scale = self.scaleFactor()
+
     def update(self, dt):
         """Run 120 times per second."""
         scale_factor = self.scaleFactor()
@@ -96,7 +117,8 @@ class Window(pyglet.window.Window):
         self.push_handlers(self.player.key_handler)
 
         self.player.update(self, self.room.tiles, dt)
-        self.room.resize(self)
+        if self.player.moving:
+            self.room.update(self)
 
         self.BATCH.draw()
         help_text = Label(
@@ -110,7 +132,7 @@ class Window(pyglet.window.Window):
         help_text.draw()
         self.fps_display.draw()
 
-    def worldToScreen(self, x, y):
+    def worldToScreen(self, x, y, parallax=False):
         """Converts a world postion to the screen position."""
         scale_factor = self.scaleFactor()
 
@@ -120,11 +142,9 @@ class Window(pyglet.window.Window):
         screen_y = (y + 2.5) * 16 * scale_factor  # With buffer
         screen_y += self.height/2 - 20*16*scale_factor/2  # Center
 
-        try:
-            screen_x += (self.player.x-10) * -2 * scale_factor
-            screen_y += (self.player.y-10) * -2 * scale_factor
-        except AttributeError:
-            pass
+        if parallax is True:
+            screen_x += (self.player.x-7) * -2.5 * scale_factor
+            screen_y += (self.player.y-7) * -2.5 * scale_factor
 
         return (screen_x, screen_y)
 

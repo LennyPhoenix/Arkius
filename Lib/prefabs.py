@@ -29,13 +29,24 @@ class Tile:
         )
         self.sprite.scale = window.scaleFactor()
 
-    def update(self, window):
-        self.screen_x, self.screen_y = window.worldToScreen(self.x, self.y)
+    def resize(self, window):
+        screen_pos = window.worldToScreen(self.x, self.y, True)
+        self.screen_x, self.screen_y = screen_pos[0], screen_pos[1]
+
         self.sprite.update(
             x=self.screen_x,
             y=self.screen_y
         )
         self.sprite.scale = window.scaleFactor()
+
+    def update(self, window):
+        screen_pos = window.worldToScreen(self.x, self.y, True)
+        self.screen_x, self.screen_y = screen_pos[0], screen_pos[1]
+
+        self.sprite.update(
+            x=self.screen_x,
+            y=self.screen_y
+        )
 
 
 class Player:
@@ -55,6 +66,7 @@ class Player:
 
         self.velocity_x = 0
         self.velocity_y = 0
+        self.moving = False
 
         self.key_handler = key.KeyStateHandler()
 
@@ -98,10 +110,16 @@ class Player:
         self.x += self.velocity_x * dt * 60
         self.y += self.velocity_y * dt * 60
 
+        if self.velocity_x != 0 or self.velocity_y != 0:
+            self.moving = True
+        else:
+            self.moving = False
+
         if self.x <= -3 or self.x >= 18 or self.y <= -3 or self.y >= 18:
             self.x, self.y = 7.5, 7.5
 
-        self.screen_x, self.screen_y = window.worldToScreen(self.x, self.y)
+        screen_pos = window.worldToScreen(self.x, self.y, True)
+        self.screen_x, self.screen_y = screen_pos[0], screen_pos[1]
 
         # Sprite
         scale_factor = window.scaleFactor()
