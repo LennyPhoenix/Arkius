@@ -109,6 +109,18 @@ class Window(pyglet.window.Window):
         help_text.draw()
         self.fps_display.draw()
 
+    def worldToScreen(self, x, y):
+        """Converts a world postion to the screen position."""
+        scale_factor = self.scaleFactor()
+
+        screen_x = (x + 2.5) * 16 * scale_factor  # With buffer
+        screen_x += self.width/2 - 20*16*scale_factor/2  # Center
+
+        screen_y = (y + 2.5) * 16 * scale_factor  # With buffer
+        screen_y += self.height/2 - 20*16*scale_factor/2  # Center
+
+        return (screen_x, screen_y)
+
     def scaleFactor(self):
         """Returns the scale factor of the window."""
         scale_factor = self.height / 320

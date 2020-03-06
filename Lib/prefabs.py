@@ -4,8 +4,6 @@ import pyglet
 from pyglet import image
 from pyglet.window import key
 
-from . import worldToScreen
-
 
 class Tile:
     """
@@ -19,7 +17,7 @@ class Tile:
         self.x = x
         self.y = y
 
-        self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
+        self.screen_x, self.screen_y = window.worldToScreen(self.x, self.y)
 
         self.sprite = pyglet.sprite.Sprite(
             tile_image,
@@ -32,7 +30,7 @@ class Tile:
         self.sprite.scale = window.scaleFactor()
 
     def update(self, window):
-        self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
+        self.screen_x, self.screen_y = window.worldToScreen(self.x, self.y)
         self.sprite.update(
             x=self.screen_x,
             y=self.screen_y
@@ -64,7 +62,7 @@ class Player:
         player_image.anchor_x = 7
         player_image.anchor_y = 0
 
-        self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
+        self.screen_x, self.screen_y = window.worldToScreen(self.x, self.y)
 
         self.sprite = pyglet.sprite.Sprite(
             player_image,
@@ -103,7 +101,7 @@ class Player:
         if self.x <= -3 or self.x >= 18 or self.y <= -3 or self.y >= 18:
             self.x, self.y = 7.5, 7.5
 
-        self.screen_x, self.screen_y = worldToScreen(self.x, self.y, window)
+        self.screen_x, self.screen_y = window.worldToScreen(self.x, self.y)
 
         # Sprite
         scale_factor = window.scaleFactor()
