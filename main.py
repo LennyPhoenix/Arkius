@@ -96,6 +96,7 @@ class Window(pyglet.window.Window):
         self.push_handlers(self.player.key_handler)
 
         self.player.update(self, self.room.tiles, dt)
+        self.room.resize(self)
 
         self.BATCH.draw()
         help_text = Label(
@@ -118,6 +119,12 @@ class Window(pyglet.window.Window):
 
         screen_y = (y + 2.5) * 16 * scale_factor  # With buffer
         screen_y += self.height/2 - 20*16*scale_factor/2  # Center
+
+        try:
+            screen_x += (self.player.x-10) * -2 * scale_factor
+            screen_y += (self.player.y-10) * -2 * scale_factor
+        except AttributeError:
+            pass
 
         return (screen_x, screen_y)
 
