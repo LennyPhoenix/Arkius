@@ -83,15 +83,18 @@ class Player:
         self.tile_y = round(self.y-0.5)
 
         # Position
+
+        SPEED = 4
+
         self.velocity_x, self.velocity_y = 0, 0
         if self.key_handler[key.W]:
-            self.velocity_y += 0.1
+            self.velocity_y += SPEED
         if self.key_handler[key.A]:
-            self.velocity_x -= 0.1
+            self.velocity_x -= SPEED
         if self.key_handler[key.S]:
-            self.velocity_y -= 0.1
+            self.velocity_y -= SPEED
         if self.key_handler[key.D]:
-            self.velocity_x += 0.1
+            self.velocity_x += SPEED
 
         if (
             (self.key_handler[key.A] or self.key_handler[key.D]) and
@@ -100,8 +103,8 @@ class Player:
             self.velocity_x *= 0.7
             self.velocity_y *= 0.7
 
-        self.x += self.velocity_x * dt * 60
-        self.y += self.velocity_y * dt * 60
+        self.x += self.velocity_x * dt
+        self.y += self.velocity_y * dt
 
         if self.velocity_x != 0 or self.velocity_y != 0:
             self.moving = True
