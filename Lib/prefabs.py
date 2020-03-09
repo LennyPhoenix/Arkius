@@ -30,13 +30,6 @@ class Tile:
         self.sprite.scale = window.scaleFactor()
 
     def resize(self, window):
-        screen_pos = window.worldToScreen(self.x, self.y, True)
-        self.screen_x, self.screen_y = screen_pos[0], screen_pos[1]
-
-        self.sprite.update(
-            x=self.screen_x,
-            y=self.screen_y
-        )
         self.sprite.scale = window.scaleFactor()
 
     def update(self, window):
@@ -128,7 +121,9 @@ class Player:
             x=self.screen_x,
             y=self.screen_y
         )
-        self.sprite.scale = scale_factor
+
+        if self.sprite.scale != scale_factor:
+            self.sprite.scale = scale_factor
 
         if self.sprite.group != window.PLAYER_Y_GROUPS[self.tile_y]:
             self.sprite.group = window.PLAYER_Y_GROUPS[self.tile_y]

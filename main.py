@@ -21,7 +21,7 @@ from pyglet.sprite import Sprite
 from pyglet.text import Label
 from pyglet.window import key
 
-from Lib import prefabs, tilesets
+from Lib import getUV, prefabs, tilesets
 from Lib.dungeon import Room
 
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
@@ -63,19 +63,6 @@ class Window(pyglet.window.Window):
 
         self.player = prefabs.Player(self)
 
-        borders_image = image.load("Images/borders.png")
-        borders_image.anchor_x = borders_image.width // 2
-        borders_image.anchor_y = borders_image.height // 2
-
-        borders_x, borders_y = self.worldToScreen(7.5, 7.5)
-        self.borders = Sprite(
-            borders_image,
-            x=borders_x, y=borders_y,
-            batch=self.BATCH,
-            group=self.UI_LAYERS[0]
-        )
-        self.borders.scale = self.scaleFactor()
-
     def on_key_press(self, symbol, modifiers):
         """Run on every key press."""
         super().on_key_press(symbol, modifiers)
@@ -101,13 +88,6 @@ class Window(pyglet.window.Window):
         super().on_resize(width, height)
         self.room.resize(self)
 
-        borders_x, borders_y = self.worldToScreen(7.5, 7.5)
-        self.borders.update(
-            x=borders_x,
-            y=borders_y
-        )
-        self.borders.scale = self.scaleFactor()
-
     def update(self, dt):
         """Run 120 times per second."""
         scale_factor = self.scaleFactor()
@@ -121,15 +101,6 @@ class Window(pyglet.window.Window):
             self.room.update(self)
 
         self.BATCH.draw()
-        help_text = Label(
-            text=f"Keys: 1 - Fight Room, 2 - Treasure Room, 3 - Boss Room, 4 - Shop Room, 0 - Start Room, F11 - Fullscreen/Windowed  {str(self.player.tile_x)[:4]}, {str(self.player.tile_y)[:4]}",  # noqa: E501
-            font_name="Helvetica", font_size=6.5*scale_factor,
-            x=10*scale_factor, y=self.height-10*scale_factor,
-            multiline=True,
-            width=self.width-10*scale_factor,
-            anchor_y="top"
-        )
-        help_text.draw()
         self.fps_display.draw()
 
     def worldToScreen(self, x, y, parallax=False):
@@ -143,8 +114,8 @@ class Window(pyglet.window.Window):
         screen_y += self.height/2 - 20*16*scale_factor/2  # Center
 
         if parallax is True:
-            screen_x += (self.player.x-7) * -2.5 * scale_factor
-            screen_y += (self.player.y-7) * -2.5 * scale_factor
+            screen_x += (self.player.x-7) * -8 * scale_factor
+            screen_y += (self.player.y-7) * -8 * scale_factor
 
         return (screen_x, screen_y)
 
