@@ -6,7 +6,7 @@ from itertools import product
 from pyglet import image
 from pyglet.sprite import Sprite
 
-from . import getBitValue, prefabs, tilesets
+from . import getBitValue, getUV, prefabs, tilesets
 
 
 class Room:
@@ -104,37 +104,40 @@ class Room:
 
         for x, y in product(range(-3, 18), repeat=2):
             if (x, y) in borders.keys() and borders[(x, y)] > 0:
-                image_path = f"Images/Tiles/{style}/1/{borders[(x, y)]}.png"
+                value = borders[(x, y)]
                 tile_type = 1
             elif (x, y) in borders.keys() and borders[(x, y)] == 0:
-                image_path = f"Images/Tiles/{style}/0/{random.randint(0, 3)}.png"  # noqa: E501
+                value = random.randint(0, 9)
                 tile_type = 0
             elif (x, None) in borders.keys() and -1 <= y and y <= 15:
-                image_path = f"Images/Tiles/{style}/1/{borders[(x, None)]}.png"
+                value = borders[(x, None)]
                 tile_type = 1
             elif (None, y) in borders.keys() and -1 <= x and x <= 15:
-                image_path = f"Images/Tiles/{style}/1/{borders[(None, y)]}.png"
+                value = borders[(None, y)]
                 tile_type = 1
             elif (x, y) in room_tiles.keys():
                 tile_type = room_tiles[(x, y)]
-                if tile_type != 0:
-                    value = getBitValue(room_tiles, x, y)
-                    image_path = f"Images/Tiles/{style}/{tile_type}/{value}.png"  # noqa: E501
+                if tile_type == 0:
+                    value = random.randint(0, 9)
                 else:
-                    floor_type = random.randint(0, 3)
-                    image_path = f"Images/Tiles/{style}/0/{floor_type}.png"
+                    value = getBitValue(room_tiles, x, y)
             else:
                 continue
 
+            image_path = f"Images/Tiles/{style}/{tile_type}.png"
             tile_image = image.load(image_path)
             tile_image.anchor_x = 0
             tile_image.anchor_y = 0
+
+            tile_region = tile_image.get_region(
+                *getUV(tile_type, value)
+            )
 
             tile = prefabs.Tile(
                 window,
                 x, y,
                 tile_type,
-                tile_image
+                tile_region
             )
             self.tiles[(x, y)] = tile
 
@@ -149,7 +152,12 @@ class Room:
                 self.tiles[(x, y)].update(window)
 
     def resize(self, window):
-        self.border.scale = self.scaleFactor()
+        border_x, border_y = window.worldToScreen(7.5, 7.5, True)
+        self.border.update(
+            x=border_x,
+            y=border_y
+        )
+        self.border.scale = window.scaleFactor()
         for x, y in product(range(-3, 18), repeat=2):
             if (x, y) in self.tiles.keys():
                 self.tiles[(x, y)].resize(window)

@@ -30,6 +30,13 @@ class Tile:
         self.sprite.scale = window.scaleFactor()
 
     def resize(self, window):
+        screen_pos = window.worldToScreen(self.x, self.y, True)
+        self.screen_x, self.screen_y = screen_pos[0], screen_pos[1]
+
+        self.sprite.update(
+            x=self.screen_x,
+            y=self.screen_y
+        )
         self.sprite.scale = window.scaleFactor()
 
     def update(self, window):
@@ -63,7 +70,7 @@ class Player:
 
         self.key_handler = key.KeyStateHandler()
 
-        player_image = image.load("./Images/Sprites/Player.png")
+        player_image = image.load("./Images/Sprites/player.png")
         player_image.anchor_x = 7
         player_image.anchor_y = 0
 

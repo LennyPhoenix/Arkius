@@ -16,12 +16,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import pyglet
-from pyglet import gl, image
-from pyglet.sprite import Sprite
-from pyglet.text import Label
+from pyglet import gl
 from pyglet.window import key
 
-from Lib import getUV, prefabs, tilesets
+from Lib import prefabs, tilesets
 from Lib.dungeon import Room
 
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
@@ -90,7 +88,6 @@ class Window(pyglet.window.Window):
 
     def update(self, dt):
         """Run 120 times per second."""
-        scale_factor = self.scaleFactor()
 
         self.clear()
 
