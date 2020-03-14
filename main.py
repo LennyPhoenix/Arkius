@@ -35,7 +35,7 @@ class Window(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
         """Creates the dungeon and player etc."""
         super().__init__(*args, **kwargs)
-        self.set_minimum_size(768, 480)
+        self.set_minimum_size(568, 320)
 
         self.BATCH = pyglet.graphics.Batch()
         self.fps_display = pyglet.window.FPSDisplay(window=self)
