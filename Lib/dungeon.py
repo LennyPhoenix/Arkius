@@ -20,7 +20,7 @@ class Room:
         self.tiles = {}
         self.cleared = room_type == 0
 
-        border_image = image.load("Images/border.png")
+        border_image = image.load("resources/border.png")
         border_image.anchor_x = border_image.width // 2
         border_image.anchor_y = border_image.height // 2
 
@@ -124,7 +124,7 @@ class Room:
             else:
                 continue
 
-            image_path = f"Images/Tiles/{style}/{tile_type}.png"
+            image_path = f"resources/tilesets/{style}/{tile_type}.png"
             tile_image = image.load(image_path)
             tile_image.anchor_x = 0
             tile_image.anchor_y = 0

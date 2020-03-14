@@ -70,7 +70,7 @@ class Player:
 
         self.key_handler = key.KeyStateHandler()
 
-        player_image = image.load("./Images/Sprites/player.png")
+        player_image = image.load("resources/sprites/player.png")
         player_image.anchor_x = 7
         player_image.anchor_y = 0
 
