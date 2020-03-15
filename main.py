@@ -20,7 +20,7 @@ from pyglet import gl
 from pyglet.window import key
 
 from lib import prefabs, tilesets
-from lib.dungeon import Room
+from lib.room import Room
 
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST

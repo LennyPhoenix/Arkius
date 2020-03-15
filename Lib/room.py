@@ -238,13 +238,3 @@ class Room:
             tile_height = 16
 
         return (x, y, 16, tile_height)
-
-
-class Dungeon:
-    """Dungeon class, contains rooms."""
-
-    def __init__(self, window):
-        self.rooms = {}
-        self.style = 0
-
-        self.rooms[(0, 0)] = Room(window)
