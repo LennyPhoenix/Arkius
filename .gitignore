@@ -10,3 +10,4 @@ dist/
 *.xcf
 *.aseprite
 nohup.out
+.pytest_cache/
