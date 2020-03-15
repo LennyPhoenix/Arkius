@@ -13,8 +13,6 @@ def getBitValue(tileset, x, y):
     }
 
     edges = [tileID]
-    if tileID == 2:
-        edges.append(1)
 
     if y != 14 and tileset[(x, y+1)] not in edges:
         sides.update({128: True, 1: True, 2: True})
