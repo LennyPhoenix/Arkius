@@ -58,8 +58,8 @@ class Player:
     def __init__(self, window):
         self.room = (0, 0)
 
-        self.x = 7.0
-        self.y = 7.0
+        self.x = 0.5
+        self.y = 0.5
 
         self.tile_x = round(self.x-0.5)
         self.tile_y = round(self.y-0.5)
@@ -71,7 +71,7 @@ class Player:
         self.key_handler = key.KeyStateHandler()
 
         player_image = image.load("resources/sprites/player.png")
-        player_image.anchor_x = 7
+        player_image.anchor_x = player_image.width // 2
         player_image.anchor_y = 0
 
         self.screen_x, self.screen_y = window.worldToScreen(self.x, self.y)
@@ -118,8 +118,11 @@ class Player:
         else:
             self.moving = False
 
-        if self.x <= -3 or self.x >= 18 or self.y <= -3 or self.y >= 18:
-            self.x, self.y = 7.5, 7.5
+        if (self.x <= -(window.room.width+3) or
+                self.x >= window.room.width+4 or
+                self.y <= -(window.room.height+3) or
+                self.y >= window.room.height+4):
+            self.x, self.y = 0, 0
 
         screen_pos = window.worldToScreen(self.x, self.y, True)
         self.screen_x, self.screen_y = screen_pos[0], screen_pos[1]

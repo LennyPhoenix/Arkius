@@ -41,23 +41,22 @@ class Window(pyglet.window.Window):
         self.fps_display = pyglet.window.FPSDisplay(window=self)
 
         self.TILE_Y_GROUPS = {}
-        for y in range(-3, 19):
-            self.TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y)
+        for y in range(-40, 41):
+            self.TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-y*2)
 
         self.PLAYER_Y_GROUPS = {}
-        for y in range(-3, 19):
-            self.PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-2*y+1)
+        for y in range(-40, 41):
+            self.PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-y*2+1)
 
         self.UI_LAYERS = {}
-        for y in range(5):
-            self.UI_LAYERS[y] = pyglet.graphics.OrderedGroup(y+100)
+        for z in range(5):
+            self.UI_LAYERS[z] = pyglet.graphics.OrderedGroup(z+100)
 
         self.room = Room(
             room_type=1,
             tileset=tilesets.fightRoom(),
             window=self
         )
-        print(self.room)
 
         self.player = prefabs.Player(self)
 
@@ -78,6 +77,9 @@ class Window(pyglet.window.Window):
                 tileset=tilesets.fightRoom(),
                 window=self
             )
+            self.player.moving = True
+            self.player.x, self.player.y = 0.5, 0.5
+            self.room.update(self)
         elif symbol == key.F11:
             self.set_fullscreen(not self.fullscreen)
 
@@ -104,15 +106,15 @@ class Window(pyglet.window.Window):
         """Converts a world postion to the screen position."""
         scale_factor = self.scaleFactor()
 
-        screen_x = (x + 2.5) * 16 * scale_factor  # With buffer
+        screen_x = (x+10) * 16 * scale_factor  # With buffer
         screen_x += self.width/2 - 20*16*scale_factor/2  # Center
 
-        screen_y = (y + 2.5) * 16 * scale_factor  # With buffer
+        screen_y = (y+10) * 16 * scale_factor  # With buffer
         screen_y += self.height/2 - 20*16*scale_factor/2  # Center
 
         if parallax is True:
-            screen_x += (self.player.x-7) * -8 * scale_factor
-            screen_y += (self.player.y-7) * -8 * scale_factor
+            screen_x += (self.player.x) * -8 * scale_factor
+            screen_y += (self.player.y) * -8 * scale_factor
 
         return (screen_x, screen_y)
 
