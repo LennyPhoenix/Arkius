@@ -41,12 +41,12 @@ class Window(pyglet.window.Window):
         self.fps_display = pyglet.window.FPSDisplay(window=self)
 
         self.TILE_Y_GROUPS = {}
-        for y in range(-12, 12):
-            self.TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(12-y*2)
+        for y in range(-100, 101):
+            self.TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(100-y*2)
 
         self.PLAYER_Y_GROUPS = {}
-        for y in range(-40, 41):
-            self.PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-y*2+1)
+        for y in range(-100, 101):
+            self.PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(100-y*2+1)
 
         self.UI_LAYERS = {}
         for z in range(5):
