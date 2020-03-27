@@ -10,7 +10,7 @@ from . import prefabs, tilemaps
 class Room:
     """Room class for dungeon."""
 
-    def __init__(self, window, room_type=0, doors={0: True, 1: True, 2: True, 3: True}, tilemap=None, random_size=False):  # noqa: E501
+    def __init__(self, window, room_type=0, doors={0: True, 1: True, 2: True, 3: True}, tilemap=None, dimensions=None):  # noqa: E501
         """Initialise the Room class."""
         self.type = room_type
         self.doors = doors
@@ -18,15 +18,19 @@ class Room:
         self.tiles = {}
         self.cleared = room_type == 0
 
-        if room_type == 3:
-            self.width, self.height = 8, 8
-        elif room_type == 4:
-            self.width, self.height = 10, 7
-        elif room_type == 1 and random_size is True:
-            self.width = random.randint(4, 9)
-            self.height = random.randint(4, 9)
+        if dimensions is None:
+            if room_type == 0:
+                self.width, self.height = 6, 6
+            elif room_type == 1:
+                self.width, self.height = 7, 7
+            elif room_type == 2:
+                self.width, self.height = 6, 5
+            elif room_type == 3:
+                self.width, self.height = 8, 8
+            elif room_type == 4:
+                self.width, self.height = 10, 7
         else:
-            self.width, self.height = 7, 7
+            self.width, self.height = dimensions[0], dimensions[1]
 
         self.ground_tiles = tilemaps.create_blank(self.width, self.height)
 
