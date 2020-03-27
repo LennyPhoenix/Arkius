@@ -259,7 +259,7 @@ class Room:
 
         x, y = values_dict[tile_value]
 
-        if tile_type == 1:
+        if tile_type == c.WALL:
             tile_height = 32
             y *= 2
         else:
