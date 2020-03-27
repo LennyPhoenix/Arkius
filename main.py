@@ -19,7 +19,7 @@ import pyglet
 from pyglet import gl
 from pyglet.window import key
 
-from lib import prefabs, tilemaps
+from lib import prefabs
 from lib.room import Room
 
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
