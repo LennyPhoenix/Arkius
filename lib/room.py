@@ -38,74 +38,69 @@ class Room:
 
     def createSprites(self, window):
         """Creates all the tile sprites."""
+        border_type = 1
         style = 0
         w, h = self.width, self.height
-        borders = {
-            (-(self.width+1), -(self.height+1)): 2,
-            (-(self.width+1), (self.height+1)): 8,
-            ((self.width+1), -(self.height+1)): 128,
-            ((self.width+1), (self.height+1)): 32,
-            (-(self.width+1), None): 14,
-            ((self.width+1), None): 224,
-            (None, -(self.height+1)): 131,
-            (None, (self.height+1)): 56
-        }
 
         door_tiles = {
             0: {
-                (-2, h+3): 14, (-1, h+3): 0,
-                (0, h+3): 0, (1, h+3): 0, (2, h+3): 224,
-                (-2, h+2): 14, (-1, h+2): 0,
-                (0, h+2): 0, (1, h+2): 0, (2, h+2): 224,
-                (-2, h+1): 62, (-1, h+1): 0,
-                (0, h+1): 0, (1, h+1): 0, (2, h+1): 248,
+                (-2, h+3): border_type, (-1, h+3): 0,
+                (0, h+3): 0, (1, h+3): 0, (2, h+3): border_type,
+                (-2, h+2): border_type, (-1, h+2): 0,
+                (0, h+2): 0, (1, h+2): 0, (2, h+2): border_type,
+                (-2, h+1): border_type, (-1, h+1): 0,
+                (0, h+1): 0, (1, h+1): 0, (2, h+1): border_type,
             },
             1: {
-                (w+1, 2): 248, (w+2, 2): 56, (w+3, 2): 56,
+                (w+1, 2): border_type,
+                (w+2, 2): border_type,
+                (w+3, 2): border_type,
                 (w+1, 1): 0, (w+2, 1): 0, (w+3, 1): 0,
                 (w+1, 0): 0, (w+2, 0): 0, (w+3, 0): 0,
                 (w+1, -1): 0, (w+2, -1): 0, (w+3, -1): 0,
-                (w+1, -2): 227, (w+2, -2): 131, (w+3, -2): 131,
+                (w+1, -2): border_type,
+                (w+2, -2): border_type,
+                (w+3, -2): border_type,
             },
             2: {
-                (-2, -(h+1)): 143, (-1, -(h+1)): 0,
-                (0, -(h+1)): 0, (1, -(h+1)): 0, (2, -(h+1)): 227,
-                (-2, -(h+2)): 14, (-1, -(h+2)): 0,
-                (0, -(h+2)): 0, (1, -(h+2)): 0, (2, -(h+2)): 224,
-                (-2, -(h+3)): 14, (-1, -(h+3)): 0,
-                (0, -(h+3)): 0, (1, -(h+3)): 0, (2, -(h+3)): 224,
+                (-2, -(h+1)): border_type, (-1, -(h+1)): 0,
+                (0, -(h+1)): 0, (1, -(h+1)): 0, (2, -(h+1)): border_type,
+                (-2, -(h+2)): border_type, (-1, -(h+2)): 0,
+                (0, -(h+2)): 0, (1, -(h+2)): 0, (2, -(h+2)): border_type,
+                (-2, -(h+3)): border_type, (-1, -(h+3)): 0,
+                (0, -(h+3)): 0, (1, -(h+3)): 0, (2, -(h+3)): border_type,
             },
             3: {
-                (-(w+3), 2): 56, (-(w+2), 2): 56, (-(w+1), 2): 62,
+                (-(w+3), 2): border_type,
+                (-(w+2), 2): border_type,
+                (-(w+1), 2): border_type,
                 (-(w+3), 1): 0, (-(w+2), 1): 0, (-(w+1), 1): 0,
                 (-(w+3), 0): 0, (-(w+2), 0): 0, (-(w+1), 0): 0,
                 (-(w+3), -1): 0, (-(w+2), -1): 0, (-(w+1), -1): 0,
-                (-(w+3), -2): 131, (-(w+2), -2): 131, (-(w+1), -2): 143,
+                (-(w+3), -2): border_type,
+                (-(w+2), -2): border_type,
+                (-(w+1), -2): border_type,
             }
         }
+
+        for x in range(-(self.width+1), self.width+2):
+            self.ground_tiles.update({
+                (x, self.height+1): border_type,
+                (x, -(self.height+1)): border_type
+            })
+        for y in range(-(self.height+1), self.height+2):
+            self.ground_tiles.update({
+                (self.width+1, y): border_type,
+                (-(self.width+1), y): border_type
+            })
+
         for i in range(4):
             if self.doors[i]:
-                borders.update(door_tiles[i])
+                self.ground_tiles.update(door_tiles[i])
 
         for x in range(-(self.width+3), self.width+4):
             for y in range(-(self.height+3), self.height+4):
-                if (x, y) in borders.keys() and borders[(x, y)] > 0:
-                    value = borders[(x, y)]
-                    tile_type = 1
-                elif (x, y) in borders.keys() and borders[(x, y)] == 0:
-                    value = random.randint(0, 9)
-                    tile_type = 0
-                elif (x, None) in borders.keys() and -h <= y <= h:
-                    value = borders[(x, None)]
-                    tile_type = 1
-                elif (None, y) in borders.keys() and -w <= x <= w:
-                    value = borders[(None, y)]
-                    tile_type = 1
-                elif ((x < -w or x > w) or
-                        (y < -h or y > h)):
-                    value = 0
-                    tile_type = 1
-                elif (x, y) in self.ground_tiles.keys():
+                if (x, y) in self.ground_tiles.keys():
                     tile_type = self.ground_tiles[(x, y)]
                     if tile_type == 0:
                         value = random.randint(0, 9)
@@ -157,22 +152,22 @@ class Room:
 
         edges = [tileID]
 
-        if y != 7 and tilemap[(x, y+1)] not in edges:
+        if (x, y+1) in tilemap.keys() and tilemap[(x, y+1)] not in edges:
             sides.update({128: True, 1: True, 2: True})
-        if x != 7 and tilemap[(x+1, y)] not in edges:
+        if (x+1, y) in tilemap.keys() and tilemap[(x+1, y)] not in edges:
             sides.update({2: True, 4: True, 8: True})
-        if y != -7 and tilemap[(x, y-1)] not in edges:
+        if (x, y-1) in tilemap.keys() and tilemap[(x, y-1)] not in edges:
             sides.update({8: True, 16: True, 32: True})
-        if x != -7 and tilemap[(x-1, y)] not in edges:
+        if (x-1, y) in tilemap.keys() and tilemap[(x-1, y)] not in edges:
             sides.update({32: True, 64: True, 128: True})
 
-        if y != 7 and x != 7 and tilemap[(x+1, y+1)] not in edges:
+        if (x+1, y+1) in tilemap.keys() and tilemap[(x+1, y+1)] not in edges:
             sides[2] = True
-        if x != 7 and y != -7 and tilemap[(x+1, y-1)] not in edges:
+        if (x+1, y-1) in tilemap.keys() and tilemap[(x+1, y-1)] not in edges:
             sides[8] = True
-        if y != -7 and x != -7 and tilemap[(x-1, y-1)] not in edges:
+        if (x-1, y-1) in tilemap.keys() and tilemap[(x-1, y-1)] not in edges:
             sides[32] = True
-        if x != -7 and y != 7 and tilemap[(x-1, y+1)] not in edges:
+        if (x-1, y+1) in tilemap.keys() and tilemap[(x-1, y+1)] not in edges:
             sides[128] = True
 
         for side in sides.keys():
