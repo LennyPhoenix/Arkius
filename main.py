@@ -19,7 +19,7 @@ import pyglet
 from pyglet import gl
 from pyglet.window import key
 
-from lib import prefabs, tilesets
+from lib import prefabs, tilemaps
 from lib.room import Room
 
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
@@ -41,8 +41,8 @@ class Window(pyglet.window.Window):
         self.fps_display = pyglet.window.FPSDisplay(window=self)
 
         self.TILE_Y_GROUPS = {}
-        for y in range(-40, 41):
-            self.TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(20-y*2)
+        for y in range(-12, 12):
+            self.TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(12-y*2)
 
         self.PLAYER_Y_GROUPS = {}
         for y in range(-40, 41):
@@ -54,7 +54,6 @@ class Window(pyglet.window.Window):
 
         self.room = Room(
             room_type=1,
-            tileset=tilesets.fightRoom(),
             window=self
         )
 
@@ -74,7 +73,6 @@ class Window(pyglet.window.Window):
         if symbol in room_keys.keys():
             self.room = Room(
                 room_type=room_keys[symbol],
-                tileset=tilesets.fightRoom(),
                 window=self
             )
             self.player.moving = True

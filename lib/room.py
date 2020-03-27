@@ -4,13 +4,13 @@ import random
 
 from pyglet import image
 
-from . import prefabs, tilesets
+from . import prefabs, tilemaps
 
 
 class Room:
     """Room class for dungeon."""
 
-    def __init__(self, window, room_type=0, doors={0: True, 1: True, 2: True, 3: True}, tileset=tilesets.basic(), random_size=False):  # noqa: E501
+    def __init__(self, window, room_type=0, doors={0: True, 1: True, 2: True, 3: True}, tilemap=None, random_size=False):  # noqa: E501
         """Initialise the Room class."""
         self.type = room_type
         self.doors = doors
@@ -18,18 +18,17 @@ class Room:
         self.tiles = {}
         self.cleared = room_type == 0
 
-        self.width = 7
-        self.height = 7
+        if room_type == 3:
+            self.width, self.height = 8, 8
+        elif room_type == 4:
+            self.width, self.height = 10, 7
+        elif room_type == 1 and random_size is True:
+            self.width = random.randint(4, 9)
+            self.height = random.randint(4, 9)
+        else:
+            self.width, self.height = 7, 7
 
-        types = {
-            0: tilesets.startRoom(),
-            1: tileset,
-            2: tilesets.treasureRoom(),
-            3: tilesets.bossRoom(),
-            4: tilesets.basic()
-        }
-
-        self.ground_tiles = types[room_type]
+        self.ground_tiles = tilemaps.create_blank(self.width, self.height)
 
         self.createSprites(window)
 
@@ -142,8 +141,8 @@ class Room:
 
     def getBitValue(self, x, y):
         """Returns the bitmasking value of a tile."""
-        tileset = self.ground_tiles
-        tileID = tileset[(x, y)]
+        tilemap = self.ground_tiles
+        tileID = tilemap[(x, y)]
         value = 0
 
         sides = {
@@ -154,22 +153,22 @@ class Room:
 
         edges = [tileID]
 
-        if y != 7 and tileset[(x, y+1)] not in edges:
+        if y != 7 and tilemap[(x, y+1)] not in edges:
             sides.update({128: True, 1: True, 2: True})
-        if x != 7 and tileset[(x+1, y)] not in edges:
+        if x != 7 and tilemap[(x+1, y)] not in edges:
             sides.update({2: True, 4: True, 8: True})
-        if y != -7 and tileset[(x, y-1)] not in edges:
+        if y != -7 and tilemap[(x, y-1)] not in edges:
             sides.update({8: True, 16: True, 32: True})
-        if x != -7 and tileset[(x-1, y)] not in edges:
+        if x != -7 and tilemap[(x-1, y)] not in edges:
             sides.update({32: True, 64: True, 128: True})
 
-        if y != 7 and x != 7 and tileset[(x+1, y+1)] not in edges:
+        if y != 7 and x != 7 and tilemap[(x+1, y+1)] not in edges:
             sides[2] = True
-        if x != 7 and y != -7 and tileset[(x+1, y-1)] not in edges:
+        if x != 7 and y != -7 and tilemap[(x+1, y-1)] not in edges:
             sides[8] = True
-        if y != -7 and x != -7 and tileset[(x-1, y-1)] not in edges:
+        if y != -7 and x != -7 and tilemap[(x-1, y-1)] not in edges:
             sides[32] = True
-        if x != -7 and y != 7 and tileset[(x-1, y+1)] not in edges:
+        if x != -7 and y != 7 and tilemap[(x-1, y+1)] not in edges:
             sides[128] = True
 
         for side in sides.keys():
