@@ -9,5 +9,6 @@ build/
 dist/
 *.xcf
 *.aseprite
+*.ase
 nohup.out
 .pytest_cache/
