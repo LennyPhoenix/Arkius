@@ -4,6 +4,8 @@ import pyglet
 from pyglet import image
 from pyglet.window import key
 
+from . import constants as c
+
 
 class Tile:
     """Tile object. Contains basic sprite renderer."""
@@ -114,25 +116,22 @@ class Player:
         self.tile_y = round(self.y-0.5)
 
         # Position
-
-        SPEED = 4
-
         self.velocity_x, self.velocity_y = 0, 0
         if self.key_handler[key.W]:
-            self.velocity_y += SPEED
+            self.velocity_y += c.PLAYER_SPEED
         if self.key_handler[key.A]:
-            self.velocity_x -= SPEED
+            self.velocity_x -= c.PLAYER_SPEED
         if self.key_handler[key.S]:
-            self.velocity_y -= SPEED
+            self.velocity_y -= c.PLAYER_SPEED
         if self.key_handler[key.D]:
-            self.velocity_x += SPEED
+            self.velocity_x += c.PLAYER_SPEED
 
         if (
             (self.key_handler[key.A] or self.key_handler[key.D]) and
             (self.key_handler[key.W] or self.key_handler[key.S])
         ):
-            self.velocity_x *= 0.7
-            self.velocity_y *= 0.7
+            self.velocity_x *= c.DIAGONAL_MULTIPLIER
+            self.velocity_y *= c.DIAGONAL_MULTIPLIER
 
         self.x += self.velocity_x * dt
         self.y += self.velocity_y * dt

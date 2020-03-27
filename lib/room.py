@@ -4,31 +4,24 @@ import random
 
 from pyglet import image
 
+from . import constants as c
 from . import prefabs, tilemaps
 
 
 class Room:
     """Room class for dungeon."""
 
-    def __init__(self, window, room_type=0, doors={0: True, 1: True, 2: True, 3: True}, tilemap=None, dimensions=None):  # noqa: E501
+    def __init__(self, window, room_type=c.START_ROOM, doors={0: True, 1: True, 2: True, 3: True}, tilemap=None, dimensions=None):  # noqa: E501
         """Initialise the room."""
         self.type = room_type
         self.doors = doors
         self.ground_tiles = {}
         self.tiles = {}
-        self.cleared = room_type == 0
+        self.cleared = room_type == c.START_ROOM
 
         if dimensions is None:
-            if room_type == 0:
-                self.width, self.height = 6, 6
-            elif room_type == 1:
-                self.width, self.height = 7, 7
-            elif room_type == 2:
-                self.width, self.height = 6, 5
-            elif room_type == 3:
-                self.width, self.height = 8, 8
-            elif room_type == 4:
-                self.width, self.height = 10, 7
+            self.width = c.ROOM_INFO[room_type]["dimensions"][0]
+            self.height = c.ROOM_INFO[room_type]["dimensions"][1]
         else:
             self.width, self.height = dimensions[0], dimensions[1]
 
@@ -42,48 +35,77 @@ class Room:
         Arguments:
             window {pyglet.window.Window} -- The window for the application.
         """
-        border_type = 1
-        style = 0
-        w, h = self.width, self.height
+        border_type = c.WALL
+        style = c.ICE
 
         door_tiles = {
             0: {
-                (-2, h+3): border_type, (-1, h+3): 0,
-                (0, h+3): 0, (1, h+3): 0, (2, h+3): border_type,
-                (-2, h+2): border_type, (-1, h+2): 0,
-                (0, h+2): 0, (1, h+2): 0, (2, h+2): border_type,
-                (-2, h+1): border_type, (-1, h+1): 0,
-                (0, h+1): 0, (1, h+1): 0, (2, h+1): border_type,
+                (-2, self.height+3): border_type,
+                (-1, self.height+3): c.FLOOR,
+                (0, self.height+3): c.FLOOR,
+                (1, self.height+3): c.FLOOR,
+                (2, self.height+3): border_type,
+                (-2, self.height+2): border_type,
+                (-1, self.height+2): c.FLOOR,
+                (0, self.height+2): c.FLOOR,
+                (1, self.height+2): c.FLOOR,
+                (2, self.height+2): border_type,
+                (-2, self.height+1): border_type,
+                (-1, self.height+1): c.FLOOR,
+                (0, self.height+1): c.FLOOR,
+                (1, self.height+1): c.FLOOR,
+                (2, self.height+1): border_type,
             },
             1: {
-                (w+1, 2): border_type,
-                (w+2, 2): border_type,
-                (w+3, 2): border_type,
-                (w+1, 1): 0, (w+2, 1): 0, (w+3, 1): 0,
-                (w+1, 0): 0, (w+2, 0): 0, (w+3, 0): 0,
-                (w+1, -1): 0, (w+2, -1): 0, (w+3, -1): 0,
-                (w+1, -2): border_type,
-                (w+2, -2): border_type,
-                (w+3, -2): border_type,
+                (self.width+1, 2): border_type,
+                (self.width+2, 2): border_type,
+                (self.width+3, 2): border_type,
+                (self.width+1, 1): c.FLOOR,
+                (self.width+2, 1): c.FLOOR,
+                (self.width+3, 1): c.FLOOR,
+                (self.width+1, 0): c.FLOOR,
+                (self.width+2, 0): c.FLOOR,
+                (self.width+3, 0): c.FLOOR,
+                (self.width+1, -1): c.FLOOR,
+                (self.width+2, -1): c.FLOOR,
+                (self.width+3, -1): c.FLOOR,
+                (self.width+1, -2): border_type,
+                (self.width+2, -2): border_type,
+                (self.width+3, -2): border_type,
             },
             2: {
-                (-2, -(h+1)): border_type, (-1, -(h+1)): 0,
-                (0, -(h+1)): 0, (1, -(h+1)): 0, (2, -(h+1)): border_type,
-                (-2, -(h+2)): border_type, (-1, -(h+2)): 0,
-                (0, -(h+2)): 0, (1, -(h+2)): 0, (2, -(h+2)): border_type,
-                (-2, -(h+3)): border_type, (-1, -(h+3)): 0,
-                (0, -(h+3)): 0, (1, -(h+3)): 0, (2, -(h+3)): border_type,
+                (-2, -(self.height+1)): border_type,
+                (-1, -(self.height+1)): c.FLOOR,
+                (0, -(self.height+1)): c.FLOOR,
+                (1, -(self.height+1)): c.FLOOR,
+                (2, -(self.height+1)): border_type,
+                (-2, -(self.height+2)): border_type,
+                (-1, -(self.height+2)): c.FLOOR,
+                (0, -(self.height+2)): c.FLOOR,
+                (1, -(self.height+2)): c.FLOOR,
+                (2, -(self.height+2)): border_type,
+                (-2, -(self.height+3)): border_type,
+                (-1, -(self.height+3)): c.FLOOR,
+                (0, -(self.height+3)): c.FLOOR,
+                (1, -(self.height+3)): c.FLOOR,
+                (2, -(self.height+3)): border_type,
             },
             3: {
-                (-(w+3), 2): border_type,
-                (-(w+2), 2): border_type,
-                (-(w+1), 2): border_type,
-                (-(w+3), 1): 0, (-(w+2), 1): 0, (-(w+1), 1): 0,
-                (-(w+3), 0): 0, (-(w+2), 0): 0, (-(w+1), 0): 0,
-                (-(w+3), -1): 0, (-(w+2), -1): 0, (-(w+1), -1): 0,
-                (-(w+3), -2): border_type,
-                (-(w+2), -2): border_type,
-                (-(w+1), -2): border_type,
+                (-(self.width+3), 2): border_type,
+                (-(self.width+2), 2): border_type,
+                (-(self.width+1), 2): border_type,
+                (-(self.width+3), 1): c.FLOOR,
+                (-(self.width+2), 1): c.FLOOR,
+                (-(self.width+1), 1): c.FLOOR,
+                (-(self.width+3), 0): c.FLOOR,
+                (-(self.width+2), 0): c.FLOOR,
+                (-(self.width+1), 0): c.FLOOR,
+                (-(self.width+3), -1): c.FLOOR,
+                (-(self.width+2), -1): c.FLOOR,
+                (-(self.width+1), -1): c.FLOOR,
+                (-(self.width+3), -2): border_type,
+                (-(self.width+2), -2): border_type,
+                (-(self.width+1), -2): border_type,
             }
         }
 
@@ -106,7 +128,7 @@ class Room:
             for y in range(-(self.height+3), self.height+4):
                 if (x, y) in self.ground_tiles.keys():
                     tile_type = self.ground_tiles[(x, y)]
-                    if tile_type == 0:
+                    if tile_type == c.FLOOR:
                         value = random.randint(0, 9)
                     else:
                         value = self.getBitValue(x, y)

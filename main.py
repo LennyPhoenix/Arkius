@@ -19,6 +19,7 @@ import pyglet
 from pyglet import gl
 from pyglet.window import key
 
+from lib import constants as c
 from lib import prefabs
 from lib.room import Room
 
@@ -39,18 +40,18 @@ class Window(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
         """Initialise the window class."""
         super().__init__(*args, **kwargs)
-        self.set_minimum_size(568, 320)
+        self.set_minimum_size(*c.MIN_SIZE)
 
         self.BATCH = pyglet.graphics.Batch()
         self.fps_display = pyglet.window.FPSDisplay(window=self)
 
         self.TILE_Y_GROUPS = {}
-        for y in range(-100, 101):
-            self.TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(100-y*2)
+        for y in range(-50, 51):
+            self.TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(50-y*2)
 
         self.PLAYER_Y_GROUPS = {}
-        for y in range(-100, 101):
-            self.PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(100-y*2+1)
+        for y in range(-50, 51):
+            self.PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(50-y*2+1)
 
         self.UI_LAYERS = {}
         for z in range(5):
@@ -163,6 +164,6 @@ if __name__ == "__main__":
         fullscreen=True,
         vsync=True
     )
-    pyglet.clock.schedule_interval(window.update, 1/120)
+    pyglet.clock.schedule_interval(window.update, c.UPDATE_SPEED)
     window.push_handlers(pyglet.window.event.WindowEventLogger())
     pyglet.app.run()
