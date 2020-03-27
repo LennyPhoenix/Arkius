@@ -11,7 +11,7 @@ class Room:
     """Room class for dungeon."""
 
     def __init__(self, window, room_type=0, doors={0: True, 1: True, 2: True, 3: True}, tilemap=None, dimensions=None):  # noqa: E501
-        """Initialise the Room class."""
+        """Initialise the room."""
         self.type = room_type
         self.doors = doors
         self.ground_tiles = {}
@@ -37,7 +37,11 @@ class Room:
         self.createSprites(window)
 
     def createSprites(self, window):
-        """Creates all the tile sprites."""
+        """Create all the sprites for the room tiles.
+
+        Arguments:
+            window {pyglet.window.Window} -- The window for the application.
+        """
         border_type = 1
         style = 0
         w, h = self.width, self.height
@@ -127,19 +131,37 @@ class Room:
                 self.tiles[(x, y)] = tile
 
     def update(self, window):
+        """Update all tiles.
+
+        Arguments:
+            window {pyglet.window.Window} -- The window for the application.
+        """
         for x in range(-(self.width+3), self.width+4):
             for y in range(-(self.height+3), self.height+4):
                 if (x, y) in self.tiles.keys():
                     self.tiles[(x, y)].update(window)
 
     def resize(self, window):
+        """Resize all tiles.
+
+        Arguments:
+            window {pyglet.window.Window} -- The window for the application.
+        """
         for x in range(-(self.width+3), self.width+4):
             for y in range(-(self.height+3), self.height+4):
                 if (x, y) in self.tiles.keys():
                     self.tiles[(x, y)].resize(window)
 
     def getBitValue(self, x, y):
-        """Returns the bitmasking value of a tile."""
+        """Return the bitmask value for a tile.
+
+        Arguments:
+            x {int} -- The x position of the tile.
+            y {int} -- The y position of the tile.
+
+        Returns:
+            int -- The bitmask value of the tile.
+        """
         tilemap = self.ground_tiles
         tileID = tilemap[(x, y)]
         value = 0
@@ -177,7 +199,15 @@ class Room:
         return value
 
     def getUV(self, tile_type, tile_value):
-        """Returns the tile's UV from its type and value."""
+        """Find a tile UV position for a tileset.
+
+        Arguments:
+            tile_type {int} -- The type of the tile.
+            tile_value {int} -- The bitmask value of the tile.
+
+        Returns:
+            (int, int) -- The UV position for the tile.
+        """
         if tile_type == 0:
             values_dict = {
                 0: (0, 0), 1: (16, 0), 2: (32, 0), 3: (48, 0), 4: (64, 0),

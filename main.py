@@ -27,13 +27,17 @@ pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
 
 
 class Window(pyglet.window.Window):
-    """
-    Custom window class for application.
-    Derived from pyglet.window.Window.
+    """Custom Window class.
+
+    Arguments:
+        pyglet {window.Window} -- Pyglet's window class.
+
+    Returns:
+        Window -- Custom window class.
     """
 
     def __init__(self, *args, **kwargs):
-        """Creates the dungeon and player etc."""
+        """Initialise the window class."""
         super().__init__(*args, **kwargs)
         self.set_minimum_size(568, 320)
 
@@ -60,7 +64,12 @@ class Window(pyglet.window.Window):
         self.player = prefabs.Player(self)
 
     def on_key_press(self, symbol, modifiers):
-        """Run on every key press."""
+        """Fullscreen the window or create a new room.
+
+        Arguments:
+            symbol {int} -- The key symbol pressed.
+            modifiers {int} -- Bitwise combination of the key modifiers active.
+        """
         super().on_key_press(symbol, modifiers)
         room_keys = {
             key._0: 0,
@@ -82,18 +91,27 @@ class Window(pyglet.window.Window):
             self.set_fullscreen(not self.fullscreen)
 
     def on_resize(self, width, height):
-        """Run on every window resize."""
+        """Resize the room.
+
+        Arguments:
+            width {int} -- The new window width.
+            height {int} -- The new window height.
+        """
         super().on_resize(width, height)
         self.room.resize(self)
 
     def update(self, dt):
-        """Run 120 times per second."""
+        """Update all sprites and redraw the window.
+
+        Arguments:
+            dt {float} -- Time passed since last update.
+        """
 
         self.clear()
 
         self.push_handlers(self.player.key_handler)
 
-        self.player.update(self, self.room.tiles, dt)
+        self.player.update(self, dt)
         if self.player.moving:
             self.room.update(self)
 
@@ -101,7 +119,18 @@ class Window(pyglet.window.Window):
         self.fps_display.draw()
 
     def worldToScreen(self, x, y, parallax=False):
-        """Converts a world postion to the screen position."""
+        """Convert a world position to a screen position.
+
+        Arguments:
+            x {float} -- The world x position.
+            y {float} -- The world y position.
+
+        Keyword Arguments:
+            parallax {bool} -- Render with parallax. (default: {False})
+
+        Returns:
+            (int, int) -- The screen position of the object.
+        """
         scale_factor = self.scaleFactor()
 
         screen_x = (x+10) * 16 * scale_factor  # With buffer
@@ -118,7 +147,11 @@ class Window(pyglet.window.Window):
         return (screen_x, screen_y)
 
     def scaleFactor(self):
-        """Returns the scale factor of the window."""
+        """Return the scale factor of the window.
+
+        Returns:
+            float -- The window's scale factor.
+        """
         scale_factor = self.height / 320
         return scale_factor
 

@@ -6,12 +6,18 @@ from pyglet.window import key
 
 
 class Tile:
-    """
-    Prefab for a tile.
-    Contains a sprite renderer and a collision box.
-    """
+    """Tile object. Contains basic sprite renderer."""
 
     def __init__(self, window, x, y, type, tile_image):
+        """Initialise the Tile class.
+
+        Arguments:
+            window {pyglet.window.Window} -- The window for the application.
+            x {float} -- The x position of the tile.
+            y {float} -- The y position of the tile.
+            type {int} -- The tile's type.
+            tile_image {pyglet.image} -- The image for the tile.
+        """
         self.type = type
 
         self.x = x
@@ -30,6 +36,11 @@ class Tile:
         self.sprite.scale = window.scaleFactor()
 
     def resize(self, window):
+        """Resize the tile.
+
+        Arguments:
+            window {pyglet.window.Window} -- The window for the application.
+        """
         screen_pos = window.worldToScreen(self.x, self.y, True)
         self.screen_x, self.screen_y = screen_pos[0], screen_pos[1]
 
@@ -40,6 +51,11 @@ class Tile:
         self.sprite.scale = window.scaleFactor()
 
     def update(self, window):
+        """Update the position of the tile.
+
+        Arguments:
+            window {pyglet.window.Window} -- The window for the application.
+        """
         screen_pos = window.worldToScreen(self.x, self.y, True)
         self.screen_x, self.screen_y = screen_pos[0], screen_pos[1]
 
@@ -50,12 +66,14 @@ class Tile:
 
 
 class Player:
-    """
-    Prefab for the player.
-    Contains a sprite renderer and a collision box.
-    """
+    """Player object. Contains basic renderer and controller."""
 
     def __init__(self, window):
+        """Initialise the player class.
+
+        Arguments:
+            window {pyglet.window.Window} -- The window for the application.
+        """
         self.room = (0, 0)
 
         self.x = 0.5
@@ -85,7 +103,13 @@ class Player:
         )
         self.sprite.scale = window.scaleFactor()
 
-    def update(self, window, tiles, dt):
+    def update(self, window, dt):
+        """Update the player.
+
+        Arguments:
+            window {pyglet.window.Window} -- The window for the application.
+            dt {float} -- Time passed since last update.
+        """
         self.tile_x = round(self.x-0.5)
         self.tile_y = round(self.y-0.5)
 
