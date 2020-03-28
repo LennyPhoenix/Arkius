@@ -4,6 +4,9 @@
 MIN_SIZE = (568, 320)
 UPDATE_SPEED = 1/120
 
+# Tilemaps
+DEFAULT_ROOM_SIZE = 7
+
 # Room Types
 START_ROOM = 0
 FIGHT_ROOM = 1
