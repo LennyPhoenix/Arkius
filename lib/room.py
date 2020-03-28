@@ -228,7 +228,7 @@ class Room:
         Returns:
             (int, int) -- The UV position for the tile.
         """
-        if tile_type == 0:
+        if tile_type == c.FLOOR:
             values_dict = {
                 0: (0, 0), 1: (16, 0), 2: (32, 0), 3: (48, 0), 4: (64, 0),
                 5: (0, 16), 6: (16, 16), 7: (32, 16), 8: (48, 16), 9: (64, 16)
