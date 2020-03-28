@@ -132,25 +132,23 @@ class Room:
                         value = random.randint(0, 9)
                     else:
                         value = self.getBitValue(x, y)
-                else:
-                    continue
 
-                image_path = f"resources/tilesets/{style}/{tile_type}.png"
-                tile_image = image.load(image_path)
-                tile_image.anchor_x = 0
-                tile_image.anchor_y = 0
+                    image_path = f"resources/tilesets/{style}/{tile_type}.png"
+                    tile_image = image.load(image_path)
+                    tile_image.anchor_x = 0
+                    tile_image.anchor_y = 0
 
-                tile_region = tile_image.get_region(
-                    *self.getUV(tile_type, value)
-                )
+                    tile_region = tile_image.get_region(
+                        *self.getUV(tile_type, value)
+                    )
 
-                tile = prefabs.Tile(
-                    window,
-                    x, y,
-                    tile_type,
-                    tile_region
-                )
-                self.tiles[(x, y)] = tile
+                    tile = prefabs.Tile(
+                        window,
+                        x, y,
+                        tile_type,
+                        tile_region
+                    )
+                    self.tiles[(x, y)] = tile
 
     def update(self, window):
         """Update all tiles.
