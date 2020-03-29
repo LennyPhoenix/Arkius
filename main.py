@@ -151,11 +151,13 @@ class Window(pyglet.window.Window):
             room = self.room
             screen_x += (
                 (self.player.x) * -8 * scale_factor *
-                (room.width / c.DEFAULT_ROOM_SIZE)
+                (room.width / c.DEFAULT_ROOM_SIZE) /
+                (self.scale_divisor / c.SCALE_DIVISOR)
             )
             screen_y += (
                 (self.player.y) * -8 * scale_factor *
-                (room.height / c.DEFAULT_ROOM_SIZE)
+                (room.height / c.DEFAULT_ROOM_SIZE) /
+                (self.scale_divisor / c.SCALE_DIVISOR)
             )
 
         return (screen_x, screen_y)
