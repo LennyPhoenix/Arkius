@@ -1,11 +1,17 @@
 """Contains tilemap generator and premade tilemaps for rooms."""
 
-import random
-
 from . import constants as c
 
 
 def toMap(matrix):
+    """Convert a matrix to a tilemap dict.
+
+    Arguments:
+        matrix {list} -- The tile matrix to convert.
+
+    Returns:
+        dict -- The converted tilemap dict.
+    """
     height = len(matrix)//2
     width = len(matrix[0])//2
     tilemap = {}
@@ -35,6 +41,20 @@ def create_blank(width=7, height=7, tile_type=c.FLOOR):
 
 
 def generate(width, height, room_map, room_type, tile_options=None):
+    """Randomly modify given tilemap with the options specified.
+
+    Arguments:
+        width {int} -- The width of the tilemap's room.
+        height {int} -- The height of the tilemap's room.
+        room_map {dict} -- The dictionary tilemap to randomise.
+        room_type {int} -- The type of room.
+
+    Keyword Arguments:
+        tile_options {dict} -- The tile's that should be randomised and their options. (default: {None})
+
+    Returns:
+        dict -- The randomised tilemap dict.
+    """
     if tile_options is None:
         tile_options = c.ROOM_INFO[room_type]["generation_options"]
 
