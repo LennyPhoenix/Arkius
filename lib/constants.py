@@ -3,6 +3,7 @@
 # Window
 MIN_SIZE = (568, 320)
 UPDATE_SPEED = 1/120
+SCALE_DIVISOR = 320
 
 # Tile Types
 FLOOR = 0

@@ -159,7 +159,7 @@ class Window(pyglet.window.Window):
         Returns:
             float -- The window's scale factor.
         """
-        scale_factor = self.height / 320
+        scale_factor = self.height / c.SCALE_DIVISOR
         return scale_factor
 
 
