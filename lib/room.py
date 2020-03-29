@@ -11,21 +11,33 @@ from . import prefabs, tilemaps
 class Room:
     """Room class for dungeon."""
 
-    def __init__(self, window, room_type=c.START_ROOM, doors={0: True, 1: True, 2: True, 3: True}, tilemap=None, dimensions=None):  # noqa: E501
+    def __init__(self, window, room_type=c.START_ROOM, doors={0: True, 1: True, 2: True, 3: True}, dimensions=None):  # noqa: E501
         """Initialise the room."""
         self.type = room_type
         self.doors = doors
-        self.ground_tiles = {}
+        self.tilemap = {}
         self.tiles = {}
-        self.cleared = room_type == c.START_ROOM
+        self.cleared = self.type == c.START_ROOM
 
         if dimensions is None:
-            self.width = c.ROOM_INFO[room_type]["dimensions"][0]
-            self.height = c.ROOM_INFO[room_type]["dimensions"][1]
+            self.width = c.ROOM_INFO[self.type]["dimensions"][0]
+            self.height = c.ROOM_INFO[self.type]["dimensions"][1]
         else:
             self.width, self.height = dimensions[0], dimensions[1]
 
-        self.ground_tiles = tilemaps.create_blank(self.width, self.height)
+        self.tilemap = tilemaps.create_blank(
+            self.width,
+            self.height
+        )
+        if c.ROOM_INFO[self.type]["base"] is not None:
+            tilemap = random.choice(c.ROOM_INFO[self.type]["base"])
+            self.tilemap.update(tilemaps.toMap(tilemap))
+
+        self.tilemap = tilemaps.generate(
+            self.width, self.height,
+            self.tilemap,
+            self.type
+        )
 
         self.createSprites(window)
 
@@ -110,24 +122,24 @@ class Room:
         }
 
         for x in range(-(self.width+1), self.width+2):
-            self.ground_tiles.update({
+            self.tilemap.update({
                 (x, self.height+1): border_type,
                 (x, -(self.height+1)): border_type
             })
         for y in range(-(self.height+1), self.height+2):
-            self.ground_tiles.update({
+            self.tilemap.update({
                 (self.width+1, y): border_type,
                 (-(self.width+1), y): border_type
             })
 
         for i in range(4):
             if self.doors[i]:
-                self.ground_tiles.update(door_tiles[i])
+                self.tilemap.update(door_tiles[i])
 
         for x in range(-(self.width+3), self.width+4):
             for y in range(-(self.height+3), self.height+4):
-                if (x, y) in self.ground_tiles.keys():
-                    tile_type = self.ground_tiles[(x, y)]
+                if (x, y) in self.tilemap.keys():
+                    tile_type = self.tilemap[(x, y)]
                     if tile_type == c.FLOOR:
                         value = random.randint(0, 9)
                     else:
@@ -182,7 +194,7 @@ class Room:
         Returns:
             int -- The bitmask value of the tile.
         """
-        tilemap = self.ground_tiles
+        tilemap = self.tilemap
         tileID = tilemap[(x, y)]
         value = 0
 

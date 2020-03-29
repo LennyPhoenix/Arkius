@@ -133,6 +133,10 @@ class Player:
             self.velocity_x *= c.DIAGONAL_MULTIPLIER
             self.velocity_y *= c.DIAGONAL_MULTIPLIER
 
+        if self.key_handler[key.LSHIFT]:
+            self.velocity_x *= 5
+            self.velocity_y *= 5
+
         self.x += self.velocity_x * dt
         self.y += self.velocity_y * dt
 
