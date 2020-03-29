@@ -44,7 +44,7 @@ class Window(pyglet.window.Window):
 
         self.BATCH = pyglet.graphics.Batch()
         self.fps_display = pyglet.window.FPSDisplay(window=self)
-        self.scale_divisor = c.SCALE_DIVISOR
+        self.scale_divisor = c.DEFAULT_SCALE_DIVISOR
 
         self.TILE_Y_GROUPS = {}
         for y in range(-50, 51):
@@ -152,12 +152,12 @@ class Window(pyglet.window.Window):
             screen_x += (
                 (self.player.x) * -8 * scale_factor *
                 (room.width / c.DEFAULT_ROOM_SIZE) /
-                (self.scale_divisor / c.SCALE_DIVISOR)
+                (self.scale_divisor / c.DEFAULT_SCALE_DIVISOR)
             )
             screen_y += (
                 (self.player.y) * -8 * scale_factor *
                 (room.height / c.DEFAULT_ROOM_SIZE) /
-                (self.scale_divisor / c.SCALE_DIVISOR)
+                (self.scale_divisor / c.DEFAULT_SCALE_DIVISOR)
             )
 
         return (screen_x, screen_y)
