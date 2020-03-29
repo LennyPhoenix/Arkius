@@ -44,6 +44,7 @@ class Window(pyglet.window.Window):
 
         self.BATCH = pyglet.graphics.Batch()
         self.fps_display = pyglet.window.FPSDisplay(window=self)
+        self.scale_divisor = c.SCALE_DIVISOR
 
         self.TILE_Y_GROUPS = {}
         for y in range(-50, 51):
@@ -88,6 +89,12 @@ class Window(pyglet.window.Window):
             self.player.moving = True
             self.player.x, self.player.y = 0.5, 0.5
             self.room.update(self)
+        elif symbol == key.EQUAL:
+            self.scale_divisor -= 5
+            self.room.resize(self)
+        elif symbol == key.MINUS:
+            self.scale_divisor += 5
+            self.room.resize(self)
         elif symbol == key.F11:
             self.set_fullscreen(not self.fullscreen)
 
@@ -159,7 +166,7 @@ class Window(pyglet.window.Window):
         Returns:
             float -- The window's scale factor.
         """
-        scale_factor = self.height / c.SCALE_DIVISOR
+        scale_factor = self.height / self.scale_divisor
         return scale_factor
 
 
