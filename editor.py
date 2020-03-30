@@ -64,6 +64,14 @@ class Window(pyglet.window.Window):
         self.tiles = {}
         self.generate_tiles()
 
+        scale_factor = self.scaleFactor()
+        self.dimensions_label = pyglet.text.Label(
+            f"Width: {self.room_width}  Height: {self.room_height}",
+            font_size=10*scale_factor,
+            x=10*scale_factor,
+            y=10*scale_factor
+        )
+
     def generate_tiles(self):
         for pos, tile in self.tiles.items():
             tile.sprite.delete()
@@ -126,15 +134,17 @@ class Window(pyglet.window.Window):
                 ):
                     self.tilemap[pos] = 0
             self.generate_tiles()
+            self.dimensions_label.text = f"Width: {self.room_width}  Height: {self.room_height}"
 
         if symbol == key.ENTER:
-            matrix = []
+            output = "[\n"
             for y in range(-self.room_height, self.room_height+1):
-                matrix_y = []
+                output += "    ["
                 for x in range(-self.room_width, self.room_width+1):
-                    matrix_y.append(self.tilemap[(x, -y)])
-                matrix.append(matrix_y)
-            print(matrix)
+                    output += f"{self.tilemap[(x, -y)]}, "
+                output += "],\n"
+            output += "]"
+            print(output)
 
     def on_resize(self, width, height):
         """Resize the tiles.
@@ -159,6 +169,7 @@ class Window(pyglet.window.Window):
 
         self.clear()
         self.batch.draw()
+        self.dimensions_label.draw()
 
     def worldToScreen(self, x, y, parallax=False):
         """Convert a world position to a screen position.
