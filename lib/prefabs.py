@@ -29,8 +29,8 @@ class Tile:
 
         self.sprite = pyglet.sprite.Sprite(
             tile_image,
-            group=window.TILE_Y_GROUPS[y],
-            batch=window.BATCH,
+            group=window.tile_groups[y],
+            batch=window.batch,
             x=self.screen_x,
             y=self.screen_y,
             usage="static"
@@ -98,7 +98,7 @@ class Player:
 
         self.sprite = pyglet.sprite.Sprite(
             player_image,
-            batch=window.BATCH,
+            batch=window.batch,
             x=self.screen_x,
             y=self.screen_y,
             usage="dynamic"
@@ -165,5 +165,5 @@ class Player:
         if self.sprite.scale != scale_factor:
             self.sprite.scale = scale_factor
 
-        if self.sprite.group != window.PLAYER_Y_GROUPS[self.tile_y]:
-            self.sprite.group = window.PLAYER_Y_GROUPS[self.tile_y]
+        if self.sprite.group != window.player_groups[self.tile_y]:
+            self.sprite.group = window.player_groups[self.tile_y]

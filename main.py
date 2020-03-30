@@ -42,21 +42,21 @@ class Window(pyglet.window.Window):
         super().__init__(*args, **kwargs)
         self.set_minimum_size(*c.MIN_SIZE)
 
-        self.BATCH = pyglet.graphics.Batch()
+        self.batch = pyglet.graphics.Batch()
         self.fps_display = pyglet.window.FPSDisplay(window=self)
         self.scale_divisor = c.DEFAULT_SCALE_DIVISOR
 
-        self.TILE_Y_GROUPS = {}
+        self.tile_groups = {}
         for y in range(-50, 51):
-            self.TILE_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(50-y*2)
+            self.tile_groups[y] = pyglet.graphics.OrderedGroup(50-y*2)
 
-        self.PLAYER_Y_GROUPS = {}
+        self.player_groups = {}
         for y in range(-50, 51):
-            self.PLAYER_Y_GROUPS[y] = pyglet.graphics.OrderedGroup(50-y*2+1)
+            self.player_groups[y] = pyglet.graphics.OrderedGroup(50-y*2+1)
 
-        self.UI_LAYERS = {}
+        self.ui_layers = {}
         for z in range(5):
-            self.UI_LAYERS[z] = pyglet.graphics.OrderedGroup(z+100)
+            self.ui_layers[z] = pyglet.graphics.OrderedGroup(z+100)
 
         self.room = Room(
             room_type=1,
@@ -123,7 +123,7 @@ class Window(pyglet.window.Window):
         if self.player.moving:
             self.room.update(self)
 
-        self.BATCH.draw()
+        self.batch.draw()
         self.fps_display.draw()
 
     def worldToScreen(self, x, y, parallax=False):
