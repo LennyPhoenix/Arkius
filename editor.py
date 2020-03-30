@@ -32,10 +32,11 @@ class Window(pyglet.window.Window):
         self.scale_divisor = c.DEFAULT_SCALE_DIVISOR
 
         self.room_style = c.ICE
+        self.brush = c.WALL
 
         self.tile_groups = {}
-        for y in range(-50, 51):
-            self.tile_groups[y] = pyglet.graphics.OrderedGroup(50-y*2)
+        for y in range(-100, 101):
+            self.tile_groups[y] = pyglet.graphics.OrderedGroup(100-y*2)
 
         self.images = {}
         for style in c.STYLES:
@@ -71,6 +72,23 @@ class Window(pyglet.window.Window):
             x=10*scale_factor,
             y=10*scale_factor
         )
+        self.brush_label = pyglet.text.Label(
+            f"Current Brush ID: {self.brush}",
+            font_size=10*scale_factor,
+            x=10*scale_factor,
+            y=self.height - 20*scale_factor
+        )
+
+        cursor_image = pyglet.image.load("resources/tile_select.png")
+        cursor_x, cursor_y = self.worldToScreen(0, 0)
+        self.cursor = pyglet.sprite.Sprite(
+            cursor_image,
+            x=cursor_x,
+            y=cursor_y,
+            group=self.tile_groups[-100],
+            batch=self.batch
+        )
+        self.cursor.scale = scale_factor
 
     def generate_tiles(self):
         for pos, tile in self.tiles.items():
@@ -134,7 +152,8 @@ class Window(pyglet.window.Window):
                 ):
                     self.tilemap[pos] = 0
             self.generate_tiles()
-            self.dimensions_label.text = f"Width: {self.room_width}  Height: {self.room_height}"
+            text = f"Width: {self.room_width}  Height: {self.room_height}"
+            self.dimensions_label.text = text
 
         if symbol == key.ENTER:
             output = "[\n"
@@ -143,8 +162,67 @@ class Window(pyglet.window.Window):
                 for x in range(-self.room_width, self.room_width+1):
                     output += f"{self.tilemap[(x, -y)]}, "
                 output += "],\n"
-            output += "]"
+            output += "],"
             print(output)
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        world_x, world_y = self.screenToWorld(x, y)
+        tile_x = round(world_x-0.5)
+        tile_y = round(world_y-0.5)
+        cursor_x, cursor_y = self.worldToScreen(tile_x, tile_y)
+        self.cursor.update(
+            x=cursor_x,
+            y=cursor_y
+        )
+        return super().on_mouse_motion(x, y, dx, dy)
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        if button == pyglet.window.mouse.LEFT:
+            world_x, world_y = self.screenToWorld(x, y)
+            tile_x = round(world_x-0.5)
+            tile_y = round(world_y-0.5)
+
+            if (
+                -self.room_width <= tile_x <= self.room_width and
+                -self.room_height <= tile_y <= self.room_height
+            ):
+                self.tilemap[(tile_x, tile_y)] = self.brush
+
+                to_refresh = [
+                    (tile_x, tile_y),
+                    (tile_x+1, tile_y),
+                    (tile_x-1, tile_y),
+                    (tile_x, tile_y+1),
+                    (tile_x, tile_y-1),
+                    (tile_x+1, tile_y+1),
+                    (tile_x-1, tile_y-1),
+                    (tile_x+1, tile_y-1),
+                    (tile_x-1, tile_y+1),
+                ]
+                for tile_x, tile_y in to_refresh:
+                    tile_type = self.tilemap[(tile_x, tile_y)]
+                    if tile_type == 0:
+                        value = random.randint(0, 9)
+                    else:
+                        value = self.getBitValue(tile_x, tile_y)
+                    UV = self.getUV(tile_type, value)
+                    image = self.images[self.room_style][tile_type]
+                    image_region = image.get_region(*UV)
+                    if (tile_x, tile_y) in self.tiles.keys():
+                        self.tiles[(tile_x, tile_y)] = prefabs.Tile(
+                            self,
+                            tile_x, tile_y,
+                            tile_type,
+                            image_region
+                        )
+
+        if button == pyglet.window.mouse.RIGHT:
+            self.brush += 1
+            if self.brush > len(c.TILE_TYPES)-1:
+                self.brush = 0
+            self.brush_label.text = f"Current Brush ID: {self.brush}"
+
+        return super().on_mouse_press(x, y, button, modifiers)
 
     def on_resize(self, width, height):
         """Resize the tiles.
@@ -158,6 +236,15 @@ class Window(pyglet.window.Window):
         for pos, tile in self.tiles.items():
             tile.resize(self)
 
+        scale_factor = self.scaleFactor()
+        self.dimensions_label.x = 10 * scale_factor
+        self.dimensions_label.y = 10 * scale_factor
+        self.dimensions_label.font_size = 10 * scale_factor
+        self.brush_label.x = 10 * scale_factor
+        self.brush_label.y = self.height - 20 * scale_factor
+        self.brush_label.font_size = 10 * scale_factor
+        self.cursor.scale = scale_factor
+
     def update(self, dt):
         """Redraw the tiles and update positions etc.
 
@@ -170,6 +257,8 @@ class Window(pyglet.window.Window):
         self.clear()
         self.batch.draw()
         self.dimensions_label.draw()
+        self.brush_label.draw()
+        self.draw_mouse_cursor()
 
     def worldToScreen(self, x, y, parallax=False):
         """Convert a world position to a screen position.
@@ -190,6 +279,28 @@ class Window(pyglet.window.Window):
         screen_y += self.height/2
 
         return (screen_x, screen_y)
+
+    def screenToWorld(self, x, y, parallax=False):
+        """Convert a world position to a screen position.
+
+        Arguments:
+            x {float} -- The screen x position.
+            y {float} -- The screen y position.
+
+        Returns:
+            (int, int) -- The world position of the object.
+        """
+        scale_factor = self.scaleFactor()
+
+        world_x = x - self.width / 2
+        world_x /= 16 * scale_factor
+        world_x += 0.5
+
+        world_y = y - self.height / 2
+        world_y /= 16 * scale_factor
+        world_y += 0.5
+
+        return (world_x, world_y)
 
     def scaleFactor(self):
         """Return the scale factor of the window.
