@@ -98,6 +98,7 @@ class Player:
 
         self.sprite = pyglet.sprite.Sprite(
             player_image,
+            group=window.player_groups[self.tile_y],
             batch=window.batch,
             x=self.screen_x,
             y=self.screen_y,
