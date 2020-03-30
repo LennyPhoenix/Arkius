@@ -26,6 +26,7 @@ class Window(pyglet.window.Window):
     """
 
     def __init__(self, *args, **kwargs):
+        """Initialise the editor."""
         super().__init__(*args, **kwargs)
 
         self.batch = pyglet.graphics.Batch()
@@ -91,6 +92,7 @@ class Window(pyglet.window.Window):
         self.cursor.scale = scale_factor
 
     def generate_tiles(self):
+        """Generate all tile sprites."""
         for pos, tile in self.tiles.items():
             tile.sprite.delete()
         self.tiles = {}
@@ -166,6 +168,14 @@ class Window(pyglet.window.Window):
             print(output)
 
     def on_mouse_motion(self, x, y, dx, dy):
+        """Move the cursor sprite.
+
+        Arguments:
+            x {int} -- The mouse X position.
+            y {int} -- The mouse Y position.
+            dx {int} -- The X position relative to the last position.
+            dy {int} -- The Y position relative to the last position.
+        """
         world_x, world_y = self.screenToWorld(x, y)
         tile_x = round(world_x-0.5)
         tile_y = round(world_y-0.5)
@@ -177,6 +187,15 @@ class Window(pyglet.window.Window):
         return super().on_mouse_motion(x, y, dx, dy)
 
     def on_mouse_press(self, x, y, button, modifiers):
+        """Paint or change the brush.
+
+        Arguments:
+            x {int} -- The mouse X position.
+            y {int} -- The mouse Y position.
+            button {int} -- The mouse button pushed.
+            modifiers {int} -- Bitwise combination of any keyboard
+                               modifiers currently active.
+        """
         if button == pyglet.window.mouse.LEFT:
             world_x, world_y = self.screenToWorld(x, y)
             tile_x = round(world_x-0.5)
