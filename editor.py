@@ -1,6 +1,14 @@
 """
 This is a secondary application for Arkius that allows the
 modification and creation of tilemaps.
+
+Controls:
+ • Arrow Keys: Change room size.
+ • "+" and "-": Change zoom level.
+ • Left Click: Place tile.
+ • Right Click: Cycle tile type.
+ • Enter: Print tilemap to console.
+
 """
 
 import random
