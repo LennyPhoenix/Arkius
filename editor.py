@@ -227,21 +227,17 @@ class Window(pyglet.window.Window):
                     (tile_x-1, tile_y+1),
                 ]
                 for tile_x, tile_y in to_refresh:
-                    tile_type = self.tilemap[(tile_x, tile_y)]
-                    if tile_type == 0:
-                        value = random.randint(0, 9)
-                    else:
-                        value = self.getBitValue(tile_x, tile_y)
-                    UV = self.getUV(tile_type, value)
-                    image = self.images[self.room_style][tile_type]
-                    image_region = image.get_region(*UV)
-                    if (tile_x, tile_y) in self.tiles.keys():
-                        self.tiles[(tile_x, tile_y)] = prefabs.Tile(
-                            self,
-                            tile_x, tile_y,
-                            tile_type,
-                            image_region
-                        )
+                    if (tile_x, tile_y) in self.tiles:
+                        tile_type = self.tilemap[(tile_x, tile_y)]
+                        if tile_type == 0:
+                            value = random.randint(0, 9)
+                        else:
+                            value = self.getBitValue(tile_x, tile_y)
+                        UV = self.getUV(tile_type, value)
+                        image = self.images[self.room_style][tile_type]
+                        image_region = image.get_region(*UV)
+                        self.tiles[(tile_x, tile_y)
+                                   ].sprite.image = image_region
 
         if button == pyglet.window.mouse.RIGHT:
             self.brush += 1
