@@ -108,7 +108,7 @@ class Window(pyglet.window.Window):
             for y in range(-self.room_height, self.room_height+1):
                 tile_type = self.tilemap[(x, y)]
                 if tile_type == c.FLOOR:
-                    value = random.randint(0, 9)
+                    value = random.randint(0, 14)
                 else:
                     value = self.getBitValue(x, y)
                 UV = self.getUV(self.tilemap[(x, y)], value)
