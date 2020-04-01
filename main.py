@@ -150,12 +150,12 @@ class Window(pyglet.window.Window):
         if parallax is True:
             room = self.room
             screen_x += (
-                (self.player.x) * -8 * scale_factor *
+                (self.player.x-0.5) * -8 * scale_factor *
                 (room.width / c.DEFAULT_ROOM_SIZE) /
                 (self.scale_divisor / c.DEFAULT_SCALE_DIVISOR)
             )
             screen_y += (
-                (self.player.y) * -8 * scale_factor *
+                (self.player.y-0.5) * -8 * scale_factor *
                 (room.height / c.DEFAULT_ROOM_SIZE) /
                 (self.scale_divisor / c.DEFAULT_SCALE_DIVISOR)
             )
