@@ -47,11 +47,9 @@ class Window(pyglet.window.Window):
         self.scale_divisor = c.DEFAULT_SCALE_DIVISOR
 
         self.tile_groups = {}
-        for y in range(-50, 51):
-            self.tile_groups[y] = pyglet.graphics.OrderedGroup(50-y*2)
-
         self.player_groups = {}
         for y in range(-50, 51):
+            self.tile_groups[y] = pyglet.graphics.OrderedGroup(50-y*2)
             self.player_groups[y] = pyglet.graphics.OrderedGroup(50-y*2+1)
 
         self.ui_layers = {}
