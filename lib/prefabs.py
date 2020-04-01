@@ -9,7 +9,20 @@ from . import constants as c
 
 
 class Basic:
+    """Basic entity."""
+
     def __init__(self, window, x, y, width, height, image, groups):
+        """Initialise with position, dimensions and a sprite.
+
+        Arguments:
+            window {pyglet.window.Window} -- The window for the application.
+            x {float} -- The world X position of the entity.
+            y {float} -- The world Y position of the entity.
+            width {int} -- The width of the entity's collider. (Unused)
+            height {int} -- The height of the entity's collider. (Unused)
+            image {pyglet.image} -- The image to be used for the sprite.
+            groups {dict} -- The Y groups dict to be used.
+        """
         self.x = x
         self.y = y
         self.width = width
@@ -27,9 +40,15 @@ class Basic:
         self.sprite.scale = window.scaleFactor()
 
     def draw(self):
+        """Manually draw the sprite."""
         self.sprite.draw()
 
     def update(self, window):
+        """Update the sprite and any position variables.
+
+        Arguments:
+            window {pyglet.window.Window} -- The window for the application.
+        """
         self.grid_x, self.grid_y = floor(self.x), floor(self.y)
         self.sprite.group = self.groups[self.grid_y]
         screen_pos = window.worldToScreen(self.x, self.y, True)
@@ -41,6 +60,11 @@ class Basic:
         )
 
     def resize(self, window):
+        """Resize the sprite.
+
+        Arguments:
+            window {pyglet.window.Window} -- The window for the application.
+        """
         self.sprite.scale = window.scaleFactor()
 
 
