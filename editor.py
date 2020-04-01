@@ -12,6 +12,7 @@ Controls:
 """
 
 import random
+from math import floor
 
 import pyglet
 from pyglet import gl
@@ -185,8 +186,8 @@ class Window(pyglet.window.Window):
             dy {int} -- The Y position relative to the last position.
         """
         world_x, world_y = self.screenToWorld(x, y)
-        tile_x = round(world_x-0.5)
-        tile_y = round(world_y-0.5)
+        tile_x = floor(world_x)
+        tile_y = floor(world_y)
         cursor_x, cursor_y = self.worldToScreen(tile_x, tile_y)
         self.cursor.update(
             x=cursor_x,
