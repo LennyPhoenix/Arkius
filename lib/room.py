@@ -2,8 +2,6 @@
 
 import random
 
-from pyglet import image
-
 from . import constants as c
 from . import prefabs, tilemaps
 
@@ -145,10 +143,7 @@ class Room:
                     else:
                         value = self.getBitValue(x, y)
 
-                    image_path = f"resources/tilesets/{style}/{tile_type}.png"
-                    tile_image = image.load(image_path)
-                    tile_image.anchor_x = 0
-                    tile_image.anchor_y = 0
+                    tile_image = window.resources["tiles"][style][tile_type]
 
                     tile_region = tile_image.get_region(
                         *self.getUV(tile_type, value)

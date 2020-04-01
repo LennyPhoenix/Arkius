@@ -56,12 +56,28 @@ class Window(pyglet.window.Window):
         for z in range(5):
             self.ui_layers[z] = pyglet.graphics.OrderedGroup(z+100)
 
+        self.loadResources()
+
         self.room = Room(
             room_type=1,
             window=self
         )
 
         self.player = prefabs.Player(self)
+
+    def loadResources(self):
+        self.resources = {}
+
+        tiles = {}
+        for style in c.STYLES:
+            tiles[style] = {}
+            for tile in c.TILE_TYPES:
+                path = f"resources/tilesets/{style}/{tile}.png"
+                tiles[style][tile] = pyglet.image.load(path)
+        self.resources["tiles"] = tiles
+
+        path = f"resources/sprites/player.png"
+        self.resources["player"] = pyglet.image.load(path)
 
     def on_draw(self):
         """Redraw the window."""

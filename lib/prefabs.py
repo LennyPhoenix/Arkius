@@ -2,7 +2,6 @@
 from math import floor
 
 import pyglet
-from pyglet import image
 from pyglet.window import key
 
 from . import constants as c
@@ -101,9 +100,8 @@ class Player(Basic):
         Arguments:
             window {pyglet.window.Window} -- The window for the application.
         """
-        player_image = image.load("resources/sprites/player.png")
+        player_image = window.resources["player"]
         player_image.anchor_x = player_image.width // 2
-        player_image.anchor_y = 0
 
         super().__init__(
             window,
