@@ -69,6 +69,18 @@ class Window(pyglet.window.Window):
         self.batch.draw()
         self.fps_display.draw()
 
+    def update(self, dt):
+        """Update all sprites.
+
+        Arguments:
+            dt {float} -- Time passed since last update.
+        """
+
+        self.push_handlers(self.player.key_handler)
+
+        self.player.update(self, dt)
+        self.room.update(self)
+
     def on_key_press(self, symbol, modifiers):
         """Fullscreen the window or create a new room.
 
@@ -112,19 +124,6 @@ class Window(pyglet.window.Window):
         super().on_resize(width, height)
         self.room.resize(self)
         self.player.resize(self)
-
-    def update(self, dt):
-        """Update all sprites.
-
-        Arguments:
-            dt {float} -- Time passed since last update.
-        """
-
-        self.push_handlers(self.player.key_handler)
-
-        self.player.update(self, dt)
-        if self.player.moving:
-            self.room.update(self)
 
     def worldToScreen(self, x, y, parallax=False):
         """Convert a world position to a screen position.
