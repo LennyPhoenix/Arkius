@@ -46,6 +46,8 @@ class Window(pyglet.window.Window):
         self.fps_display = pyglet.window.FPSDisplay(window=self)
         self.scale_divisor = c.DEFAULT_SCALE_DIVISOR
 
+        self.loadResources()
+
         self.tile_groups = {}
         self.player_groups = {}
         for y in range(-50, 51):
@@ -55,8 +57,6 @@ class Window(pyglet.window.Window):
         self.ui_layers = {}
         for z in range(5):
             self.ui_layers[z] = pyglet.graphics.OrderedGroup(z+100)
-
-        self.loadResources()
 
         self.room = Room(
             room_type=1,
