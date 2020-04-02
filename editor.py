@@ -212,8 +212,8 @@ class Window(pyglet.window.Window):
         """
         if button == pyglet.window.mouse.LEFT:
             world_x, world_y = self.screenToWorld(x, y)
-            tile_x = round(world_x-0.5)
-            tile_y = round(world_y-0.5)
+            tile_x = floor(world_x)
+            tile_y = floor(world_y)
 
             if (
                 -self.room_width <= tile_x <= self.room_width and
@@ -301,10 +301,10 @@ class Window(pyglet.window.Window):
         """
         scale_factor = self.scaleFactor()
 
-        screen_x = (x-0.5) * 16 * scale_factor
+        screen_x = (x) * 16 * scale_factor
         screen_x += self.width/2
 
-        screen_y = (y-0.5) * 16 * scale_factor
+        screen_y = (y) * 16 * scale_factor
         screen_y += self.height/2
 
         return (screen_x, screen_y)
@@ -323,11 +323,9 @@ class Window(pyglet.window.Window):
 
         world_x = x - self.width / 2
         world_x /= 16 * scale_factor
-        world_x += 0.5
 
         world_y = y - self.height / 2
         world_y /= 16 * scale_factor
-        world_y += 0.5
 
         return (world_x, world_y)
 
