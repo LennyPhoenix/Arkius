@@ -43,6 +43,7 @@ class Window(pyglet.window.Window):
 
         self.room_style = c.ICE
         self.brush = c.WALL
+        self.enable_debugging = False
 
         self.tile_groups = {}
         for y in range(-100, 101):
