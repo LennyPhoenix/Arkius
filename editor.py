@@ -89,10 +89,11 @@ class Window(pyglet.window.Window):
             y=self.height - 20*scale_factor
         )
 
-        cursor_image = pyglet.image.load("resources/tile_select.png")
+        self.cursor_green = pyglet.image.load("resources/selection_green.png")
+        self.cursor_red = pyglet.image.load("resources/selection_red.png")
         cursor_x, cursor_y = self.worldToScreen(0, 0)
         self.cursor = pyglet.sprite.Sprite(
-            cursor_image,
+            self.cursor_green,
             x=cursor_x,
             y=cursor_y,
             group=self.tile_groups[-100],
@@ -193,6 +194,10 @@ class Window(pyglet.window.Window):
             x=cursor_x,
             y=cursor_y
         )
+        if (tile_x, tile_y) in self.tiles.keys():
+            self.cursor.image = self.cursor_green
+        else:
+            self.cursor.image = self.cursor_red
         return super().on_mouse_motion(x, y, dx, dy)
 
     def on_mouse_press(self, x, y, button, modifiers):
