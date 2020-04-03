@@ -29,10 +29,10 @@ TILE_COLLIDERS = {
         "height": 1
     },
     PIT: {
-        "x": 1/16,
-        "y": 2/16,
-        "width": 12/16,
-        "height": 12/16
+        "x": 3/16,
+        "y": 3/16,
+        "width": 10/16,
+        "height": 11/16
     }
 }
 
