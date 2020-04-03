@@ -50,6 +50,8 @@ class Basic:
         Arguments:
             window {pyglet.window.Window} -- The window for the application.
         """
+        self.x = round(self.x*16)/16
+        self.y = round(self.y*16)/16
         self.grid_x, self.grid_y = floor(self.x), floor(self.y)
         self.sprite.group = self.groups[self.grid_y]
 
