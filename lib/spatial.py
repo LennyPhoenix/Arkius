@@ -45,8 +45,12 @@ class Space:
 
         def simple_overlap(body_aabb):
             bleft, bbottom, bright, btop = body_aabb
-            # An overlap has occured if ALL of these are True, otherwise return False:
-            return bleft < aright and bright > aleft and btop > abottom and bbottom < atop
+            return (
+                bleft < aright and
+                bright > aleft and
+                btop > abottom and
+                bbottom < atop
+            )
 
         hits = set()
 
