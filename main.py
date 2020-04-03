@@ -61,7 +61,6 @@ class Window(pyglet.window.Window):
             self.ui_layers[z] = pyglet.graphics.OrderedGroup(z+100)
 
         self.room = Room(
-            room_type=1,
             window=self
         )
 
