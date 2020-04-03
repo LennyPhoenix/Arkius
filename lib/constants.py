@@ -5,12 +5,36 @@ MIN_SIZE = (568, 320)
 UPDATE_SPEED = 1/120
 DEFAULT_SCALE_DIVISOR = 320
 
+# Player
+PLAYER_SPEED = 4
+DIAGONAL_MULTIPLIER = 0.7
+PLAYER_COLLIDER = {
+    "x": 1/16,
+    "y": -1/16,
+    "width": 14/16,
+    "height": 10/16
+}
+
 # Tile Types
 FLOOR = 0
 WALL = 1
 PIT = 2
 SECONDARY_FLOOR = 3
 TILE_TYPES = [FLOOR, WALL, PIT, SECONDARY_FLOOR]
+TILE_COLLIDERS = {
+    WALL: {
+        "x": 0,
+        "y": 0,
+        "width": 1,
+        "height": 1
+    },
+    PIT: {
+        "x": 1/16,
+        "y": 2/16,
+        "width": 12/16,
+        "height": 12/16
+    }
+}
 
 # Tilemaps
 DEFAULT_ROOM_SIZE = 7

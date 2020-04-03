@@ -119,7 +119,7 @@ class Window(pyglet.window.Window):
                 window=self
             )
             self.player.moving = True
-            self.player.x, self.player.y = 0.5, 0.5
+            self.player.x, self.player.y = 0, 0
             self.room.update(self)
         elif symbol == key.EQUAL:
             self.scale_divisor -= 5
@@ -154,29 +154,30 @@ class Window(pyglet.window.Window):
         Returns:
             (int, int) -- The screen position of the object.
         """
-        scale_factor = self.scaleFactor()
+        scale_factor = self.scaleFactor
 
-        screen_x = (x-0.5) * 16 * scale_factor
+        screen_x = (x) * 16 * scale_factor
         screen_x += self.width/2
 
-        screen_y = (y-0.5) * 16 * scale_factor
+        screen_y = (y) * 16 * scale_factor
         screen_y += self.height/2
 
         if parallax is True:
             room = self.room
             screen_x += (
-                (self.player.x-0.5) * -8 * scale_factor *
+                (self.player.x) * -8 * scale_factor *
                 (room.width / c.DEFAULT_ROOM_SIZE) /
                 (self.scale_divisor / c.DEFAULT_SCALE_DIVISOR)
             )
             screen_y += (
-                (self.player.y-0.5) * -8 * scale_factor *
+                (self.player.y) * -8 * scale_factor *
                 (room.height / c.DEFAULT_ROOM_SIZE) /
                 (self.scale_divisor / c.DEFAULT_SCALE_DIVISOR)
             )
 
         return (screen_x, screen_y)
 
+    @property
     def scaleFactor(self):
         """Return the scale factor of the window.
 

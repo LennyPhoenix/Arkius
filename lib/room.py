@@ -4,6 +4,7 @@ import random
 
 from . import constants as c
 from . import prefabs, tilemaps
+from .spatial import Space
 
 
 class Room:
@@ -16,6 +17,8 @@ class Room:
         self.tilemap = {}
         self.tiles = {}
         self.cleared = self.type == c.START_ROOM
+
+        self.space = Space(cell_size=4)
 
         if dimensions is None:
             self.width = c.ROOM_INFO[self.type]["dimensions"][0]
@@ -155,6 +158,8 @@ class Room:
                         tile_type,
                         tile_region
                     )
+                    if tile.type in c.TILE_COLLIDERS.keys():
+                        self.space.insert_body(tile)
                     self.tiles[(x, y)] = tile
 
     def update(self, window):

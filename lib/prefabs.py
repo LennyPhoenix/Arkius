@@ -10,22 +10,24 @@ from . import constants as c
 class Basic:
     """Basic entity."""
 
-    def __init__(self, window, x, y, width, height, image, groups):
+    def __init__(
+        self,
+        window,
+        x, y,
+        image,
+        groups
+    ):
         """Initialise with position, dimensions and a sprite.
 
         Arguments:
             window {pyglet.window.Window} -- The window for the application.
             x {float} -- The world X position of the entity.
             y {float} -- The world Y position of the entity.
-            width {int} -- The width of the entity's collider. (Unused)
-            height {int} -- The height of the entity's collider. (Unused)
             image {pyglet.image} -- The image to be used for the sprite.
             groups {dict} -- The Y groups dict to be used.
         """
         self.x = x
         self.y = y
-        self.width = width
-        self.height = height
         self.grid_x, self.grid_y = floor(self.x), floor(self.y)
         self.groups = groups
 
@@ -36,7 +38,7 @@ class Basic:
             batch=window.batch,
             group=self.groups[self.grid_y]
         )
-        self.sprite.scale = window.scaleFactor()
+        self.sprite.scale = window.scaleFactor
 
     def draw(self):
         """Manually draw the sprite."""
@@ -50,6 +52,7 @@ class Basic:
         """
         self.grid_x, self.grid_y = floor(self.x), floor(self.y)
         self.sprite.group = self.groups[self.grid_y]
+
         screen_pos = window.worldToScreen(self.x, self.y, True)
         self.screen_x, self.screen_y = screen_pos[0], screen_pos[1]
 
@@ -64,7 +67,7 @@ class Basic:
         Arguments:
             window {pyglet.window.Window} -- The window for the application.
         """
-        self.sprite.scale = window.scaleFactor()
+        self.sprite.scale = window.scaleFactor
 
 
 class Tile(Basic):
@@ -85,10 +88,25 @@ class Tile(Basic):
         super().__init__(
             window,
             x, y,
-            1, 1,
             tile_image,
             window.tile_groups
         )
+
+        if self.type in c.TILE_COLLIDERS.keys():
+            self.col_x = c.TILE_COLLIDERS[self.type]["x"]
+            self.col_y = c.TILE_COLLIDERS[self.type]["y"]
+            self.col_width = c.TILE_COLLIDERS[self.type]["width"]
+            self.col_height = c.TILE_COLLIDERS[self.type]["height"]
+
+    @property
+    def aabb(self):
+        if self.type in c.TILE_COLLIDERS.keys():
+            return (
+                self.x + self.col_x,
+                self.y + self.col_y,
+                self.x + self.col_x + self.col_width,
+                self.y + self.col_y + self.col_height
+            )
 
 
 class Player(Basic):
@@ -101,15 +119,20 @@ class Player(Basic):
             window {pyglet.window.Window} -- The window for the application.
         """
         player_image = window.resources["player"]
-        player_image.anchor_x = player_image.width // 2
 
         super().__init__(
             window,
-            0.5, 0.5,
-            0.9, 0.5,
+            0, 0,
             player_image,
             window.player_groups
         )
+
+        self.col_x = c.PLAYER_COLLIDER["x"]
+        self.col_y = c.PLAYER_COLLIDER["y"]
+        self.col_width = c.PLAYER_COLLIDER["width"]
+        self.col_height = c.PLAYER_COLLIDER["height"]
+
+        # window.room.space.insert_body(self)
 
         self.room = (0, 0)
 
@@ -158,4 +181,17 @@ class Player(Basic):
                 self.y >= window.room.height+4):
             self.x, self.y = 0, 0
 
+        if window.room.space.get_hits(self.aabb) != set():
+            self.x -= self.velocity_x * dt
+            self.y -= self.velocity_y * dt
+
         super().update(window)
+
+    @property
+    def aabb(self):
+        return (
+            self.x + self.col_x,
+            self.y + self.col_y,
+            self.x + self.col_x + self.col_width,
+            self.y + self.col_y + self.col_height
+        )
