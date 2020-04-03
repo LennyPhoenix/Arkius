@@ -46,6 +46,8 @@ class Window(pyglet.window.Window):
         self.fps_display = pyglet.window.FPSDisplay(window=self)
         self.scale_divisor = c.DEFAULT_SCALE_DIVISOR
 
+        self.enable_debugging = True
+
         self.loadResources()
 
         self.tile_groups = {}
@@ -78,6 +80,11 @@ class Window(pyglet.window.Window):
 
         path = f"resources/sprites/player.png"
         self.resources["player"] = pyglet.image.load(path)
+
+        debug = {}
+        path = "resources/collider.png"
+        debug["collider"] = pyglet.image.load(path)
+        self.resources["debug"] = debug
 
     def on_draw(self):
         """Redraw the window."""
