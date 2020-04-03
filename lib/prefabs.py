@@ -185,7 +185,11 @@ class Player(Basic):
 
         if window.room.space.get_hits(self.aabb) != set():
             self.x -= self.velocity_x * dt
+        if window.room.space.get_hits(self.aabb) != set():
+            self.x += self.velocity_x * dt
             self.y -= self.velocity_y * dt
+        if window.room.space.get_hits(self.aabb) != set():
+            self.x -= self.velocity_x * dt
 
         super().update(window)
 
