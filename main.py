@@ -131,9 +131,11 @@ class Window(pyglet.window.Window):
         elif symbol == key.EQUAL:
             self.scale_divisor -= 5
             self.room.resize(self)
+            self.player.resize(self)
         elif symbol == key.MINUS:
             self.scale_divisor += 5
             self.room.resize(self)
+            self.player.resize(self)
         elif symbol == key.F11:
             self.set_fullscreen(not self.fullscreen)
 
