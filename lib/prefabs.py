@@ -38,7 +38,7 @@ class Basic:
             batch=window.batch,
             group=self.groups[self.grid_y]
         )
-        self.sprite.scale = window.scaleFactor
+        self.sprite.scale = window.scale_factor
 
     def draw(self):
         """Manually draw the sprite."""
@@ -69,7 +69,7 @@ class Basic:
         Arguments:
             window {pyglet.window.Window} -- The window for the application.
         """
-        self.sprite.scale = window.scaleFactor
+        self.sprite.scale = window.scale_factor
 
 
 class Tile(Basic):

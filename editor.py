@@ -76,7 +76,7 @@ class Window(pyglet.window.Window):
         self.tiles = {}
         self.generate_tiles()
 
-        scale_factor = self.scaleFactor()
+        scale_factor = self.scale_factor
         self.dimensions_label = pyglet.text.Label(
             f"Width: {self.room_width}  Height: {self.room_height}",
             font_size=10*scale_factor,
@@ -266,7 +266,7 @@ class Window(pyglet.window.Window):
         for pos, tile in self.tiles.items():
             tile.resize(self)
 
-        scale_factor = self.scaleFactor()
+        scale_factor = self.scale_factor
         self.dimensions_label.x = 10 * scale_factor
         self.dimensions_label.y = 10 * scale_factor
         self.dimensions_label.font_size = 10 * scale_factor
@@ -300,7 +300,7 @@ class Window(pyglet.window.Window):
         Returns:
             (int, int) -- The screen position of the object.
         """
-        scale_factor = self.scaleFactor()
+        scale_factor = self.scale_factor
 
         screen_x = (x) * 16 * scale_factor
         screen_x += self.width/2
@@ -320,7 +320,7 @@ class Window(pyglet.window.Window):
         Returns:
             (int, int) -- The world position of the object.
         """
-        scale_factor = self.scaleFactor()
+        scale_factor = self.scale_factor
 
         world_x = x - self.width / 2
         world_x /= 16 * scale_factor
@@ -330,7 +330,8 @@ class Window(pyglet.window.Window):
 
         return (world_x, world_y)
 
-    def scaleFactor(self):
+    @property
+    def scale_factor(self):
         """Return the scale factor of the window.
 
         Returns:

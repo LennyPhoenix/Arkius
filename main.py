@@ -162,7 +162,7 @@ class Window(pyglet.window.Window):
         Returns:
             (int, int) -- The screen position of the object.
         """
-        scale_factor = self.scaleFactor
+        scale_factor = self.scale_factor
 
         screen_x = (x) * 16 * scale_factor
         screen_x += self.width/2
@@ -186,7 +186,7 @@ class Window(pyglet.window.Window):
         return (screen_x, screen_y)
 
     @property
-    def scaleFactor(self):
+    def scale_factor(self):
         """Return the scale factor of the window.
 
         Returns:
