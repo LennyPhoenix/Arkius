@@ -282,7 +282,7 @@ class Window(pyglet.window.Window):
             dt {float} -- Time passed since last update.
         """
         for pos, tile in self.tiles.items():
-            tile.resize
+            tile.update(self)
 
         self.clear()
         self.batch.draw()
