@@ -128,6 +128,7 @@ class Player(Basic):
             player_image,
             window.player_groups
         )
+        self.ox, self.oy = self.x, self.y
 
         self.col_x = c.PLAYER_COLLIDER["x"]
         self.col_y = c.PLAYER_COLLIDER["y"]
@@ -174,22 +175,39 @@ class Player(Basic):
             self.velocity_x *= 5
             self.velocity_y *= 5
 
+        self.ox, self.oy = self.x, self.y
         self.x += self.velocity_x * dt
         self.y += self.velocity_y * dt
 
-        if (self.x <= -(window.room.width+3) or
-                self.x >= window.room.width+4 or
-                self.y <= -(window.room.height+3) or
-                self.y >= window.room.height+4):
-            self.x, self.y = 0, 0
+        hits = window.room.space.get_hits(self.aabb)
+        for tile in hits:
+            if (
+                self.aabb[1] <= tile.aabb[3] and
+                self.old_aabb[1] >= tile.aabb[3]
+            ):
+                self.y = tile.aabb[3] - self.col_y
+                print("up")
 
-        if window.room.space.get_hits(self.aabb) != set():
-            self.x -= self.velocity_x * dt
-        if window.room.space.get_hits(self.aabb) != set():
-            self.x += self.velocity_x * dt
-            self.y -= self.velocity_y * dt
-        if window.room.space.get_hits(self.aabb) != set():
-            self.x -= self.velocity_x * dt
+            elif (
+                self.aabb[3] >= tile.aabb[1] and
+                self.old_aabb[3] <= tile.aabb[1]
+            ):
+                self.y = tile.aabb[1] - self.col_y - self.col_height
+                print("down")
+
+            elif (
+                self.aabb[2] >= tile.aabb[0] and
+                self.old_aabb[2] <= tile.aabb[0]
+            ):
+                self.x = tile.aabb[0] - self.col_x - self.col_width
+                print("left")
+
+            elif (
+                self.aabb[0] <= tile.aabb[2] and
+                self.old_aabb[0] >= tile.aabb[2]
+            ):
+                self.x = tile.aabb[2] - self.col_x
+                print("right")
 
         super().update(window)
 
@@ -200,4 +218,13 @@ class Player(Basic):
             self.y + self.col_y,
             self.x + self.col_x + self.col_width,
             self.y + self.col_y + self.col_height
+        )
+
+    @property
+    def old_aabb(self):
+        return (
+            self.ox + self.col_x,
+            self.oy + self.col_y,
+            self.ox + self.col_x + self.col_width,
+            self.oy + self.col_y + self.col_height
         )
