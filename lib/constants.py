@@ -20,19 +20,48 @@ FLOOR = 0
 WALL = 1
 PIT = 2
 SECONDARY_FLOOR = 3
-TILE_TYPES = [FLOOR, WALL, PIT, SECONDARY_FLOOR]
-TILE_COLLIDERS = {
+TILES = {
+    FLOOR: {
+        "sprite": {
+            "width": 16,
+            "height": 16,
+            "connective": False
+        },
+        "collider": None
+    },
     WALL: {
-        "x": 0,
-        "y": 0,
-        "width": 1,
-        "height": 1
+        "sprite": {
+            "width": 16,
+            "height": 32,
+            "connective": True
+        },
+        "collider": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 1
+        }
     },
     PIT: {
-        "x": 2/16,
-        "y": 3/16,
-        "width": 11/16,
-        "height": 11/16
+        "sprite": {
+            "width": 16,
+            "height": 16,
+            "connective": True
+        },
+        "collider": {
+            "x": 2/16,
+            "y": 3/16,
+            "width": 11/16,
+            "height": 11/16
+        }
+    },
+    SECONDARY_FLOOR: {
+        "sprite": {
+            "width": 16,
+            "height": 16,
+            "connective": True
+        },
+        "collider": None
     }
 }
 
@@ -252,6 +281,7 @@ ROOM_INFO = {
 }
 
 # Styles
+TILESET_DIMENSIONS = (10, 5)
 ICE = 0
 VOLCANO = 1
 STYLES = [ICE, VOLCANO]
