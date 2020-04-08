@@ -142,23 +142,19 @@ class Room:
                 if (x, y) in self.tilemap.keys():
                     tile_type = self.tilemap[(x, y)]
                     if tile_type == c.FLOOR:
-                        value = random.randint(0, 14)
+                        index = random.randint(0, 14)
                     else:
-                        value = self.getBitValue(x, y)
+                        index = self.getImageIndex(x, y)
 
-                    tile_image = window.resources["tiles"][style][tile_type]
-
-                    tile_region = tile_image.get_region(
-                        *self.getUV(tile_type, value)
-                    )
+                    tile_image = window.resources["tiles"][style][tile_type][index]
 
                     tile = prefabs.Tile(
                         window,
                         x, y,
                         tile_type,
-                        tile_region
+                        tile_image
                     )
-                    if tile.type in c.TILE_COLLIDERS.keys():
+                    if c.TILES[tile.type]["collider"] is not None:
                         self.space.insert_body(tile)
                     self.tiles[(x, y)] = tile
 
@@ -184,15 +180,15 @@ class Room:
                 if (x, y) in self.tiles.keys():
                     self.tiles[(x, y)].resize(window)
 
-    def getBitValue(self, x, y):
-        """Return the bitmask value for a tile.
+    def getImageIndex(self, x, y):
+        """Return the image index for a tile.
 
         Arguments:
             x {int} -- The x position of the tile.
             y {int} -- The y position of the tile.
 
         Returns:
-            int -- The bitmask value of the tile.
+            int -- The image index of the tile.
         """
         tilemap = self.tilemap
         tileID = tilemap[(x, y)]
@@ -228,53 +224,14 @@ class Room:
             if sides[side]:
                 value += side
 
-        return value
+        index_dict = {
+            34: 2, 136: 3, 226: 4, 184: 5, 58: 6, 142: 7, 138: 8, 162: 9,
+            251: 10, 187: 11, 191: 12, 255: 13, 139: 14, 46: 15, 232: 16,
+            163: 17, 42: 18, 168: 19, 248: 20, 56: 21, 62: 22, 254: 23,
+            250: 24, 186: 25, 190: 26, 2: 27, 130: 28, 128: 29, 224: 30, 0: 31,
+            14: 32, 238: 33, 234: 34, 174: 36, 10: 37, 170: 38, 160: 39,
+            227: 40, 131: 41, 143: 42, 239: 43, 235: 44, 171: 45, 175: 46,
+            8: 47, 40: 48, 32: 49
+        }
 
-    def getUV(self, tile_type, tile_value):
-        """Find a tile UV position for a tileset.
-
-        Arguments:
-            tile_type {int} -- The type of the tile.
-            tile_value {int} -- The bitmask value of the tile.
-
-        Returns:
-            (int, int) -- The UV position for the tile.
-        """
-        if tile_type == c.FLOOR:
-            values_dict = {
-                0: (0, 0), 1: (16, 0), 2: (32, 0), 3: (48, 0), 4: (64, 0),
-                5: (0, 16), 6: (16, 16), 7: (32, 16), 8: (48, 16),
-                9: (64, 16), 10: (0, 32), 11: (16, 32), 12: (32, 32),
-                13: (48, 32), 14: (64, 32)
-            }
-        else:
-            values_dict = {
-                34: (32, 0), 136: (48, 0), 226: (64, 0), 184: (80, 0),
-                58: (96, 0), 142: (112, 0), 138: (128, 0), 162: (144, 0),
-
-                251: (0, 16), 187: (16, 16), 191: (32, 16), 255: (48, 16),
-                139: (64, 16), 46: (80, 16), 232: (96, 16), 163: (112, 16),
-                42: (128, 16), 168: (144, 16),
-
-                248: (0, 32), 56: (16, 32), 62: (32, 32), 254: (48, 32),
-                250: (64, 32), 186: (80, 32), 190: (96, 32), 2: (112, 32),
-                130: (128, 32), 128: (144, 32),
-
-                224: (0, 48), 0: (16, 48), 14: (32, 48), 238: (48, 48),
-                234: (64, 48), 174: (96, 48), 10: (112, 48), 170: (128, 48),
-                160: (144, 48),
-
-                227: (0, 64), 131: (16, 64), 143: (32, 64), 239: (48, 64),
-                235: (64, 64), 171: (80, 64), 175: (96, 64), 8: (112, 64),
-                40: (128, 64), 32: (144, 64)
-            }
-
-        x, y = values_dict[tile_value]
-
-        if tile_type == c.WALL:
-            tile_height = 32
-            y *= 2
-        else:
-            tile_height = 16
-
-        return (x, y, 16, tile_height)
+        return index_dict[value]
