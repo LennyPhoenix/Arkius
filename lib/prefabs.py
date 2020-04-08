@@ -94,15 +94,15 @@ class Tile(Basic):
             window.tile_groups
         )
 
-        if self.type in c.TILE_COLLIDERS.keys():
-            self.col_x = c.TILE_COLLIDERS[self.type]["x"]
-            self.col_y = c.TILE_COLLIDERS[self.type]["y"]
-            self.col_width = c.TILE_COLLIDERS[self.type]["width"]
-            self.col_height = c.TILE_COLLIDERS[self.type]["height"]
+        if c.TILES[self.type]["collider"] is not None:
+            self.col_x = c.TILES[self.type]["collider"]["x"]
+            self.col_y = c.TILES[self.type]["collider"]["y"]
+            self.col_width = c.TILES[self.type]["collider"]["width"]
+            self.col_height = c.TILES[self.type]["collider"]["height"]
 
     @property
     def aabb(self):
-        if self.type in c.TILE_COLLIDERS.keys():
+        if c.TILES[self.type]["collider"] is not None:
             return (
                 self.x + self.col_x,
                 self.y + self.col_y,
