@@ -41,7 +41,7 @@ class Window(pyglet.window.Window):
         self.batch = pyglet.graphics.Batch()
         self.scale_divisor = c.DEFAULT_SCALE_DIVISOR
 
-        self.room_style = c.ICE
+        self.room_style = c.VOLCANO
         self.brush = c.WALL
         self.enable_debugging = False
 
@@ -49,13 +49,29 @@ class Window(pyglet.window.Window):
         for y in range(-100, 101):
             self.tile_groups[y] = pyglet.graphics.OrderedGroup(100-y*2)
 
-        self.images = {}
+        self.tile_images = {}
         for style in c.STYLES:
-            self.images[style] = {}
-            for tile_type in c.TILE_TYPES:
-                self.images[style][tile_type] = pyglet.image.load(
-                    f"resources/tilesets/{style}/{tile_type}.png"
-                )
+            self.tile_images[style] = {}
+            for tile in c.TILES.keys():
+                path = f"resources/tilesets/{style}/{tile}.png"
+                image = pyglet.image.load(path)
+                if c.TILES[tile]["sprite"]["connective"]:
+                    image_grid = pyglet.image.ImageGrid(
+                        image,
+                        c.TILESET_DIMENSIONS[1],
+                        c.TILESET_DIMENSIONS[0],
+                        item_width=c.TILES[tile]["sprite"]["width"],
+                        item_height=c.TILES[tile]["sprite"]["height"]
+                    )
+                else:
+                    image_grid = pyglet.image.ImageGrid(
+                        image,
+                        image.height // c.TILES[tile]["sprite"]["height"],
+                        image.width // c.TILES[tile]["sprite"]["width"],
+                        item_width=c.TILES[tile]["sprite"]["width"],
+                        item_height=c.TILES[tile]["sprite"]["height"]
+                    )
+                self.tile_images[style][tile] = image_grid
 
         if TILE_MATRIX is None:
             self.room_width = c.DEFAULT_ROOM_SIZE
@@ -111,17 +127,16 @@ class Window(pyglet.window.Window):
             for y in range(-self.room_height, self.room_height+1):
                 tile_type = self.tilemap[(x, y)]
                 if tile_type == c.FLOOR:
-                    value = random.randint(0, 14)
+                    index = random.randint(0, 14)
                 else:
-                    value = self.getBitValue(x, y)
-                UV = self.getUV(self.tilemap[(x, y)], value)
-                image = self.images[self.room_style][tile_type]
-                image_region = image.get_region(*UV)
+                    index = self.getImageIndex(x, y)
+
+                image = self.tile_images[self.room_style][tile_type][index]
                 self.tiles[(x, y)] = prefabs.Tile(
                     self,
                     x, y,
                     tile_type,
-                    image_region
+                    image
                 )
 
     def on_key_press(self, symbol, modifiers):
@@ -237,18 +252,21 @@ class Window(pyglet.window.Window):
                     if (tile_x, tile_y) in self.tiles:
                         tile_type = self.tilemap[(tile_x, tile_y)]
                         if tile_type == 0:
-                            value = random.randint(0, 9)
+                            index = random.randint(0, 9)
                         else:
-                            value = self.getBitValue(tile_x, tile_y)
-                        UV = self.getUV(tile_type, value)
-                        image = self.images[self.room_style][tile_type]
-                        image_region = image.get_region(*UV)
-                        self.tiles[(tile_x, tile_y)
-                                   ].sprite.image = image_region
+                            index = self.getImageIndex(tile_x, tile_y)
+                        image = self.tile_images[
+                            self.room_style
+                        ][
+                            tile_type
+                        ][
+                            index
+                        ]
+                        self.tiles[(tile_x, tile_y)].sprite.image = image
 
         if button == pyglet.window.mouse.RIGHT:
             self.brush += 1
-            if self.brush > len(c.TILE_TYPES)-1:
+            if self.brush > len(c.TILES)-1:
                 self.brush = 0
             self.brush_label.text = f"Current Brush ID: {self.brush}"
 
@@ -322,10 +340,10 @@ class Window(pyglet.window.Window):
         """
         scale_factor = self.scale_factor
 
-        world_x = x - self.width / 2
+        world_x = (x+0.5) - self.width / 2
         world_x /= 16 * scale_factor
 
-        world_y = y - self.height / 2
+        world_y = (y+0.5) - self.height / 2
         world_y /= 16 * scale_factor
 
         return (world_x, world_y)
@@ -340,7 +358,7 @@ class Window(pyglet.window.Window):
         scale_factor = self.height / self.scale_divisor
         return scale_factor
 
-    def getBitValue(self, x, y):
+    def getImageIndex(self, x, y):
         """Return the bitmask value for a tile.
 
         Arguments:
@@ -384,56 +402,17 @@ class Window(pyglet.window.Window):
             if sides[side]:
                 value += side
 
-        return value
+        index_dict = {
+            34: 2, 136: 3, 226: 4, 184: 5, 58: 6, 142: 7, 138: 8, 162: 9,
+            251: 10, 187: 11, 191: 12, 255: 13, 139: 14, 46: 15, 232: 16,
+            163: 17, 42: 18, 168: 19, 248: 20, 56: 21, 62: 22, 254: 23,
+            250: 24, 186: 25, 190: 26, 2: 27, 130: 28, 128: 29, 224: 30, 0: 31,
+            14: 32, 238: 33, 234: 34, 174: 36, 10: 37, 170: 38, 160: 39,
+            227: 40, 131: 41, 143: 42, 239: 43, 235: 44, 171: 45, 175: 46,
+            8: 47, 40: 48, 32: 49
+        }
 
-    def getUV(self, tile_type, tile_value):
-        """Find a tile UV position for a tileset.
-
-        Arguments:
-            tile_type {int} -- The type of the tile.
-            tile_value {int} -- The bitmask value of the tile.
-
-        Returns:
-            (int, int) -- The UV position for the tile.
-        """
-        if tile_type == c.FLOOR:
-            values_dict = {
-                0: (0, 0), 1: (16, 0), 2: (32, 0), 3: (48, 0), 4: (64, 0),
-                5: (0, 16), 6: (16, 16), 7: (32, 16), 8: (48, 16),
-                9: (64, 16), 10: (0, 32), 11: (16, 32), 12: (32, 32),
-                13: (48, 32), 14: (64, 32)
-            }
-        else:
-            values_dict = {
-                34: (32, 0), 136: (48, 0), 226: (64, 0), 184: (80, 0),
-                58: (96, 0), 142: (112, 0), 138: (128, 0), 162: (144, 0),
-
-                251: (0, 16), 187: (16, 16), 191: (32, 16), 255: (48, 16),
-                139: (64, 16), 46: (80, 16), 232: (96, 16), 163: (112, 16),
-                42: (128, 16), 168: (144, 16),
-
-                248: (0, 32), 56: (16, 32), 62: (32, 32), 254: (48, 32),
-                250: (64, 32), 186: (80, 32), 190: (96, 32), 2: (112, 32),
-                130: (128, 32), 128: (144, 32),
-
-                224: (0, 48), 0: (16, 48), 14: (32, 48), 238: (48, 48),
-                234: (64, 48), 174: (96, 48), 10: (112, 48), 170: (128, 48),
-                160: (144, 48),
-
-                227: (0, 64), 131: (16, 64), 143: (32, 64), 239: (48, 64),
-                235: (64, 64), 171: (80, 64), 175: (96, 64), 8: (112, 64),
-                40: (128, 64), 32: (144, 64)
-            }
-
-        x, y = values_dict[tile_value]
-
-        if tile_type == c.WALL:
-            tile_height = 32
-            y *= 2
-        else:
-            tile_height = 16
-
-        return (x, y, 16, tile_height)
+        return index_dict[value]
 
 
 if __name__ == "__main__":
