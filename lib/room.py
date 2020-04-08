@@ -142,17 +142,26 @@ class Room:
                 if (x, y) in self.tilemap.keys():
                     tile_type = self.tilemap[(x, y)]
                     if tile_type == c.FLOOR:
-                        index = random.randint(0, 14)
+                        image = random.choice(window.resources["tiles"][
+                            style
+                        ][
+                            tile_type
+                        ])
                     else:
                         index = self.getImageIndex(x, y)
-
-                    tile_image = window.resources["tiles"][style][tile_type][index]
+                        image = window.resources["tiles"][
+                            style
+                        ][
+                            tile_type
+                        ][
+                            index
+                        ]
 
                     tile = prefabs.Tile(
                         window,
                         x, y,
                         tile_type,
-                        tile_image
+                        image
                     )
                     if c.TILES[tile.type]["collider"] is not None:
                         self.space.insert_body(tile)
