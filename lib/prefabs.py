@@ -186,28 +186,24 @@ class Player(Basic):
                 self.old_aabb[1] >= tile.aabb[3]
             ):
                 self.y = tile.aabb[3] - self.col_y
-                print("up")
 
             elif (
                 self.aabb[3] >= tile.aabb[1] and
                 self.old_aabb[3] <= tile.aabb[1]
             ):
                 self.y = tile.aabb[1] - self.col_y - self.col_height
-                print("down")
 
             elif (
                 self.aabb[2] >= tile.aabb[0] and
                 self.old_aabb[2] <= tile.aabb[0]
             ):
                 self.x = tile.aabb[0] - self.col_x - self.col_width
-                print("left")
 
             elif (
                 self.aabb[0] <= tile.aabb[2] and
                 self.old_aabb[0] >= tile.aabb[2]
             ):
                 self.x = tile.aabb[2] - self.col_x
-                print("right")
 
         super().update(window)
 
