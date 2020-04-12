@@ -1,2 +1,2 @@
 python -m pip install -Ur requirements.txt
-python editor.py
+python -OO editor.py
