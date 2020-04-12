@@ -75,6 +75,7 @@ class Window(pyglet.window.Window):
             for tile in c.TILES.keys():
                 path = f"resources/tilesets/{style}/{tile}.png"
                 image = pyglet.image.load(path)
+
                 if c.TILES[tile]["sprite"]["connective"]:
                     image_grid = pyglet.image.ImageGrid(
                         image,
@@ -91,7 +92,6 @@ class Window(pyglet.window.Window):
                         item_width=c.TILES[tile]["sprite"]["width"],
                         item_height=c.TILES[tile]["sprite"]["height"]
                     )
-                # tiles[style][tile] = image_grid
                 tiles[style][tile] = pyglet.image.TextureGrid(image_grid)
                 # if image.width > c.TILESET_DIMENSIONS[0] * 16:
                 #     frames = image.
