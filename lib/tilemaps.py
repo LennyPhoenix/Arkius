@@ -1,5 +1,7 @@
 """Contains tilemap generator and premade tilemaps for rooms."""
 
+import random
+
 from . import constants as c
 
 
