@@ -52,7 +52,8 @@ def generate(width, height, room_map, room_type, tile_options=None):
         room_type {int} -- The type of room.
 
     Keyword Arguments:
-        tile_options {dict} -- The tile's that should be randomised and their options. (default: {None})
+        tile_options {dict} -- The tiles that should be randomised and their
+                               options. (default: {None})
 
     Returns:
         dict -- The randomised tilemap dict.
