@@ -267,7 +267,7 @@ ROOM_INFO = {
     },
     1: {
         "dimensions": (7, 7),
-        "generation_options": DEFAULT_MAP_SETTINGS,
+        "generation_options": [],
         "base": None
     },
     2: {
