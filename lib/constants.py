@@ -67,25 +67,32 @@ TILES = {
 
 # Tilemaps
 DEFAULT_ROOM_SIZE = 7
-DEFAULT_MAP_SETTINGS = {
-    WALL: {
-        "base_chance": 10,
-        "spread_chance": 20,
-        "spread_type": "wall"
+DEFAULT_MAP_SETTINGS = [
+    {
+        "id": SECONDARY_FLOOR,
+        "overrides": [FLOOR],
+        "seed_amount": 3,
+        "seed_type": "blob",
+        "b_spread_amount": 20,
+        "b_spread_additional": 20
     },
-    SECONDARY_FLOOR: {
-        "base_chance": 15,
-        "spread_chance": 25,
-        "spread_type": "blob",
-        "favour_centre": False
+    {
+        "id": PIT,
+        "overrides": [FLOOR, SECONDARY_FLOOR],
+        "seed_amount": 1,
+        "seed_type": "blob",
+        "b_spread_amount": 50,
+        "b_spread_additional": 50
     },
-    PIT: {
-        "base_chance": 20,
-        "spread_chance": 15,
-        "spread_type": "blob",
-        "favour_centre": True
-    }
-}
+    {
+        "id": WALL,
+        "overrides": [FLOOR, PIT, SECONDARY_FLOOR],
+        "seed_amount": 2,
+        "seed_type": "line",
+        "l_hole_amount": 3,
+        "l_hole_size_range": (2, 4)
+    },
+]
 START_ROOM_MAPS = [
     [
         [1, 1, 2, 2, 2, 0, 0, 0, 2, 2, 2, 1, 1, ],
