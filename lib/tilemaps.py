@@ -118,6 +118,99 @@ def generate(width, height, room_map, room_type, tile_options=None):
             ]
             seeded += 1
 
+    def line(options):
+        seeded = 0
+        tries = 0
+
+        walls = {
+            True: [],
+            False: []
+        }
+
+        old_map = room_map.copy()
+
+        while (
+            seeded < options["seed_amount"] and
+            tries < 50
+        ):
+            horizontal = random.choice([True, False])
+            if horizontal:
+                l_pos = random.randint(-(height-2), (height-2))
+                line = [
+                    (x, l_pos) for x in range(-width, width+1) if
+                    room_map[(x, l_pos)] in options["overrides"]
+                ]
+            else:
+                l_pos = random.randint(-(width-2), (width-2))
+                line = [
+                    (l_pos, y) for y in range(-height, height+1) if
+                    room_map[(l_pos, y)] in options["overrides"]
+                ]
+
+            too_close = False
+            for previous in walls[horizontal]:
+                if previous-3 < l_pos < previous+3:
+                    too_close = True
+            if -3 < l_pos < 3:
+                too_close = True
+
+            if not too_close:
+                for x, y in line:
+                    room_map[(x, y)] = options["id"]
+                    walls[horizontal].append(l_pos)
+
+                for i in range(options["l_hole_amount"]):
+                    hole_possible = []
+                    hole_size = random.randint(*options["l_hole_size_range"])
+                    if horizontal:
+                        hole_pos = random.randint(-width, width)
+                        room_map[
+                            (hole_pos, l_pos)
+                        ] = old_map[(hole_pos, l_pos)]
+                        neighbours = [
+                            (1, 0),
+                            (-1, 0)
+                        ]
+                    else:
+                        hole_pos = random.randint(-height, height)
+                        room_map[
+                            (l_pos, hole_pos)
+                        ] = old_map[(l_pos, hole_pos)]
+                        neighbours = [
+                            (0, 1),
+                            (0, -1)
+                        ]
+
+                    for x, y in neighbours:
+                        if horizontal:
+                            n_x, n_y = hole_pos + x, l_pos + y
+                        else:
+                            n_x, n_y = l_pos + x, hole_pos + y
+                        if (
+                            (n_x, n_y) in room_map.keys() and
+                            (n_x, n_y) not in hole_possible
+                        ):
+                            hole_possible.append((n_x, n_y))
+
+                    hole = 1
+                    while hole < hole_size:
+                        next_pos = random.choice(hole_possible)
+                        room_map[next_pos] = old_map[next_pos]
+                        hole_possible.remove(next_pos)
+
+                        for x, y in neighbours:
+                            n_x, n_y = next_pos[0] + x, next_pos[1] + y
+                            if (
+                                (n_x, n_y) in room_map.keys() and
+                                (n_x, n_y) not in hole_possible
+                            ):
+                                hole_possible.append((n_x, n_y))
+
+                        hole += 1
+                seeded += 1
+                tries = 0
+            else:
+                tries += 1
 
     generators = {
         "blob": blob,
