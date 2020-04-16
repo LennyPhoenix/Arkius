@@ -268,7 +268,7 @@ ROOM_INFO = {
     1: {
         "dimensions": (7, 7),
         "generation_options": [],
-        "base": None
+        "base": FIGHT_ROOM_MAPS
     },
     2: {
         "dimensions": (6, 5),
