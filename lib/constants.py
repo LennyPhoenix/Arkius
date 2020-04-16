@@ -262,27 +262,36 @@ SHOP_ROOM = 4
 ROOM_INFO = {
     0: {
         "dimensions": (6, 6),
-        "generation_options": {},
+        "generation_options": [],
         "base": START_ROOM_MAPS
     },
     1: {
-        "dimensions": (7, 7),
+        "dimensions": (10, 10),
         "generation_options": DEFAULT_MAP_SETTINGS,
-        "base": FIGHT_ROOM_MAPS
+        "base": None
     },
     2: {
         "dimensions": (6, 5),
-        "generation_options": {},
+        "generation_options": [],
         "base": TREASURE_ROOM_MAPS
     },
     3: {
         "dimensions": (9, 9),
-        "generation_options": {},
+        "generation_options": [],
         "base": BOSS_ROOM_MAPS
     },
     4: {
         "dimensions": (10, 7),
-        "generation_options": DEFAULT_MAP_SETTINGS,
+        "generation_options": [
+            {
+                "id": SECONDARY_FLOOR,
+                "overrides": [FLOOR],
+                "seed_amount": 3,
+                "seed_type": "blob",
+                "b_spread_amount": 5,
+                "b_spread_additional": 90
+            }
+        ],
         "base": SHOP_ROOM_MAPS
     }
 }
