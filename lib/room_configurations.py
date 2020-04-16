@@ -1,0 +1,2 @@
+"""Contains room configurations."""
+
