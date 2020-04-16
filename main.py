@@ -146,7 +146,6 @@ class Window(pyglet.window.Window):
             )
             self.player.moving = True
             self.player.x, self.player.y = 0, 0
-            self.room.update(self)
         elif symbol == key.EQUAL:
             self.scale_divisor -= 5
             self.room.resize(self)
