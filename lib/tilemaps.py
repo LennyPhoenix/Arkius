@@ -58,7 +58,74 @@ def generate(width, height, room_map, room_type, tile_options=None):
     Returns:
         dict -- The randomised tilemap dict.
     """
+
     if tile_options is None:
         tile_options = c.ROOM_INFO[room_type]["generation_options"]
+
+    def blob(options):
+        seeded = 0
+        possible_seeds = [
+            pos for pos in room_map.keys() if
+            room_map[pos] in options["overrides"]
+        ]
+        while seeded < options["seed_amount"] and len(possible_seeds) > 0:
+            seed = random.choice(possible_seeds)
+            room_map[seed] = options["id"]
+            neighbours = [
+                (1, 0),
+                (0, 1),
+                (-1, 0),
+                (0, -1)
+            ]
+            possible = []
+            spread = 0
+            additional_chance = random.random() * 100
+
+            for x, y in neighbours:
+                n_x, n_y = seed[0]+x, seed[1]+y
+                if (
+                    (n_x, n_y) in room_map.keys() and
+                    room_map[(n_x, n_y)] in options["overrides"]
+                ):
+                    possible.append((n_x, n_y))
+
+            while (
+                (
+                    spread < options["b_spread_amount"] or
+                    additional_chance < options["b_spread_additional"]
+                ) and
+                len(possible) > 0
+            ):
+                next_pos = random.choice(possible)
+                room_map[next_pos] = options["id"]
+                possible.remove(next_pos)
+
+                for x, y in neighbours:
+                    n_x, n_y = next_pos[0]+x, next_pos[1]+y
+                    if (
+                        (n_x, n_y) in room_map.keys() and
+                        room_map[(n_x, n_y)] in options["overrides"] and
+                        (n_x, n_y) not in possible
+                    ):
+                        possible.append((n_x, n_y))
+
+                spread += 1
+                additional_chance = random.random() * 100
+
+            possible_seeds = [
+                pos for pos in room_map.keys() if
+                room_map[pos] in options["overrides"]
+            ]
+            seeded += 1
+
+
+    generators = {
+        "blob": blob,
+        "line": line
+    }
+
+    for options in tile_options:
+        if options["seed_type"] in generators.keys():
+            generators[options["seed_type"]](options)
 
     return room_map
