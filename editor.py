@@ -126,7 +126,7 @@ class Window(pyglet.window.Window):
         for x in range(-self.room_width, self.room_width+1):
             for y in range(-self.room_height, self.room_height+1):
                 tile_type = self.tilemap[(x, y)]
-                if tile_type == c.FLOOR:
+                if not c.TILES[tile_type]["sprite"]["connective"]:
                     image = random.choice(self.tile_images[
                         self.room_style
                     ][

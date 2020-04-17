@@ -141,7 +141,7 @@ class Room:
             for y in range(-(self.height+3), self.height+4):
                 if (x, y) in self.tilemap.keys():
                     tile_type = self.tilemap[(x, y)]
-                    if tile_type == c.FLOOR:
+                    if not c.TILES[tile_type]["sprite"]["connective"]:
                         image = random.choice(window.resources["tiles"][
                             style
                         ][
