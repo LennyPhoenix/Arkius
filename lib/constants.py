@@ -67,7 +67,7 @@ TILES = {
     PAVEMENT: {
         "sprite": {
             "width": 16,
-            "height": 17,
+            "height": 16,
             "connective": True
         },
         "collider": None
