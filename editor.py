@@ -41,7 +41,7 @@ class Window(pyglet.window.Window):
         self.batch = pyglet.graphics.Batch()
         self.scale_divisor = c.DEFAULT_SCALE_DIVISOR
 
-        self.room_style = c.VOLCANO
+        self.room_style = c.ICE
         self.brush = c.WALL
         self.enable_debugging = False
 
@@ -127,11 +127,20 @@ class Window(pyglet.window.Window):
             for y in range(-self.room_height, self.room_height+1):
                 tile_type = self.tilemap[(x, y)]
                 if tile_type == c.FLOOR:
-                    index = random.randint(0, 14)
+                    image = random.choice(self.tile_images[
+                        self.room_style
+                    ][
+                        tile_type
+                    ])
                 else:
                     index = self.getImageIndex(x, y)
-
-                image = self.tile_images[self.room_style][tile_type][index]
+                    image = self.tile_images[
+                        self.room_style
+                    ][
+                        tile_type
+                    ][
+                        index
+                    ]
                 self.tiles[(x, y)] = prefabs.Tile(
                     self,
                     x, y,
