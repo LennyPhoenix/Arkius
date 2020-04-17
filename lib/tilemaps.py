@@ -127,12 +127,12 @@ def generate(width, height, room_map, room_type, tile_options=None):
             False: []
         }
 
-        old_map = room_map.copy()
-
         while (
             seeded < options["seed_amount"] and
             tries < 50
         ):
+            old_map = room_map.copy()
+
             horizontal = random.choice([True, False])
             if horizontal:
                 l_pos = random.randint(-(height-2), (height-2))
