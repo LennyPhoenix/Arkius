@@ -20,6 +20,7 @@ FLOOR = 0
 WALL = 1
 PIT = 2
 SECONDARY_FLOOR = 3
+PAVEMENT = 4
 TILES = {
     FLOOR: {
         "sprite": {
@@ -59,6 +60,14 @@ TILES = {
         "sprite": {
             "width": 16,
             "height": 16,
+            "connective": True
+        },
+        "collider": None
+    },
+    PAVEMENT: {
+        "sprite": {
+            "width": 16,
+            "height": 17,
             "connective": True
         },
         "collider": None
