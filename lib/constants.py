@@ -32,7 +32,7 @@ TILES = {
     WALL: {
         "sprite": {
             "width": 16,
-            "height": 32,
+            "height": 25,
             "connective": True
         },
         "collider": {
