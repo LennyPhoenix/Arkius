@@ -98,14 +98,19 @@ def generate(width, height, room_map, room_type, tile_options=None):
             ):
                 next_pos = random.choice(possible)
                 room_map[next_pos] = options["id"]
-                possible.remove(next_pos)
+
+                while next_pos in possible:
+                    possible.remove(next_pos)
 
                 for x, y in neighbours:
                     n_x, n_y = next_pos[0]+x, next_pos[1]+y
                     if (
                         (n_x, n_y) in room_map.keys() and
                         room_map[(n_x, n_y)] in options["overrides"] and
-                        (n_x, n_y) not in possible
+                        (
+                            (n_x, n_y) not in possible or
+                            options["b_spread_compound"]
+                        )
                     ):
                         possible.append((n_x, n_y))
 

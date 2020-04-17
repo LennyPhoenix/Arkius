@@ -88,7 +88,8 @@ DEFAULT_MAP_SETTINGS = [
         "seed_amount": 3,
         "seed_type": "blob",
         "b_spread_amount": 20,
-        "b_spread_additional": 20
+        "b_spread_additional": 20,
+        "b_spread_compound": False
     },
     {
         "id": PIT,
@@ -96,7 +97,8 @@ DEFAULT_MAP_SETTINGS = [
         "seed_amount": 1,
         "seed_type": "blob",
         "b_spread_amount": 50,
-        "b_spread_additional": 50
+        "b_spread_additional": 50,
+        "b_spread_compound": True
     },
     {
         "id": WALL,
