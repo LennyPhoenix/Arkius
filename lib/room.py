@@ -209,24 +209,36 @@ class Room:
             32: False,  16: False,  8: False
         }
 
-        edges = [tileID]
+        connects = c.TILES[tileID]["sprite"]["connects"]
 
-        if (x, y+1) in tilemap.keys() and tilemap[(x, y+1)] not in edges:
+        if (x, y+1) in tilemap.keys() and tilemap[(x, y+1)] not in connects:
             sides.update({128: True, 1: True, 2: True})
-        if (x+1, y) in tilemap.keys() and tilemap[(x+1, y)] not in edges:
+        if (x+1, y) in tilemap.keys() and tilemap[(x+1, y)] not in connects:
             sides.update({2: True, 4: True, 8: True})
-        if (x, y-1) in tilemap.keys() and tilemap[(x, y-1)] not in edges:
+        if (x, y-1) in tilemap.keys() and tilemap[(x, y-1)] not in connects:
             sides.update({8: True, 16: True, 32: True})
-        if (x-1, y) in tilemap.keys() and tilemap[(x-1, y)] not in edges:
+        if (x-1, y) in tilemap.keys() and tilemap[(x-1, y)] not in connects:
             sides.update({32: True, 64: True, 128: True})
 
-        if (x+1, y+1) in tilemap.keys() and tilemap[(x+1, y+1)] not in edges:
+        if (
+            (x+1, y+1) in tilemap.keys() and
+            tilemap[(x+1, y+1)] not in connects
+        ):
             sides[2] = True
-        if (x+1, y-1) in tilemap.keys() and tilemap[(x+1, y-1)] not in edges:
+        if (
+            (x+1, y-1) in tilemap.keys() and
+            tilemap[(x+1, y-1)] not in connects
+        ):
             sides[8] = True
-        if (x-1, y-1) in tilemap.keys() and tilemap[(x-1, y-1)] not in edges:
+        if (
+            (x-1, y-1) in tilemap.keys() and
+            tilemap[(x-1, y-1)] not in connects
+        ):
             sides[32] = True
-        if (x-1, y+1) in tilemap.keys() and tilemap[(x-1, y+1)] not in edges:
+        if (
+            (x-1, y+1) in tilemap.keys() and
+            tilemap[(x-1, y+1)] not in connects
+        ):
             sides[128] = True
 
         for side in sides.keys():
