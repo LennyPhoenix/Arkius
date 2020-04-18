@@ -1,5 +1,7 @@
 """Contains constants used for the game."""
 
+from . import room_configurations as conf
+
 # Window
 MIN_SIZE = (568, 320)
 UPDATE_SPEED = 1/120
