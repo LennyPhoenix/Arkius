@@ -27,11 +27,11 @@ class Room:
                 c.ROOM_INFO[self.type]["configs"][self.style]
             )
 
-        room_map = random.choice(self.config["maps"])
+        self.map_data = random.choice(self.config["maps"])
 
-        if room_map is not None:
-            self.width = room_map["width"]
-            self.height = room_map["height"]
+        if self.map_data is not None:
+            self.width = self.map_data["width"]
+            self.height = self.map_data["height"]
         else:
             self.width = c.ROOM_INFO[self.type]["default_dimensions"][0]
             self.height = c.ROOM_INFO[self.type]["default_dimensions"][1]
@@ -41,8 +41,8 @@ class Room:
             self.height
         )
 
-        if room_map is not None:
-            self.tilemap.update(tilemaps.toMap(room_map["matrix"]))
+        if self.map_data is not None:
+            self.tilemap.update(tilemaps.toMap(self.map_data["matrix"]))
 
         self.tilemap = tilemaps.generate(
             self.width, self.height,
@@ -59,76 +59,92 @@ class Room:
             window {pyglet.window.Window} -- The window for the application.
         """
         border_type = c.WALL
-        style = c.ICE
+
+        door_f = {}
+        door_p = {}
+        for i in range(4):
+            if self.map_data is not None:
+                door_f[i] = self.map_data["door_info"][i]["floor"]
+                if type(self.map_data["door_info"][i]["pos"]) is tuple:
+                    door_p[i] = random.randint(
+                        *self.map_data["door_info"][i]["pos"]
+                    )
+                else:
+                    door_p[i] = self.map_data["door_info"][i]["pos"]
+            else:
+                door_f[i] = c.FLOOR
+                door_p[i] = 0
 
         door_tiles = {
             0: {
-                (-2, self.height+3): border_type,
-                (-1, self.height+3): c.FLOOR,
-                (0, self.height+3): c.FLOOR,
-                (1, self.height+3): c.FLOOR,
-                (2, self.height+3): border_type,
-                (-2, self.height+2): border_type,
-                (-1, self.height+2): c.FLOOR,
-                (0, self.height+2): c.FLOOR,
-                (1, self.height+2): c.FLOOR,
-                (2, self.height+2): border_type,
-                (-2, self.height+1): border_type,
-                (-1, self.height+1): c.FLOOR,
-                (0, self.height+1): c.FLOOR,
-                (1, self.height+1): c.FLOOR,
-                (2, self.height+1): border_type,
+                (door_p[0]-2, self.height+3): border_type,
+                (door_p[0]-1, self.height+3): door_f[0],
+                (door_p[0], self.height+3): door_f[0],
+                (door_p[0]+1, self.height+3): door_f[0],
+                (door_p[0]+2, self.height+3): border_type,
+
+                (door_p[0]-2, self.height+2): border_type,
+                (door_p[0]-1, self.height+2): door_f[0],
+                (door_p[0], self.height+2): door_f[0],
+                (door_p[0]+1, self.height+2): door_f[0],
+                (door_p[0]+2, self.height+2): border_type,
+
+                (door_p[0]-2, self.height+1): border_type,
+                (door_p[0]-1, self.height+1): door_f[0],
+                (door_p[0], self.height+1): door_f[0],
+                (door_p[0]+1, self.height+1): door_f[0],
+                (door_p[0]+2, self.height+1): border_type,
             },
             1: {
-                (self.width+1, 2): border_type,
-                (self.width+2, 2): border_type,
-                (self.width+3, 2): border_type,
-                (self.width+1, 1): c.FLOOR,
-                (self.width+2, 1): c.FLOOR,
-                (self.width+3, 1): c.FLOOR,
-                (self.width+1, 0): c.FLOOR,
-                (self.width+2, 0): c.FLOOR,
-                (self.width+3, 0): c.FLOOR,
-                (self.width+1, -1): c.FLOOR,
-                (self.width+2, -1): c.FLOOR,
-                (self.width+3, -1): c.FLOOR,
-                (self.width+1, -2): border_type,
-                (self.width+2, -2): border_type,
-                (self.width+3, -2): border_type,
+                (self.width+1, door_p[1]+2): border_type,
+                (self.width+2, door_p[1]+2): border_type,
+                (self.width+3, door_p[1]+2): border_type,
+                (self.width+1, door_p[1]+1): door_f[1],
+                (self.width+2, door_p[1]+1): door_f[1],
+                (self.width+3, door_p[1]+1): door_f[1],
+                (self.width+1, door_p[1]): door_f[1],
+                (self.width+2, door_p[1]): door_f[1],
+                (self.width+3, door_p[1]): door_f[1],
+                (self.width+1, door_p[1]-1): door_f[1],
+                (self.width+2, door_p[1]-1): door_f[1],
+                (self.width+3, door_p[1]-1): door_f[1],
+                (self.width+1, door_p[1]-2): border_type,
+                (self.width+2, door_p[1]-2): border_type,
+                (self.width+3, door_p[1]-2): border_type,
             },
             2: {
-                (-2, -(self.height+1)): border_type,
-                (-1, -(self.height+1)): c.FLOOR,
-                (0, -(self.height+1)): c.FLOOR,
-                (1, -(self.height+1)): c.FLOOR,
-                (2, -(self.height+1)): border_type,
-                (-2, -(self.height+2)): border_type,
-                (-1, -(self.height+2)): c.FLOOR,
-                (0, -(self.height+2)): c.FLOOR,
-                (1, -(self.height+2)): c.FLOOR,
-                (2, -(self.height+2)): border_type,
-                (-2, -(self.height+3)): border_type,
-                (-1, -(self.height+3)): c.FLOOR,
-                (0, -(self.height+3)): c.FLOOR,
-                (1, -(self.height+3)): c.FLOOR,
-                (2, -(self.height+3)): border_type,
+                (door_p[2]-2, -(self.height+1)): border_type,
+                (door_p[2]-1, -(self.height+1)): door_f[2],
+                (door_p[2], -(self.height+1)): door_f[2],
+                (door_p[2]+1, -(self.height+1)): door_f[2],
+                (door_p[2]+2, -(self.height+1)): border_type,
+                (door_p[2]-2, -(self.height+2)): border_type,
+                (door_p[2]-1, -(self.height+2)): door_f[2],
+                (door_p[2], -(self.height+2)): door_f[2],
+                (door_p[2]+1, -(self.height+2)): door_f[2],
+                (door_p[2]+2, -(self.height+2)): border_type,
+                (door_p[2]-2, -(self.height+3)): border_type,
+                (door_p[2]-1, -(self.height+3)): door_f[2],
+                (door_p[2], -(self.height+3)): door_f[2],
+                (door_p[2]+1, -(self.height+3)): door_f[2],
+                (door_p[2]+2, -(self.height+3)): border_type,
             },
             3: {
-                (-(self.width+3), 2): border_type,
-                (-(self.width+2), 2): border_type,
-                (-(self.width+1), 2): border_type,
-                (-(self.width+3), 1): c.FLOOR,
-                (-(self.width+2), 1): c.FLOOR,
-                (-(self.width+1), 1): c.FLOOR,
-                (-(self.width+3), 0): c.FLOOR,
-                (-(self.width+2), 0): c.FLOOR,
-                (-(self.width+1), 0): c.FLOOR,
-                (-(self.width+3), -1): c.FLOOR,
-                (-(self.width+2), -1): c.FLOOR,
-                (-(self.width+1), -1): c.FLOOR,
-                (-(self.width+3), -2): border_type,
-                (-(self.width+2), -2): border_type,
-                (-(self.width+1), -2): border_type,
+                (-(self.width+3), door_p[3]+2): border_type,
+                (-(self.width+2), door_p[3]+2): border_type,
+                (-(self.width+1), door_p[3]+2): border_type,
+                (-(self.width+3), door_p[3]+1): door_f[3],
+                (-(self.width+2), door_p[3]+1): door_f[3],
+                (-(self.width+1), door_p[3]+1): door_f[3],
+                (-(self.width+3), door_p[3]): door_f[3],
+                (-(self.width+2), door_p[3]): door_f[3],
+                (-(self.width+1), door_p[3]): door_f[3],
+                (-(self.width+3), door_p[3]-1): door_f[3],
+                (-(self.width+2), door_p[3]-1): door_f[3],
+                (-(self.width+1), door_p[3]-1): door_f[3],
+                (-(self.width+3), door_p[3]-2): border_type,
+                (-(self.width+2), door_p[3]-2): border_type,
+                (-(self.width+1), door_p[3]-2): border_type,
             }
         }
 
@@ -153,14 +169,14 @@ class Room:
                     tile_type = self.tilemap[(x, y)]
                     if not c.TILES[tile_type]["sprite"]["connective"]:
                         image = random.choice(window.resources["tiles"][
-                            style
+                            self.style
                         ][
                             tile_type
                         ])
                     else:
                         index = self.getImageIndex(x, y)
                         image = window.resources["tiles"][
-                            style
+                            self.style
                         ][
                             tile_type
                         ][
