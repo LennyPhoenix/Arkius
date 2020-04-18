@@ -22,9 +22,9 @@ MAP = {
         3: {"pos": int, "floor": int},
     },
     "matrix": [
-        [int, int, int],
-        [int, int, int],
-        [int, int, int]
+        [int, int, int, ],
+        [int, int, int, ],
+        [int, int, int, ],
     ]
 }
 
