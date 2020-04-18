@@ -127,37 +127,38 @@ BOSS_ROOM = 3
 SHOP_ROOM = 4
 ROOM_INFO = {
     0: {
-        "dimensions": (6, 6),
-        "generation_options": [],
-        "base": START_ROOM_MAPS
+        "default_dimensions": (6, 6),
+        "configs": {
+            ICE: [conf.C_EMPTY],
+            VOLCANO: [conf.C_EMPTY]
+        }
     },
     1: {
-        "dimensions": (7, 7),
-        "generation_options": [],
-        "base": FIGHT_ROOM_MAPS
+        "default_dimensions": (7, 7),
+        "configs": {
+            ICE: [conf.C_EMPTY],
+            VOLCANO: [conf.C_EMPTY]
+        }
     },
     2: {
-        "dimensions": (6, 5),
-        "generation_options": [],
-        "base": TREASURE_ROOM_MAPS
+        "default_dimensions": (6, 5),
+        "configs": {
+            ICE: [conf.C_EMPTY],
+            VOLCANO: [conf.C_EMPTY]
+        }
     },
     3: {
-        "dimensions": (9, 9),
-        "generation_options": [],
-        "base": BOSS_ROOM_MAPS
+        "default_dimensions": (9, 9),
+        "configs": {
+            ICE: [conf.C_EMPTY],
+            VOLCANO: [conf.C_EMPTY]
+        }
     },
     4: {
-        "dimensions": (10, 7),
-        "generation_options": [
-            {
-                "id": SECONDARY_FLOOR,
-                "overrides": [FLOOR],
-                "seed_amount": 3,
-                "seed_type": "blob",
-                "b_spread_amount": 5,
-                "b_spread_additional": 90
-            }
-        ],
-        "base": SHOP_ROOM_MAPS
+        "default_dimensions": (10, 7),
+        "configs": {
+            ICE: [conf.C_EMPTY],
+            VOLCANO: [conf.C_EMPTY]
+        }
     }
 }
