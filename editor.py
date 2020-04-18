@@ -24,6 +24,8 @@ from lib import prefabs, tilemaps
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
 
+# Options:
+ROOM_STYLE = c.VOLCANO
 TILE_MATRIX = None
 
 
@@ -41,7 +43,7 @@ class Window(pyglet.window.Window):
         self.batch = pyglet.graphics.Batch()
         self.scale_divisor = c.DEFAULT_SCALE_DIVISOR
 
-        self.room_style = c.ICE
+        self.room_style = ROOM_STYLE
         self.brush = c.WALL
         self.enable_debugging = False
 
