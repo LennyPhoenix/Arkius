@@ -15,6 +15,13 @@ PLAYER_COLLIDER = {
     "height": 10/16
 }
 
+# Styles
+TILESET_DIMENSIONS = (10, 5)
+ICE = 0
+VOLCANO = 1
+FOREST = 2
+STYLES = [ICE, VOLCANO]
+
 # Tile Types
 FLOOR = 0
 WALL = 1
@@ -311,10 +318,3 @@ ROOM_INFO = {
         "base": SHOP_ROOM_MAPS
     }
 }
-
-# Styles
-TILESET_DIMENSIONS = (10, 5)
-ICE = 0
-VOLCANO = 1
-FOREST = 2
-STYLES = [ICE, VOLCANO]
