@@ -24,6 +24,127 @@ def toMap(matrix):
     return tilemap
 
 
+def add_boundaries(room_map, width, height, doors_enabled, map_data, border_type=c.WALL):  # noqa: E501
+    """Applies boundaries and doors.
+
+    Arguments:
+        room_map {dict} -- The dictionary tilemap to modify.
+        width {int} -- The room's width.
+        height {int} -- The room's height.
+        doors_enabled {dict} -- A dict of all enabled doors.
+        map_data {dict} -- The data about the map.
+        border_type {int} -- The tile type to use as a border.
+
+    Returns:
+        dict -- The modified tilemap.
+    """
+
+    door_f = {}
+    door_p = {}
+    for i in range(4):
+        if map_data is not None:
+            door_f[i] = map_data["door_info"][i]["floor"]
+            if type(map_data["door_info"][i]["pos"]) is tuple:
+                door_p[i] = random.randint(
+                    *map_data["door_info"][i]["pos"]
+                )
+            else:
+                door_p[i] = map_data["door_info"][i]["pos"]
+        else:
+            door_f[i] = c.FLOOR
+            door_p[i] = 0
+
+    door_tiles = {
+        0: {
+            (door_p[0]-2, height+3): border_type,
+            (door_p[0]-1, height+3): door_f[0],
+            (door_p[0], height+3): door_f[0],
+            (door_p[0]+1, height+3): door_f[0],
+            (door_p[0]+2, height+3): border_type,
+
+            (door_p[0]-2, height+2): border_type,
+            (door_p[0]-1, height+2): door_f[0],
+            (door_p[0], height+2): door_f[0],
+            (door_p[0]+1, height+2): door_f[0],
+            (door_p[0]+2, height+2): border_type,
+
+            (door_p[0]-2, height+1): border_type,
+            (door_p[0]-1, height+1): door_f[0],
+            (door_p[0], height+1): door_f[0],
+            (door_p[0]+1, height+1): door_f[0],
+            (door_p[0]+2, height+1): border_type,
+        },
+        1: {
+            (width+1, door_p[1]+2): border_type,
+            (width+2, door_p[1]+2): border_type,
+            (width+3, door_p[1]+2): border_type,
+            (width+1, door_p[1]+1): door_f[1],
+            (width+2, door_p[1]+1): door_f[1],
+            (width+3, door_p[1]+1): door_f[1],
+            (width+1, door_p[1]): door_f[1],
+            (width+2, door_p[1]): door_f[1],
+            (width+3, door_p[1]): door_f[1],
+            (width+1, door_p[1]-1): door_f[1],
+            (width+2, door_p[1]-1): door_f[1],
+            (width+3, door_p[1]-1): door_f[1],
+            (width+1, door_p[1]-2): border_type,
+            (width+2, door_p[1]-2): border_type,
+            (width+3, door_p[1]-2): border_type,
+        },
+        2: {
+            (door_p[2]-2, -(height+1)): border_type,
+            (door_p[2]-1, -(height+1)): door_f[2],
+            (door_p[2], -(height+1)): door_f[2],
+            (door_p[2]+1, -(height+1)): door_f[2],
+            (door_p[2]+2, -(height+1)): border_type,
+            (door_p[2]-2, -(height+2)): border_type,
+            (door_p[2]-1, -(height+2)): door_f[2],
+            (door_p[2], -(height+2)): door_f[2],
+            (door_p[2]+1, -(height+2)): door_f[2],
+            (door_p[2]+2, -(height+2)): border_type,
+            (door_p[2]-2, -(height+3)): border_type,
+            (door_p[2]-1, -(height+3)): door_f[2],
+            (door_p[2], -(height+3)): door_f[2],
+            (door_p[2]+1, -(height+3)): door_f[2],
+            (door_p[2]+2, -(height+3)): border_type,
+        },
+        3: {
+            (-(width+3), door_p[3]+2): border_type,
+            (-(width+2), door_p[3]+2): border_type,
+            (-(width+1), door_p[3]+2): border_type,
+            (-(width+3), door_p[3]+1): door_f[3],
+            (-(width+2), door_p[3]+1): door_f[3],
+            (-(width+1), door_p[3]+1): door_f[3],
+            (-(width+3), door_p[3]): door_f[3],
+            (-(width+2), door_p[3]): door_f[3],
+            (-(width+1), door_p[3]): door_f[3],
+            (-(width+3), door_p[3]-1): door_f[3],
+            (-(width+2), door_p[3]-1): door_f[3],
+            (-(width+1), door_p[3]-1): door_f[3],
+            (-(width+3), door_p[3]-2): border_type,
+            (-(width+2), door_p[3]-2): border_type,
+            (-(width+1), door_p[3]-2): border_type,
+        }
+    }
+
+    for x in range(-(width+1), width+2):
+        room_map.update({
+            (x, height+1): border_type,
+            (x, -(height+1)): border_type
+        })
+    for y in range(-(height+1), height+2):
+        room_map.update({
+            (width+1, y): border_type,
+            (-(width+1), y): border_type
+        })
+
+    for i in range(4):
+        if doors_enabled[i]:
+            room_map.update(door_tiles[i])
+
+    return room_map
+
+
 def create_blank(width=7, height=7, tile_type=c.FLOOR):
     """Creates a coordinate based dictionary with the specified width and height.
 

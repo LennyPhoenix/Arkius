@@ -50,6 +50,14 @@ class Room:
             self.config["options"]
         )
 
+        self.tilemap = tilemaps.add_boundaries(
+            self.tilemap,
+            self.width,
+            self.height,
+            self.doors,
+            self.map_data
+        )
+
         self.createSprites(window)
 
     def createSprites(self, window):
@@ -58,110 +66,6 @@ class Room:
         Arguments:
             window {pyglet.window.Window} -- The window for the application.
         """
-        border_type = c.WALL
-
-        door_f = {}
-        door_p = {}
-        for i in range(4):
-            if self.map_data is not None:
-                door_f[i] = self.map_data["door_info"][i]["floor"]
-                if type(self.map_data["door_info"][i]["pos"]) is tuple:
-                    door_p[i] = random.randint(
-                        *self.map_data["door_info"][i]["pos"]
-                    )
-                else:
-                    door_p[i] = self.map_data["door_info"][i]["pos"]
-            else:
-                door_f[i] = c.FLOOR
-                door_p[i] = 0
-
-        door_tiles = {
-            0: {
-                (door_p[0]-2, self.height+3): border_type,
-                (door_p[0]-1, self.height+3): door_f[0],
-                (door_p[0], self.height+3): door_f[0],
-                (door_p[0]+1, self.height+3): door_f[0],
-                (door_p[0]+2, self.height+3): border_type,
-
-                (door_p[0]-2, self.height+2): border_type,
-                (door_p[0]-1, self.height+2): door_f[0],
-                (door_p[0], self.height+2): door_f[0],
-                (door_p[0]+1, self.height+2): door_f[0],
-                (door_p[0]+2, self.height+2): border_type,
-
-                (door_p[0]-2, self.height+1): border_type,
-                (door_p[0]-1, self.height+1): door_f[0],
-                (door_p[0], self.height+1): door_f[0],
-                (door_p[0]+1, self.height+1): door_f[0],
-                (door_p[0]+2, self.height+1): border_type,
-            },
-            1: {
-                (self.width+1, door_p[1]+2): border_type,
-                (self.width+2, door_p[1]+2): border_type,
-                (self.width+3, door_p[1]+2): border_type,
-                (self.width+1, door_p[1]+1): door_f[1],
-                (self.width+2, door_p[1]+1): door_f[1],
-                (self.width+3, door_p[1]+1): door_f[1],
-                (self.width+1, door_p[1]): door_f[1],
-                (self.width+2, door_p[1]): door_f[1],
-                (self.width+3, door_p[1]): door_f[1],
-                (self.width+1, door_p[1]-1): door_f[1],
-                (self.width+2, door_p[1]-1): door_f[1],
-                (self.width+3, door_p[1]-1): door_f[1],
-                (self.width+1, door_p[1]-2): border_type,
-                (self.width+2, door_p[1]-2): border_type,
-                (self.width+3, door_p[1]-2): border_type,
-            },
-            2: {
-                (door_p[2]-2, -(self.height+1)): border_type,
-                (door_p[2]-1, -(self.height+1)): door_f[2],
-                (door_p[2], -(self.height+1)): door_f[2],
-                (door_p[2]+1, -(self.height+1)): door_f[2],
-                (door_p[2]+2, -(self.height+1)): border_type,
-                (door_p[2]-2, -(self.height+2)): border_type,
-                (door_p[2]-1, -(self.height+2)): door_f[2],
-                (door_p[2], -(self.height+2)): door_f[2],
-                (door_p[2]+1, -(self.height+2)): door_f[2],
-                (door_p[2]+2, -(self.height+2)): border_type,
-                (door_p[2]-2, -(self.height+3)): border_type,
-                (door_p[2]-1, -(self.height+3)): door_f[2],
-                (door_p[2], -(self.height+3)): door_f[2],
-                (door_p[2]+1, -(self.height+3)): door_f[2],
-                (door_p[2]+2, -(self.height+3)): border_type,
-            },
-            3: {
-                (-(self.width+3), door_p[3]+2): border_type,
-                (-(self.width+2), door_p[3]+2): border_type,
-                (-(self.width+1), door_p[3]+2): border_type,
-                (-(self.width+3), door_p[3]+1): door_f[3],
-                (-(self.width+2), door_p[3]+1): door_f[3],
-                (-(self.width+1), door_p[3]+1): door_f[3],
-                (-(self.width+3), door_p[3]): door_f[3],
-                (-(self.width+2), door_p[3]): door_f[3],
-                (-(self.width+1), door_p[3]): door_f[3],
-                (-(self.width+3), door_p[3]-1): door_f[3],
-                (-(self.width+2), door_p[3]-1): door_f[3],
-                (-(self.width+1), door_p[3]-1): door_f[3],
-                (-(self.width+3), door_p[3]-2): border_type,
-                (-(self.width+2), door_p[3]-2): border_type,
-                (-(self.width+1), door_p[3]-2): border_type,
-            }
-        }
-
-        for x in range(-(self.width+1), self.width+2):
-            self.tilemap.update({
-                (x, self.height+1): border_type,
-                (x, -(self.height+1)): border_type
-            })
-        for y in range(-(self.height+1), self.height+2):
-            self.tilemap.update({
-                (self.width+1, y): border_type,
-                (-(self.width+1), y): border_type
-            })
-
-        for i in range(4):
-            if self.doors[i]:
-                self.tilemap.update(door_tiles[i])
 
         for x in range(-(self.width+3), self.width+4):
             for y in range(-(self.height+3), self.height+4):
