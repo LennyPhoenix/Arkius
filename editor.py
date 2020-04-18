@@ -198,6 +198,7 @@ class Window(pyglet.window.Window):
             output = "MAP = {\n"
             output += f"    \"width\": {self.room_width},\n"
             output += f"    \"height\": {self.room_height},\n"
+            output += "    \"border_type\": 1,\n"
             output += "    \"door_info\": {\n"
             output += "        0: {\"pos\": 0, \"floor\": 0},\n"
             output += "        1: {\"pos\": 0, \"floor\": 0},\n"
