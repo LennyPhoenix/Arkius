@@ -193,13 +193,25 @@ class Window(pyglet.window.Window):
             self.dimensions_label.text = text
 
         if symbol == key.ENTER:
-            output = "[\n"
+            output = "MAP = {\n"
+            output += f"    \"width\": {self.room_width},\n"
+            output += f"    \"height\": {self.room_height},\n"
+            output += "    \"door_info\": {\n"
+            output += "        0: {\"pos\": 0, \"floor\": 0},\n"
+            output += "        1: {\"pos\": 0, \"floor\": 0},\n"
+            output += "        2: {\"pos\": 0, \"floor\": 0},\n"
+            output += "        3: {\"pos\": 0, \"floor\": 0},\n"
+            output += "    },\n"
+            output += "    \"matrix\": [\n"
+
             for y in range(-self.room_height, self.room_height+1):
-                output += "    ["
+                output += "        ["
                 for x in range(-self.room_width, self.room_width+1):
                     output += f"{self.tilemap[(x, -y)]}, "
                 output += "],\n"
-            output += "],"
+
+            output += "    ]\n"
+            output += "}\n"
             print(output)
 
     def on_mouse_motion(self, x, y, dx, dy):
