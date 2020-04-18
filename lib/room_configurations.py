@@ -15,13 +15,15 @@ GENERATION_OPTIONS = [
 ]
 
 MAP = {
-    "dimensions": (int, int),
+    "width": int,
+    "height": int,
     "door_info": {
         0: {"pos": int, "floor": int},
         1: {"pos": int, "floor": int},
         2: {"pos": int, "floor": int},
         3: {"pos": int, "floor": int},
     },
+    "border_type": int,
     "matrix": [
         [int, int, int, ],
         [int, int, int, ],
@@ -47,6 +49,7 @@ M_CROSSROADS_SMALL = {
         2: {"pos": 0, "floor": 4},
         3: {"pos": 0, "floor": 4},
     },
+    "border_type": 1,
     "matrix": [
         [1, 1, 3, 2, 2, 4, 4, 4, 2, 2, 3, 1, 1, ],
         [1, 3, 3, 2, 2, 4, 4, 4, 2, 2, 3, 3, 1, ],
