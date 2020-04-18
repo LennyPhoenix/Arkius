@@ -13,8 +13,7 @@ GENERATION_OPTIONS = {
 }
 
 MAP = {
-    "width": int,
-    "height": int,
+    "dimensions": (int, int),
     "door_info": {
         0: {"pos": int, "floor": int},
         1: {"pos": int, "floor": int},
