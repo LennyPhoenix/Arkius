@@ -33,3 +33,9 @@ CONFIG = {
     "options": GENERATION_OPTIONS,
     "maps": [MAP, MAP]
 }
+
+# Config
+C_EMPTY = {
+    "options": [],
+    "maps": [None]
+}
