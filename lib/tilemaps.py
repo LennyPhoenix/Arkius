@@ -42,25 +42,19 @@ def create_blank(width=7, height=7, tile_type=c.FLOOR):
     return map
 
 
-def generate(width, height, room_map, room_type, tile_options=None):
+def generate(width, height, room_map, tile_options):
     """Randomly modify given tilemap with the options specified.
 
     Arguments:
         width {int} -- The width of the tilemap's room.
         height {int} -- The height of the tilemap's room.
         room_map {dict} -- The dictionary tilemap to randomise.
-        room_type {int} -- The type of room.
-
-    Keyword Arguments:
-        tile_options {dict} -- The tiles that should be randomised and their
-                               options. (default: {None})
+        tile_options {list} -- The tiles that should be randomised and their
+                               options.
 
     Returns:
         dict -- The randomised tilemap dict.
     """
-
-    if tile_options is None:
-        tile_options = c.ROOM_INFO[room_type]["generation_options"]
 
     def blob(options):
         seeded = 0
