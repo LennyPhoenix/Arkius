@@ -24,7 +24,7 @@ def toMap(matrix):
     return tilemap
 
 
-def add_boundaries(room_map, width, height, doors_enabled, map_data, border_type=c.WALL):  # noqa: E501
+def add_boundaries(room_map, width, height, doors_enabled, map_data):  # noqa: E501
     """Applies boundaries and doors.
 
     Arguments:
@@ -33,11 +33,15 @@ def add_boundaries(room_map, width, height, doors_enabled, map_data, border_type
         height {int} -- The room's height.
         doors_enabled {dict} -- A dict of all enabled doors.
         map_data {dict} -- The data about the map.
-        border_type {int} -- The tile type to use as a border.
 
     Returns:
         dict -- The modified tilemap.
     """
+
+    if map_data is not None:
+        border_type = map_data["border_type"]
+    else:
+        border_type = c.WALL
 
     door_f = {}
     door_p = {}
