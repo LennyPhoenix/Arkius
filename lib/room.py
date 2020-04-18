@@ -10,34 +10,44 @@ from .spatial import Space
 class Room:
     """Room class for dungeon."""
 
-    def __init__(self, window, room_type=c.START_ROOM, doors={0: True, 1: True, 2: True, 3: True}, dimensions=None):  # noqa: E501
+    def __init__(self, window, room_type=c.START_ROOM, dungeon_style=c.ICE,  room_config=None, doors={0: True, 1: True, 2: True, 3: True}, dimensions=None):  # noqa: E501
         """Initialise the room."""
         self.type = room_type
         self.doors = doors
         self.tilemap = {}
         self.tiles = {}
         self.cleared = self.type == c.START_ROOM
+        self.style = dungeon_style
+        self.config = room_config
 
         self.space = Space(cell_size=4)
 
-        if dimensions is None:
-            self.width = c.ROOM_INFO[self.type]["dimensions"][0]
-            self.height = c.ROOM_INFO[self.type]["dimensions"][1]
+        if self.config is None:
+            self.config = random.choice(
+                c.ROOM_INFO[self.type]["configs"][self.style]
+            )
+
+        room_map = random.choice(self.config["maps"])
+
+        if room_map is not None:
+            self.width = room_map["width"]
+            self.height = room_map["height"]
         else:
-            self.width, self.height = dimensions[0], dimensions[1]
+            self.width = c.ROOM_INFO[self.type]["default_dimensions"][0]
+            self.height = c.ROOM_INFO[self.type]["default_dimensions"][1]
 
         self.tilemap = tilemaps.create_blank(
             self.width,
             self.height
         )
-        if c.ROOM_INFO[self.type]["base"] is not None:
-            tilemap = random.choice(c.ROOM_INFO[self.type]["base"])
-            self.tilemap.update(tilemaps.toMap(tilemap))
+
+        if room_map is not None:
+            self.tilemap.update(tilemaps.toMap(room_map["matrix"]))
 
         self.tilemap = tilemaps.generate(
             self.width, self.height,
             self.tilemap,
-            self.type
+            self.config["options"]
         )
 
         self.createSprites(window)
