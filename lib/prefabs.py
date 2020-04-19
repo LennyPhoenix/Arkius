@@ -58,10 +58,18 @@ class Basic:
         screen_pos = window.worldToScreen(self.x, self.y, True)
         self.screen_x, self.screen_y = screen_pos[0], screen_pos[1]
 
-        self.sprite.update(
-            x=self.screen_x,
-            y=self.screen_y
+        visible = (
+            (0-self.sprite.width) < self.screen_x < window.width and
+            (0-self.sprite.height) < self.screen_y < window.height
         )
+
+        if visible:
+            self.sprite.update(
+                x=self.screen_x,
+                y=self.screen_y
+            )
+        if self.sprite.visible != visible:
+            self.sprite.visible = visible
 
     def resize(self, window):
         """Resize the sprite.
