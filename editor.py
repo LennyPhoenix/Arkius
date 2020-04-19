@@ -17,6 +17,7 @@ from math import floor
 import pyglet
 from pyglet import gl
 from pyglet.window import key
+from pyglet.window import mouse
 
 from lib import constants as c
 from lib import prefabs, tilemaps
@@ -250,7 +251,7 @@ class Window(pyglet.window.Window):
             modifiers {int} -- Bitwise combination of any keyboard
                                modifiers currently active.
         """
-        if button == pyglet.window.mouse.LEFT:
+        if button == mouse.LEFT:
             world_x, world_y = self.screenToWorld(x, y)
             tile_x = floor(world_x)
             tile_y = floor(world_y)
@@ -288,7 +289,7 @@ class Window(pyglet.window.Window):
                         ]
                         self.tiles[(tile_x, tile_y)].sprite.image = image
 
-        if button == pyglet.window.mouse.RIGHT:
+        if button == mouse.RIGHT:
             self.brush += 1
             if self.brush > len(c.TILES)-1:
                 self.brush = 0
