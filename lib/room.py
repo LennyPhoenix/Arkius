@@ -41,7 +41,10 @@ class Room:
             self.height
         )
 
-        if self.map_data is not None:
+        if (
+            self.map_data is not None and
+            self.map_data["matrix"] is not None
+        ):
             self.tilemap.update(tilemaps.toMap(self.map_data["matrix"]))
 
         self.tilemap = tilemaps.generate(
