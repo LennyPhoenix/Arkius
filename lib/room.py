@@ -17,6 +17,7 @@ class Room:
         self.tilemap = {}
         self.tiles = {}
         self.cleared = self.type == c.START_ROOM
+        self._visible = False
         self.style = dungeon_style
         self.config = room_config
 
@@ -192,3 +193,15 @@ class Room:
         }
 
         return index_dict[value]
+
+    @property
+    def visibility(self):
+        return self._visible
+
+    @visibility.setter
+    def visibility(self, visible):
+        for pos in self.tiles.keys():
+            tile = self.tiles[pos]
+            if tile.sprite.visible != visible:
+                tile.sprite.visible = visible
+        self._visible = visible
