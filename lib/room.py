@@ -23,7 +23,7 @@ class Room:
         self.space = Space(cell_size=4)
 
         if self.doors is None:
-            self.doos = {i: False for i in range(4)}
+            self.doors = {i: False for i in range(4)}
 
         if self.config is None:
             self.config = random.choice(
