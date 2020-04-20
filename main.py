@@ -136,11 +136,13 @@ class Window(pyglet.window.Window):
 
         if symbol == key.EQUAL:
             self.scale_divisor -= 5
-            self.room.resize(self)
+            for pos in self.dungeon.map.keys():
+                self.dungeon.map[pos].resize(self)
             self.player.resize(self)
         elif symbol == key.MINUS:
             self.scale_divisor += 5
-            self.room.resize(self)
+            for pos in self.dungeon.map.keys():
+                self.dungeon.map[pos].resize(self)
             self.player.resize(self)
         elif symbol == key.F11:
             self.set_fullscreen(not self.fullscreen)
