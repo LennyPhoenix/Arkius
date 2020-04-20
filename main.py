@@ -68,6 +68,7 @@ class Window(pyglet.window.Window):
         self.player = prefabs.Player(self)
 
     def loadResources(self):
+        """Preloads all resources."""
         self.resources = {}
 
         tiles = {}
@@ -191,6 +192,11 @@ class Window(pyglet.window.Window):
 
     @property
     def room(self):
+        """Gets the room occupied by the player.
+
+        Returns:
+            Room -- The active room.
+        """
         room_map = self.dungeon.map
         return room_map[self.player.room]
 

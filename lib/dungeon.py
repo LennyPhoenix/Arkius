@@ -1,3 +1,4 @@
+"""Contains dungeon class."""
 import random
 
 from . import constants as c
@@ -5,7 +6,19 @@ from .room import Room
 
 
 class Dungeon:
+    """Dungeon class, contains room map."""
+
     def __init__(self, window, style, config=None):
+        """Define the style and dungeon configuration.
+
+        Arguments:
+            window {pyglet.window.Window} -- The window for the application.
+            style {int} -- The tileset/style of the dungeon.
+
+        Keyword Arguments:
+            config {dict} -- The dungeon config to use for room
+                             numbering. (default: {None})
+        """
         self.style = style
         self.map = {}
         self.config = config
@@ -16,6 +29,11 @@ class Dungeon:
         self.generateRooms(window)
 
     def generateRooms(self, window):
+        """Place and create each room.
+
+        Arguments:
+            window {pyglet.window.Window} -- The window for the application.
+        """
         gen_map = {}
         neighbours = {
             (1, 0): (1, 3),

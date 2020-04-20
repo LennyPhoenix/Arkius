@@ -196,10 +196,20 @@ class Room:
 
     @property
     def visibility(self):
+        """The room's visibility.
+
+        Returns:
+            bool -- Is the room marked as visible?
+        """
         return self._visible
 
     @visibility.setter
     def visibility(self, visible):
+        """Sets the visibility of each tile.
+
+        Arguments:
+            visible {bool} -- The visibility for each tile.
+        """
         for pos in self.tiles.keys():
             tile = self.tiles[pos]
             if tile.sprite.visible != visible:
