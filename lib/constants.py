@@ -162,3 +162,11 @@ ROOM_INFO = {
         }
     }
 }
+
+# Dungeon Configs
+DUNGEON_BASE = {
+    FIGHT_ROOM: 5,
+    TREASURE_ROOM: 2,
+    BOSS_ROOM: 1,
+    SHOP_ROOM: 1
+}
