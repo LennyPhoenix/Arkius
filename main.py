@@ -21,7 +21,7 @@ from pyglet.window import key
 
 from lib import constants as c
 from lib import prefabs
-from lib.room import Room
+from lib.dungeon import Dungeon
 
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
@@ -60,8 +60,9 @@ class Window(pyglet.window.Window):
         for z in range(5):
             self.ui_layers[z] = pyglet.graphics.OrderedGroup(z+100)
 
-        self.room = Room(
-            window=self
+        self.dungeon = Dungeon(
+            self,
+            c.ICE
         )
 
         self.player = prefabs.Player(self)
@@ -131,22 +132,8 @@ class Window(pyglet.window.Window):
             modifiers {int} -- Bitwise combination of the key modifiers active.
         """
         super().on_key_press(symbol, modifiers)
-        room_keys = {
-            key._0: 0,
-            key._1: 1,
-            key._2: 2,
-            key._3: 3,
-            key._4: 4,
-        }
 
-        if symbol in room_keys.keys():
-            self.room = Room(
-                room_type=room_keys[symbol],
-                window=self
-            )
-            self.player.moving = True
-            self.player.x, self.player.y = 0, 0
-        elif symbol == key.EQUAL:
+        if symbol == key.EQUAL:
             self.scale_divisor -= 5
             self.room.resize(self)
             self.player.resize(self)
@@ -165,7 +152,8 @@ class Window(pyglet.window.Window):
             height {int} -- The new window height.
         """
         super().on_resize(width, height)
-        self.room.resize(self)
+        for pos in self.dungeon.map.keys():
+            self.dungeon.map[pos].resize(self)
         self.player.resize(self)
 
     def worldToScreen(self, x, y, parallax=False):
@@ -200,6 +188,11 @@ class Window(pyglet.window.Window):
             )
 
         return (screen_x, screen_y)
+
+    @property
+    def room(self):
+        room_map = self.dungeon.map
+        return room_map[self.player.room]
 
     @property
     def scale_factor(self):
