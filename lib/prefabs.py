@@ -101,6 +101,7 @@ class Tile(Basic):
             tile_image,
             window.tile_groups
         )
+        self.sprite.visible = False
 
         if c.TILES[self.type]["collider"] is not None:
             self.col_x = c.TILES[self.type]["collider"]["x"]
@@ -212,6 +213,38 @@ class Player(Basic):
                 self.old_aabb[0] >= body.aabb[2]
             ):
                 self.x = body.aabb[2] - self.col_x
+
+        if self.y < -(window.room.height+3):
+            window.room.visibility = False
+            self.room = (self.room[0], self.room[1]-1)
+            window.room.visibility = True
+            self.y = window.room.height+3
+            if window.room.map_data is not None:
+                self.x = window.room.map_data["door_info"][0]["pos"]
+
+        if self.x < -(window.room.width+3):
+            window.room.visibility = False
+            self.room = (self.room[0]-1, self.room[1])
+            window.room.visibility = True
+            self.x = window.room.width+3
+            if window.room.map_data is not None:
+                self.y = window.room.map_data["door_info"][1]["pos"]
+
+        if self.y > window.room.height+3:
+            window.room.visibility = False
+            self.room = (self.room[0], self.room[1]+1)
+            window.room.visibility = True
+            self.y = -(window.room.height+3)
+            if window.room.map_data is not None:
+                self.x = window.room.map_data["door_info"][2]["pos"]
+
+        if self.x > window.room.width+3:
+            window.room.visibility = False
+            self.room = (self.room[0]+1, self.room[1])
+            window.room.visibility = True
+            self.x = -(window.room.width+3)
+            if window.room.map_data is not None:
+                self.y = window.room.map_data["door_info"][3]["pos"]
 
         super().update(window)
 
