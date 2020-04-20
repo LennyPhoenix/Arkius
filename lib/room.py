@@ -10,7 +10,7 @@ from .spatial import Space
 class Room:
     """Room class for dungeon."""
 
-    def __init__(self, window, room_type=c.START_ROOM, dungeon_style=c.ICE, room_config=None, doors={0: True, 1: True, 2: True, 3: True}, dimensions=None):  # noqa: E501
+    def __init__(self, window, room_type=c.START_ROOM, dungeon_style=c.ICE, room_config=None, doors=None):  # noqa: E501
         """Initialise the room."""
         self.type = room_type
         self.doors = doors
@@ -21,6 +21,9 @@ class Room:
         self.config = room_config
 
         self.space = Space(cell_size=4)
+
+        if self.doors is None:
+            self.doos = {i: False for i in range(4)}
 
         if self.config is None:
             self.config = random.choice(
