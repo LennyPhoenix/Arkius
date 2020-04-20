@@ -100,11 +100,11 @@ class Window(pyglet.window.Window):
         self.resources["tiles"] = tiles
 
         path = f"resources/sprites/player.png"
-        self.resources["player"] = pyglet.image.load(path)
+        self.resources["player"] = pyglet.resource.image(path)
 
         debug = {}
         path = "resources/collider.png"
-        debug["collider"] = pyglet.image.load(path)
+        debug["collider"] = pyglet.resource.image(path)
         self.resources["debug"] = debug
 
     def on_draw(self):
