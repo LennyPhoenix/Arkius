@@ -188,30 +188,30 @@ class Player(Basic):
         self.y += self.velocity_y * dt
 
         hits = window.room.space.get_hits(self.aabb)
-        for tile in hits:
+        for body in hits:
             if (
-                self.aabb[1] <= tile.aabb[3] and
-                self.old_aabb[1] >= tile.aabb[3]
+                self.aabb[1] <= body.aabb[3] and
+                self.old_aabb[1] >= body.aabb[3]
             ):
-                self.y = tile.aabb[3] - self.col_y
+                self.y = body.aabb[3] - self.col_y
 
             elif (
-                self.aabb[3] >= tile.aabb[1] and
-                self.old_aabb[3] <= tile.aabb[1]
+                self.aabb[3] >= body.aabb[1] and
+                self.old_aabb[3] <= body.aabb[1]
             ):
-                self.y = tile.aabb[1] - self.col_y - self.col_height
+                self.y = body.aabb[1] - self.col_y - self.col_height
+
+            if (
+                self.aabb[2] >= body.aabb[0] and
+                self.old_aabb[2] <= body.aabb[0]
+            ):
+                self.x = body.aabb[0] - self.col_x - self.col_width
 
             elif (
-                self.aabb[2] >= tile.aabb[0] and
-                self.old_aabb[2] <= tile.aabb[0]
+                self.aabb[0] <= body.aabb[2] and
+                self.old_aabb[0] >= body.aabb[2]
             ):
-                self.x = tile.aabb[0] - self.col_x - self.col_width
-
-            elif (
-                self.aabb[0] <= tile.aabb[2] and
-                self.old_aabb[0] >= tile.aabb[2]
-            ):
-                self.x = tile.aabb[2] - self.col_x
+                self.x = body.aabb[2] - self.col_x
 
         super().update(window)
 
