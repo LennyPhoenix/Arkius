@@ -221,6 +221,8 @@ class Player(Basic):
             self.y = window.room.height+3
             if window.room.map_data is not None:
                 self.x = window.room.map_data["door_info"][0]["pos"]
+            else:
+                self.x = 0
 
         if self.x < -(window.room.width+3):
             window.room.visibility = False
@@ -229,6 +231,8 @@ class Player(Basic):
             self.x = window.room.width+3
             if window.room.map_data is not None:
                 self.y = window.room.map_data["door_info"][1]["pos"]
+            else:
+                self.y = 0
 
         if self.y > window.room.height+3:
             window.room.visibility = False
@@ -237,6 +241,8 @@ class Player(Basic):
             self.y = -(window.room.height+3)
             if window.room.map_data is not None:
                 self.x = window.room.map_data["door_info"][2]["pos"]
+            else:
+                self.x = 0
 
         if self.x > window.room.width+3:
             window.room.visibility = False
@@ -245,6 +251,8 @@ class Player(Basic):
             self.x = -(window.room.width+3)
             if window.room.map_data is not None:
                 self.y = window.room.map_data["door_info"][3]["pos"]
+            else:
+                self.y = 0
 
         super().update(window)
 
