@@ -310,3 +310,18 @@ C_EMPTY = {
         None
     ]
 }
+
+C_START = {
+    "options": [],
+    "maps": [
+        M_CROSSROADS_SMALL
+    ]
+}
+
+C_FIGHT_LARGE = {
+    "options": [],
+    "maps": [
+        M_QUARTERS_LARGE,
+        M_CORNER_LARGE
+    ]
+}

@@ -129,15 +129,15 @@ ROOM_INFO = {
     0: {
         "default_dimensions": (6, 6),
         "configs": {
-            ICE: [conf.C_EMPTY],
-            VOLCANO: [conf.C_EMPTY]
+            ICE: [conf.C_START],
+            VOLCANO: [conf.C_START]
         }
     },
     1: {
         "default_dimensions": (7, 7),
         "configs": {
-            ICE: [conf.C_EMPTY],
-            VOLCANO: [conf.C_EMPTY]
+            ICE: [conf.C_FIGHT_LARGE],
+            VOLCANO: [conf.C_FIGHT_LARGE]
         }
     },
     2: {
