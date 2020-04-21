@@ -34,6 +34,7 @@ class Room:
         self.map_data = random.choice(self.config["maps"])
 
         if self.map_data is not None:
+            self.map_data = self.map_data.copy()
             self.width = self.map_data["width"]
             self.height = self.map_data["height"]
         else:
@@ -50,6 +51,11 @@ class Room:
             self.map_data["matrix"] is not None
         ):
             self.tilemap.update(tilemaps.toMap(self.map_data["matrix"]))
+            for i in range(4):
+                if type(self.map_data["door_info"][i]["pos"]) is tuple:
+                    self.map_data["door_info"][i]["pos"] = random.randint(
+                        *self.map_data["door_info"][i]["pos"]
+                    )
 
         self.tilemap = tilemaps.generate(
             self.width, self.height,

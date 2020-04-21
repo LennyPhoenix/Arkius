@@ -48,12 +48,7 @@ def add_boundaries(room_map, width, height, doors_enabled, map_data):  # noqa: E
     for i in range(4):
         if map_data is not None:
             door_f[i] = map_data["door_info"][i]["floor"]
-            if type(map_data["door_info"][i]["pos"]) is tuple:
-                door_p[i] = random.randint(
-                    *map_data["door_info"][i]["pos"]
-                )
-            else:
-                door_p[i] = map_data["door_info"][i]["pos"]
+            door_p[i] = map_data["door_info"][i]["pos"]
         else:
             door_f[i] = c.FLOOR
             door_p[i] = 0
