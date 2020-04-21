@@ -45,9 +45,7 @@ class Dungeon:
             "type": c.START_ROOM,
             "doors": {i: False for i in range(4)}
         }
-        for room_type in c.ROOM_INFO.keys():
-            if room_type == c.START_ROOM:
-                continue
+        for room_type in self.config["rooms"].keys():
             planted = 0
             while planted < self.config["rooms"][room_type]:
                 pos = random.choice(list(gen_map.keys()))
