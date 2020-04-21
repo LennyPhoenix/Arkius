@@ -67,6 +67,7 @@ class Window(pyglet.window.Window):
         )
 
         self.player = prefabs.Player(self)
+        self.push_handlers(self.key_handler)
 
     def loadResources(self):
         """Preloads all resources."""
@@ -120,8 +121,6 @@ class Window(pyglet.window.Window):
         Arguments:
             dt {float} -- Time passed since last update.
         """
-
-        self.push_handlers(self.key_handler)
 
         if self.key_handler[key.EQUAL]:
             self.scale_divisor -= 100 * dt
