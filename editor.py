@@ -216,6 +216,8 @@ class Window(pyglet.window.Window):
 
             output += "    ]\n"
             output += "}\n"
+            with open("map.txt", "w+") as f:
+                f.write(output)
             print(output)
 
     def on_mouse_motion(self, x, y, dx, dy):
