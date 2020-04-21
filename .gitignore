@@ -12,4 +12,3 @@ dist/
 *.ase
 nohup.out
 .pytest_cache/
-map.txt
