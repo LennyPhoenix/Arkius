@@ -53,9 +53,8 @@ class Dungeon:
                 n_x, n_y = pos[0] + x, pos[1] + y
                 doors = neighbours[(x, y)]
 
-                gen_map[pos]["doors"][doors[0]] = True
-
                 if (n_x, n_y) not in gen_map.keys():
+                    gen_map[pos]["doors"][doors[0]] = True
                     gen_map[(n_x, n_y)] = {
                         "type": room_type,
                         "doors": {i: (i == doors[1]) for i in range(4)}
