@@ -54,7 +54,8 @@ class Room:
         self.tilemap = tilemaps.generate(
             self.width, self.height,
             self.tilemap,
-            self.config["options"]
+            self.config["options"],
+            self.map_data
         )
 
         self.tilemap = tilemaps.add_boundaries(

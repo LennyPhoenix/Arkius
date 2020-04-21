@@ -167,7 +167,7 @@ def create_blank(width=7, height=7, tile_type=c.FLOOR):
     return map
 
 
-def generate(width, height, room_map, tile_options):
+def generate(width, height, room_map, tile_options, map_data):
     """Randomly modify given tilemap with the options specified.
 
     Arguments:
