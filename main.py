@@ -43,6 +43,7 @@ class Window(pyglet.window.Window):
         self.set_minimum_size(*c.MIN_SIZE)
 
         self.batch = pyglet.graphics.Batch()
+        self.key_handler = key.KeyStateHandler()
         self.fps_display = pyglet.window.FPSDisplay(window=self)
         self.scale_divisor = c.DEFAULT_SCALE_DIVISOR
 
@@ -120,7 +121,7 @@ class Window(pyglet.window.Window):
             dt {float} -- Time passed since last update.
         """
 
-        self.push_handlers(self.player.key_handler)
+        self.push_handlers(self.key_handler)
 
         self.player.update(self, dt)
         self.room.update(self)

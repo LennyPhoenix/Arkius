@@ -152,8 +152,6 @@ class Player(Basic):
         self.velocity_y = 0
         self.moving = False
 
-        self.key_handler = key.KeyStateHandler()
-
     def update(self, window, dt):
         """Update the player.
 
@@ -164,23 +162,23 @@ class Player(Basic):
 
         # Position
         self.velocity_x, self.velocity_y = 0, 0
-        if self.key_handler[key.W]:
+        if window.key_handler[key.W]:
             self.velocity_y += c.PLAYER_SPEED
-        if self.key_handler[key.A]:
+        if window.key_handler[key.A]:
             self.velocity_x -= c.PLAYER_SPEED
-        if self.key_handler[key.S]:
+        if window.key_handler[key.S]:
             self.velocity_y -= c.PLAYER_SPEED
-        if self.key_handler[key.D]:
+        if window.key_handler[key.D]:
             self.velocity_x += c.PLAYER_SPEED
 
         if (
-            (self.key_handler[key.A] or self.key_handler[key.D]) and
-            (self.key_handler[key.W] or self.key_handler[key.S])
+            (window.key_handler[key.A] or window.key_handler[key.D]) and
+            (window.key_handler[key.W] or window.key_handler[key.S])
         ):
             self.velocity_x *= c.DIAGONAL_MULTIPLIER
             self.velocity_y *= c.DIAGONAL_MULTIPLIER
 
-        if self.key_handler[key.LSHIFT]:
+        if window.key_handler[key.LSHIFT]:
             self.velocity_x *= 5
             self.velocity_y *= 5
 
