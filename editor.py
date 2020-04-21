@@ -370,9 +370,11 @@ class Window(pyglet.window.Window):
         scale_factor = self.scale_factor
 
         world_x = (x+0.5) - self.width / 2
+        world_x += 8 * scale_factor
         world_x /= 16 * scale_factor
 
         world_y = (y+0.5) - self.height / 2
+        world_y += 8 * scale_factor
         world_y /= 16 * scale_factor
 
         return (world_x, world_y)
