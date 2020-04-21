@@ -123,6 +123,17 @@ class Window(pyglet.window.Window):
 
         self.push_handlers(self.key_handler)
 
+        if self.key_handler[key.EQUAL]:
+            self.scale_divisor -= 100 * dt
+            for pos in self.dungeon.map.keys():
+                self.dungeon.map[pos].resize(self)
+            self.player.resize(self)
+        elif self.key_handler[key.MINUS]:
+            self.scale_divisor += 100 * dt
+            for pos in self.dungeon.map.keys():
+                self.dungeon.map[pos].resize(self)
+            self.player.resize(self)
+
         self.player.update(self, dt)
         self.room.update(self)
 
@@ -135,17 +146,7 @@ class Window(pyglet.window.Window):
         """
         super().on_key_press(symbol, modifiers)
 
-        if symbol == key.EQUAL:
-            self.scale_divisor -= 5
-            for pos in self.dungeon.map.keys():
-                self.dungeon.map[pos].resize(self)
-            self.player.resize(self)
-        elif symbol == key.MINUS:
-            self.scale_divisor += 5
-            for pos in self.dungeon.map.keys():
-                self.dungeon.map[pos].resize(self)
-            self.player.resize(self)
-        elif symbol == key.F11:
+        if symbol == key.F11:
             self.set_fullscreen(not self.fullscreen)
 
     def on_resize(self, width, height):

@@ -42,6 +42,7 @@ class Window(pyglet.window.Window):
         super().__init__(*args, **kwargs)
 
         self.batch = pyglet.graphics.Batch()
+        self.key_handler = key.KeyStateHandler()
         self.scale_divisor = c.DEFAULT_SCALE_DIVISOR
 
         self.room_style = ROOM_STYLE
@@ -162,12 +163,6 @@ class Window(pyglet.window.Window):
 
         if symbol == key.F11:
             self.set_fullscreen(not self.fullscreen)
-        elif symbol == key.EQUAL:
-            self.scale_divisor -= 20
-            self.on_resize(self.width, self.height)
-        elif symbol == key.MINUS:
-            self.scale_divisor += 20
-            self.on_resize(self.width, self.height)
 
         resize_keys = {
             key.LEFT: (-1, 0),
@@ -326,6 +321,15 @@ class Window(pyglet.window.Window):
         Arguments:
             dt {float} -- Time passed since last update.
         """
+        self.push_handlers(self.key_handler)
+
+        if self.key_handler[key.EQUAL]:
+            self.scale_divisor -= 100 * dt
+            self.on_resize(self.width, self.height)
+        elif self.key_handler[key.MINUS]:
+            self.scale_divisor += 100 * dt
+            self.on_resize(self.width, self.height)
+
         for pos, tile in self.tiles.items():
             tile.update(self)
 
