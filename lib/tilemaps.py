@@ -275,8 +275,15 @@ def generate(width, height, room_map, tile_options, map_data):
             for previous in walls[horizontal]:
                 if previous-3 < l_pos < previous+3:
                     too_close = True
-            if -3 < l_pos < 3:
-                too_close = True
+
+            angle_doors = {
+                True: [1, 3],
+                False: [0, 2]
+            }
+            for door_id in angle_doors[horizontal]:
+                d_pos = map_data["door_info"][door_id]["pos"]
+                if d_pos-3 < l_pos < d_pos+3:
+                    too_close = True
 
             if not too_close:
                 for x, y in line:
