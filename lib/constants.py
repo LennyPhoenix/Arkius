@@ -136,22 +136,28 @@ ROOM_INFO = {
     1: {
         "default_dimensions": (7, 7),
         "configs": {
-            ICE: [conf.C_FIGHT_LARGE],
-            VOLCANO: [conf.C_FIGHT_LARGE]
+            ICE: [
+                conf.C_FIGHT_LARGE,
+                conf.C_FIGHT_SEMI_RANDOM
+            ],
+            VOLCANO: [
+                conf.C_FIGHT_LARGE,
+                conf.C_FIGHT_SEMI_RANDOM
+            ]
         }
     },
     2: {
         "default_dimensions": (6, 5),
         "configs": {
-            ICE: [conf.C_EMPTY],
-            VOLCANO: [conf.C_EMPTY]
+            ICE: [conf.C_TREASURE],
+            VOLCANO: [conf.C_TREASURE]
         }
     },
     3: {
         "default_dimensions": (9, 9),
         "configs": {
-            ICE: [conf.C_EMPTY],
-            VOLCANO: [conf.C_EMPTY]
+            ICE: [conf.C_BOSS_CENTRED],
+            VOLCANO: [conf.C_BOSS_CENTRED]
         }
     },
     4: {
