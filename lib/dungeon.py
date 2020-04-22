@@ -55,8 +55,8 @@ class Dungeon:
 
                 if (
                     (
-                        gen_map[(pos)] == c.START_ROOM or
-                        gen_map[(pos)] == c.BOSS_ROOM
+                        gen_map[(pos)]["type"] == c.START_ROOM or
+                        gen_map[(pos)]["type"] == c.BOSS_ROOM
                     ) and
                     (
                         room_type == c.START_ROOM and
@@ -80,19 +80,20 @@ class Dungeon:
             n_x, n_y = pos[0] + x, pos[1] + y
             doors = neighbours[(x, y)]
 
-            if (
-                (
-                    gen_map[(pos)] == c.START_ROOM or
-                    gen_map[(pos)] == c.BOSS_ROOM
-                ) and
-                (
-                    gen_map[(n_x, n_y)] == c.START_ROOM and
-                    gen_map[(n_x, n_y)] == c.BOSS_ROOM
-                )
-            ):
-                continue
-
             if (n_x, n_y) in gen_map.keys():
+
+                if (
+                    (
+                        gen_map[(pos)]["type"] == c.START_ROOM or
+                        gen_map[(pos)]["type"] == c.BOSS_ROOM
+                    ) and
+                    (
+                        gen_map[(n_x, n_y)]["type"] == c.START_ROOM and
+                        gen_map[(n_x, n_y)]["type"] == c.BOSS_ROOM
+                    )
+                ):
+                    continue
+
                 gen_map[pos]["doors"][doors[0]] = True
                 gen_map[(n_x, n_y)]["doors"][doors[1]] = True
                 planted += 1
