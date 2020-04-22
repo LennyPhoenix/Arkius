@@ -139,12 +139,13 @@ ROOM_INFO = {
             ICE: [
                 conf.C_FIGHT_LARGE,
                 conf.C_FIGHT_SEMI_RANDOM,
-                conf.C_FIGHT_SEMI_RANDOM
+                conf.C_FIGHT_SEMI_RANDOM,
+                conf.C_FIGHT_RANDOM
             ],
             VOLCANO: [
                 conf.C_FIGHT_LARGE,
                 conf.C_FIGHT_SEMI_RANDOM,
-                conf.C_FIGHT_SEMI_RANDOM
+                conf.C_FIGHT_RANDOM
             ]
         }
     },

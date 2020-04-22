@@ -38,8 +38,99 @@ CONFIG = {
 
 # Generation Options
 
+G_2_WALLS = [
+    {
+        "id": 2,
+        "overrides": [0],
+        "seed_amount": 2,
+        "seed_type": "blob",
+        "b_spread_amount": 15,
+        "b_spread_additional": 75,
+        "b_spread_compound": True
+    },
+    {
+        "id": 3,
+        "overrides": [0],
+        "seed_amount": 3,
+        "seed_type": "blob",
+        "b_spread_amount": 10,
+        "b_spread_additional": 50,
+        "b_spread_compound": False
+    },
+    {
+        "id": 1,
+        "overrides": [0, 2, 3, 4],
+        "seed_amount": 2,
+        "seed_type": "line",
+        "l_hole_amount": 4,
+        "l_hole_size_range": (3, 5)
+    },
+]
+
+G_4_WALLS = [
+    {
+        "id": 2,
+        "overrides": [0],
+        "seed_amount": 1,
+        "seed_type": "blob",
+        "b_spread_amount": 35,
+        "b_spread_additional": 50,
+        "b_spread_compound": True
+    },
+    {
+        "id": 3,
+        "overrides": [0],
+        "seed_amount": 5,
+        "seed_type": "blob",
+        "b_spread_amount": 7,
+        "b_spread_additional": 80,
+        "b_spread_compound": False
+    },
+    {
+        "id": 1,
+        "overrides": [0, 3, 4],
+        "seed_amount": 4,
+        "seed_type": "line",
+        "l_hole_amount": 3,
+        "l_hole_size_range": (4, 7)
+    },
+]
 
 # MAPS
+M_EMPTY_MEDIUM = {
+    "width": 9,
+    "height": 9,
+    "border_type": 1,
+    "door_info": {
+        0: {"pos": (-6, 6), "floor": 0},
+        1: {"pos": (-6, 6), "floor": 0},
+        2: {"pos": (-6, 6), "floor": 0},
+        3: {"pos": (-6, 6), "floor": 0},
+    },
+    "matrix": [
+        [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, ],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, ],
+        [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, ],
+    ]
+}
+
+
 M_CROSSROADS_SMALL = {
     "width": 6,
     "height": 6,
@@ -436,10 +527,10 @@ M_CENTRE_PIECE_SMALL = {
     "height": 9,
     "border_type": 1,
     "door_info": {
-        0: {"pos": (-6, 6), "floor": 3},
-        1: {"pos": (-6, 6), "floor": 3},
-        2: {"pos": (-6, 6), "floor": 3},
-        3: {"pos": (-6, 6), "floor": 3},
+        0: {"pos": (-5, 5), "floor": 3},
+        1: {"pos": (-5, 5), "floor": 3},
+        2: {"pos": (-5, 5), "floor": 3},
+        3: {"pos": (-5, 5), "floor": 3},
     },
     "matrix": [
         [2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, ],
@@ -490,37 +581,17 @@ C_FIGHT_LARGE = {
 }
 
 C_FIGHT_SEMI_RANDOM = {
-    "options": [
-        {
-            "id": 2,
-            "overrides": [0],
-            "seed_amount": 2,
-            "seed_type": "blob",
-            "b_spread_amount": 15,
-            "b_spread_additional": 75,
-            "b_spread_compound": True
-        },
-        {
-            "id": 3,
-            "overrides": [0],
-            "seed_amount": 3,
-            "seed_type": "blob",
-            "b_spread_amount": 10,
-            "b_spread_additional": 50,
-            "b_spread_compound": False
-        },
-        {
-            "id": 1,
-            "overrides": [0, 2, 3, 4],
-            "seed_amount": 2,
-            "seed_type": "line",
-            "l_hole_amount": 4,
-            "l_hole_size_range": (3, 5)
-        },
-    ],
+    "options": G_2_WALLS,
     "maps": [
         M_CROSSROADS_EMPTY,
         M_CENTRE_PIECE_SMALL
+    ]
+}
+
+C_FIGHT_RANDOM = {
+    "options": G_4_WALLS,
+    "maps": [
+        M_EMPTY_MEDIUM
     ]
 }
 
