@@ -175,13 +175,17 @@ class Window(pyglet.window.Window):
         """
         scale_factor = self.scale_factor
 
-        screen_x = (x) * 16 * scale_factor
-        screen_x += self.width/2
-        screen_x -= 8 * scale_factor
+        screen_x = (
+            (x * 16 * scale_factor) +
+            (self.width/2) -
+            (8 * scale_factor)
+        )
 
-        screen_y = (y) * 16 * scale_factor
-        screen_y += self.height/2
-        screen_y -= 8 * scale_factor
+        screen_y = (
+            (y * 16 * scale_factor) +
+            (self.height/2) -
+            (8 * scale_factor)
+        )
 
         if parallax is True:
             screen_x += (
