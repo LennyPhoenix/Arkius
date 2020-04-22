@@ -176,6 +176,8 @@ def generate(width, height, room_map, tile_options, map_data):
         dict -- The randomised tilemap dict.
     """
 
+    pre_generation = room_map.copy()
+
     def blob(options):
         seeded = 0
         possible_seeds = [
@@ -276,7 +278,10 @@ def generate(width, height, room_map, tile_options, map_data):
                 False: [0, 2]
             }
             for door_id in angle_doors[horizontal]:
-                d_pos = map_data["door_info"][door_id]["pos"]
+                if map_data is not None:
+                    d_pos = map_data["door_info"][door_id]["pos"]
+                else:
+                    d_pos = 0
                 if d_pos-3 < l_pos < d_pos+3:
                     too_close = True
 
@@ -346,5 +351,23 @@ def generate(width, height, room_map, tile_options, map_data):
     for options in tile_options:
         if options["seed_type"] in generators.keys():
             generators[options["seed_type"]](options)
+    angle_doors = {
+        1: (True, 1),
+        3: (True, -1),
+        0: (False, 1),
+        2: (False, -1)
+    }
+    for i in range(4):
+        if map_data is not None:
+            d_pos = map_data["door_info"][i]["pos"]
+        else:
+            d_pos = 0
+        for offset in range(-1, 2):
+            if angle_doors[i][0]:
+                pos = (width*angle_doors[i][1], d_pos+offset)
+            else:
+                pos = (d_pos+offset, height*angle_doors[i][1])
+            if c.TILES[room_map[pos]]["collider"] is not None:
+                room_map[pos] = pre_generation[pos]
 
     return room_map
