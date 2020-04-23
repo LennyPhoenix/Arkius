@@ -7,7 +7,7 @@ Controls:
  • "+" and "-": Change zoom level.
  • Left Click: Place tile.
  • Right Click: Cycle tile type.
- • Enter: Print tilemap to console.
+ • Enter: Print tilemap to console and export to map.txt.
 
 """
 
