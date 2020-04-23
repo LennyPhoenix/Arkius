@@ -90,7 +90,7 @@ class Tile(Basic):
             x, y,
             tile_image
         )
-        group = window.layers[c.TILES[self.type]["layer"]]
+        group = window.layers["room_layers"][c.TILES[self.type]["layer"]]
         if type(group) is dict:
             self.sprite.group = group[self.grid_y]
         else:
@@ -130,7 +130,8 @@ class Player(Basic):
             0, 0,
             player_image
         )
-        self.sprite.group = window.layers["y_ordered"][self.grid_y]
+        layer = window.layers["room_layers"]["y_ordered"][self.grid_y]
+        self.sprite.group = layer
         self.ox, self.oy = self.x, self.y
 
         self.col_x = c.PLAYER_COLLIDER["x"]
@@ -209,8 +210,9 @@ class Player(Basic):
         self.checkDoors(window)
 
         super().update(window)
-        if self.sprite.group != window.layers["y_ordered"][self.grid_y]:
-            self.sprite.group = window.layers["y_ordered"][self.grid_y]
+        layer = window.layers["room_layers"]["y_ordered"][self.grid_y]
+        if self.sprite.group != layer:
+            self.sprite.group = layer
 
     def checkDoors(self, window):
         # Bottom Door

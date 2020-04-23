@@ -53,16 +53,26 @@ class Window(pyglet.window.Window):
 
         self.layers = {}
         self.layers["room"] = pyglet.graphics.OrderedGroup(1)
-        self.layers["ground"] = pyglet.graphics.OrderedGroup(
+        room_layers = {}
+        room_layers["ground"] = pyglet.graphics.OrderedGroup(
             1, parent=self.layers["room"]
         )
-        self.layers["y_ordered"] = {}
+        room_layers["y_ordered"] = {}
         for i in range(-50, 51):
-            self.layers["y_ordered"][i] = pyglet.graphics.OrderedGroup(
+            room_layers["y_ordered"][i] = pyglet.graphics.OrderedGroup(
                 51-i, parent=self.layers["room"]
             )
+        self.layers["room_layers"] = room_layers
 
         self.layers["ui"] = pyglet.graphics.OrderedGroup(2)
+        ui_layers = {}
+        ui_layers["map_window"] = pyglet.graphics.OrderedGroup(
+            1, parent=self.layers["ui"]
+        )
+        ui_layers["map_rooms"] = pyglet.graphics.OrderedGroup(
+            2, parent=self.layers["ui"]
+        )
+        self.layers["ui_layers"] = ui_layers
 
         self.dungeon = Dungeon(
             self,
@@ -80,8 +90,9 @@ class Window(pyglet.window.Window):
         for style in c.STYLES:
             tiles[style] = {}
             for tile in c.TILES.keys():
-                path = f"resources/tilesets/{style}/{tile}.png"
-                image = pyglet.image.load(path)
+                image = pyglet.resource.image(
+                    f"resources/tilesets/{style}/{tile}.png"
+                )
 
                 if c.TILES[tile]["sprite"]["connective"]:
                     image_grid = pyglet.image.ImageGrid(
@@ -104,12 +115,29 @@ class Window(pyglet.window.Window):
                 #     frames = image.
         self.resources["tiles"] = tiles
 
-        path = f"resources/sprites/player.png"
-        self.resources["player"] = pyglet.resource.image(path)
+        self.resources["player"] = pyglet.resource.image(
+            "resources/sprites/player.png"
+        )
+
+        ui = {}
+        ui["map"] = {}
+        ui["map"]["background"] = pyglet.resource.image(
+            "resources/ui/map.png"
+        )
+        image = pyglet.resource.image(
+            "resources/ui/map_rooms.png"
+        )
+        image_grid = pyglet.image.ImageGrid(
+            image,
+            1, 16
+        )
+        ui["map"]["rooms"] = pyglet.image.TextureGrid(image_grid)
+        self.resources["ui"] = ui
 
         debug = {}
-        path = "resources/collider.png"
-        debug["collider"] = pyglet.resource.image(path)
+        debug["collider"] = pyglet.resource.image(
+            "resources/collider.png"
+        )
         self.resources["debug"] = debug
 
     def on_draw(self):
