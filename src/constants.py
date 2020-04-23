@@ -38,7 +38,8 @@ TILES = {
             "connective": False,
             "connects": []
         },
-        "collider": None
+        "collider": None,
+        "layer": "ground"
     },
     WALL: {
         "sprite": {
@@ -52,7 +53,8 @@ TILES = {
             "y": 0,
             "width": 1,
             "height": 1
-        }
+        },
+        "layer": "y_ordered"
     },
     PIT: {
         "sprite": {
@@ -66,7 +68,8 @@ TILES = {
             "y": 3/16,
             "width": 11/16,
             "height": 11/16
-        }
+        },
+        "layer": "ground"
     },
     SECONDARY_FLOOR: {
         "sprite": {
@@ -75,7 +78,8 @@ TILES = {
             "connective": True,
             "connects": [SECONDARY_FLOOR]
         },
-        "collider": None
+        "collider": None,
+        "layer": "ground"
     },
     PAVEMENT: {
         "sprite": {
@@ -84,7 +88,8 @@ TILES = {
             "connective": True,
             "connects": [WALL, PAVEMENT]
         },
-        "collider": None
+        "collider": None,
+        "layer": "ground"
     }
 }
 

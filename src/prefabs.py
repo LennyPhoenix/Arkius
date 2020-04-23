@@ -10,13 +10,7 @@ from . import constants as c
 class Basic:
     """Basic entity."""
 
-    def __init__(
-        self,
-        window,
-        x, y,
-        image,
-        groups
-    ):
+    def __init__(self, window, x, y, image):
         """Initialise with position, dimensions and a sprite.
 
         Arguments:
@@ -24,19 +18,16 @@ class Basic:
             x {float} -- The world X position of the entity.
             y {float} -- The world Y position of the entity.
             image {pyglet.image} -- The image to be used for the sprite.
-            groups {dict} -- The Y groups dict to be used.
         """
         self.x = x
         self.y = y
         self.grid_x, self.grid_y = floor(self.x), floor(self.y)
-        self.groups = groups
 
         self.screen_x, self.screen_y = window.worldToScreen(self.x, self.y)
         self.sprite = pyglet.sprite.Sprite(
             image,
             x=self.screen_x, y=self.screen_y,
-            batch=window.batch,
-            group=self.groups[self.grid_y]
+            batch=window.batch
         )
         self.sprite.scale = window.scale_factor
 
@@ -53,7 +44,6 @@ class Basic:
         self.x = round(self.x*16)/16
         self.y = round(self.y*16)/16
         self.grid_x, self.grid_y = floor(self.x), floor(self.y)
-        self.sprite.group = self.groups[self.grid_y]
 
         screen_pos = window.worldToScreen(self.x, self.y, True)
         self.screen_x, self.screen_y = screen_pos[0], screen_pos[1]
@@ -98,9 +88,13 @@ class Tile(Basic):
         super().__init__(
             window,
             x, y,
-            tile_image,
-            window.tile_groups
+            tile_image
         )
+        group = window.layers[c.TILES[self.type]["layer"]]
+        if type(group) is dict:
+            self.sprite.group = group[self.grid_y]
+        else:
+            self.sprite.group = group
         self.sprite.visible = False
 
         if c.TILES[self.type]["collider"] is not None:
@@ -134,9 +128,9 @@ class Player(Basic):
         super().__init__(
             window,
             0, 0,
-            player_image,
-            window.player_groups
+            player_image
         )
+        self.sprite.group = window.layers["y_ordered"][self.grid_y]
         self.ox, self.oy = self.x, self.y
 
         self.col_x = c.PLAYER_COLLIDER["x"]
@@ -215,6 +209,8 @@ class Player(Basic):
         self.checkDoors(window)
 
         super().update(window)
+        if self.sprite.group != window.layers["y_ordered"][self.grid_y]:
+            self.sprite.group = window.layers["y_ordered"][self.grid_y]
 
     def checkDoors(self, window):
         # Bottom Door

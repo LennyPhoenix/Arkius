@@ -51,15 +51,18 @@ class Window(pyglet.window.Window):
 
         self.loadResources()
 
-        self.tile_groups = {}
-        self.player_groups = {}
-        for y in range(-50, 51):
-            self.tile_groups[y] = pyglet.graphics.OrderedGroup(50-y*2)
-            self.player_groups[y] = pyglet.graphics.OrderedGroup(50-y*2+1)
+        self.layers = {}
+        self.layers["room"] = pyglet.graphics.OrderedGroup(1)
+        self.layers["ground"] = pyglet.graphics.OrderedGroup(
+            1, parent=self.layers["room"]
+        )
+        self.layers["y_ordered"] = {}
+        for i in range(-50, 51):
+            self.layers["y_ordered"][i] = pyglet.graphics.OrderedGroup(
+                51-i, parent=self.layers["room"]
+            )
 
-        self.ui_layers = {}
-        for z in range(5):
-            self.ui_layers[z] = pyglet.graphics.OrderedGroup(z+100)
+        self.layers["ui"] = pyglet.graphics.OrderedGroup(2)
 
         self.dungeon = Dungeon(
             self,
