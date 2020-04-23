@@ -212,6 +212,11 @@ class Player(Basic):
             ):
                 self.x = body.aabb[2] - self.col_x
 
+        self.checkDoors()
+
+        super().update(window)
+
+    def checkDoors(self, window):
         # Bottom Door
         if self.y < -(window.room.height+3):
             window.room.visibility = False
@@ -295,8 +300,6 @@ class Player(Basic):
                 )
             else:
                 self.y = 0 + offset
-
-        super().update(window)
 
     @property
     def aabb(self):
