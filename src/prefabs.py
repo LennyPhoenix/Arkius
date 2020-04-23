@@ -212,7 +212,7 @@ class Player(Basic):
             ):
                 self.x = body.aabb[2] - self.col_x
 
-        self.checkDoors()
+        self.checkDoors(window)
 
         super().update(window)
 
