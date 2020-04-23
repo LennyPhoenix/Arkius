@@ -19,8 +19,8 @@ from pyglet import gl
 from pyglet.window import key
 from pyglet.window import mouse
 
-from lib import constants as c
-from lib import prefabs, tilemaps
+from src import constants as c
+from src import prefabs, tilemaps
 
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
