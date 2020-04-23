@@ -212,45 +212,89 @@ class Player(Basic):
             ):
                 self.x = body.aabb[2] - self.col_x
 
+        # Bottom Door
         if self.y < -(window.room.height+3):
             window.room.visibility = False
+            if window.room.map_data is not None:
+                offset = (
+                    self.x -
+                    window.room.map_data["door_info"][2]["pos"]
+                )
+            else:
+                offset = self.x
             self.room = (self.room[0], self.room[1]-1)
             window.room.visibility = True
             self.y = window.room.height+3
             if window.room.map_data is not None:
-                self.x = window.room.map_data["door_info"][0]["pos"]
+                self.x = (
+                    offset +
+                    window.room.map_data["door_info"][0]["pos"]
+                )
             else:
-                self.x = 0
+                self.x = 0 + offset
 
+        # Left Door
         if self.x < -(window.room.width+3):
             window.room.visibility = False
+            if window.room.map_data is not None:
+                offset = (
+                    self.y -
+                    window.room.map_data["door_info"][3]["pos"]
+                )
+            else:
+                offset = self.y
             self.room = (self.room[0]-1, self.room[1])
             window.room.visibility = True
             self.x = window.room.width+3
             if window.room.map_data is not None:
-                self.y = window.room.map_data["door_info"][1]["pos"]
+                self.y = (
+                    offset +
+                    window.room.map_data["door_info"][1]["pos"]
+                )
             else:
-                self.y = 0
+                self.y = 0 + offset
 
+        # Top Door
         if self.y > window.room.height+3:
             window.room.visibility = False
+            if window.room.map_data is not None:
+                offset = (
+                    self.x -
+                    window.room.map_data["door_info"][0]["pos"]
+                )
+            else:
+                offset = self.x
             self.room = (self.room[0], self.room[1]+1)
             window.room.visibility = True
             self.y = -(window.room.height+3)
             if window.room.map_data is not None:
-                self.x = window.room.map_data["door_info"][2]["pos"]
+                self.x = (
+                    offset +
+                    window.room.map_data["door_info"][2]["pos"]
+                )
             else:
-                self.x = 0
+                self.x = 0 + offset
 
+        # Right Door
         if self.x > window.room.width+3:
             window.room.visibility = False
+            if window.room.map_data is not None:
+                offset = (
+                    self.y -
+                    window.room.map_data["door_info"][1]["pos"]
+                )
+            else:
+                offset = self.y
             self.room = (self.room[0]+1, self.room[1])
             window.room.visibility = True
             self.x = -(window.room.width+3)
             if window.room.map_data is not None:
-                self.y = window.room.map_data["door_info"][3]["pos"]
+                self.y = (
+                    offset +
+                    window.room.map_data["door_info"][3]["pos"]
+                )
             else:
-                self.y = 0
+                self.y = 0 + offset
 
         super().update(window)
 
