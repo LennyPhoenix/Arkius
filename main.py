@@ -19,9 +19,9 @@ import pyglet
 from pyglet import gl
 from pyglet.window import key
 
-from lib import constants as c
-from lib import prefabs
-from lib.dungeon import Dungeon
+from src import constants as c
+from src import prefabs
+from src.dungeon import Dungeon
 
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
