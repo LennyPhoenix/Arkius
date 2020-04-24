@@ -226,7 +226,6 @@ class Player(Basic):
             else:
                 offset = self.x
             self.room = (self.room[0], self.room[1]-1)
-            window.room.visibility = True
             self.y = window.room.height+3
             if window.room.map_data is not None:
                 self.x = (
@@ -247,7 +246,6 @@ class Player(Basic):
             else:
                 offset = self.y
             self.room = (self.room[0]-1, self.room[1])
-            window.room.visibility = True
             self.x = window.room.width+3
             if window.room.map_data is not None:
                 self.y = (
@@ -268,7 +266,6 @@ class Player(Basic):
             else:
                 offset = self.x
             self.room = (self.room[0], self.room[1]+1)
-            window.room.visibility = True
             self.y = -(window.room.height+3)
             if window.room.map_data is not None:
                 self.x = (
@@ -289,7 +286,6 @@ class Player(Basic):
             else:
                 offset = self.y
             self.room = (self.room[0]+1, self.room[1])
-            window.room.visibility = True
             self.x = -(window.room.width+3)
             if window.room.map_data is not None:
                 self.y = (
