@@ -83,6 +83,9 @@ class Window(pyglet.window.Window):
         ui_layers["map_rooms"] = pyglet.graphics.OrderedGroup(
             2, parent=self.layers["ui"]
         )
+        ui_layers["map_icons"] = pyglet.graphics.OrderedGroup(
+            3, parent=self.layers["ui"]
+        )
         self.layers["ui_layers"] = ui_layers
 
     def loadResources(self):
@@ -135,6 +138,14 @@ class Window(pyglet.window.Window):
             4, 16
         )
         ui["map"]["rooms"] = pyglet.image.TextureGrid(image_grid)
+        image = pyglet.resource.image(
+            "resources/ui/map_icons.png"
+        )
+        image_grid = pyglet.image.ImageGrid(
+            image,
+            1, 5
+        )
+        ui["map"]["icons"] = pyglet.image.TextureGrid(image_grid)
         self.resources["ui"] = ui
 
         debug = {}

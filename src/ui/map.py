@@ -38,6 +38,7 @@ class Map:
             image = window.resources["ui"]["map"]["rooms"][(
                 3, room.door_value
             )]
+            icon = window.resources["ui"]["map"]["icons"][room.type]
             self.map_rooms[pos] = {}
             self.map_rooms[pos]["sprite"] = pyglet.sprite.Sprite(
                 image,
@@ -45,18 +46,37 @@ class Map:
                     self.map_window.x +
                     self.map_window.width//2 -
                     image.width//2*scale_factor +
-                    pos[0]*6*scale_factor
+                    pos[0]*12*scale_factor
                 ),
                 y=(
                     self.map_window.y +
                     self.map_window.height//2 -
                     image.height//2*scale_factor +
-                    pos[1]*6*scale_factor
+                    pos[1]*12*scale_factor
                 ),
                 batch=window.batch,
                 group=window.layers["ui_layers"]["map_rooms"]
             )
             self.map_rooms[pos]["sprite"].scale = scale_factor
+            self.map_rooms[pos]["icon"] = pyglet.sprite.Sprite(
+                icon,
+                x=(
+                    self.map_window.x +
+                    self.map_window.width//2 -
+                    icon.width//2*scale_factor +
+                    pos[0]*12*scale_factor
+                ),
+                y=(
+                    self.map_window.y +
+                    self.map_window.height//2 -
+                    icon.height//2*scale_factor +
+                    pos[1]*12*scale_factor
+                ),
+                batch=window.batch,
+                group=window.layers["ui_layers"]["map_icons"]
+            )
+            self.map_rooms[pos]["icon"].scale = scale_factor
+            self.map_rooms[pos]["icon"].visible = False
             self.map_rooms[pos]["visited"] = False
             self.map_rooms[pos]["room"] = room
 
@@ -74,6 +94,7 @@ class Map:
         )]
         self.map_rooms[pos]["sprite"].image = image
         self.map_rooms[pos]["visited"] = True
+        self.map_rooms[pos]["icon"].visible = True
 
         for (x, y), door in neighbours.items():
             n_x, n_y = x+pos[0], y+pos[1]
@@ -92,6 +113,7 @@ class Map:
                 self.map_rooms[(
                     n_x, n_y
                 )]["sprite"].image = image
+                self.map_rooms[(n_x, n_y)]["icon"].visible = True
 
     def resize(self, window):
         scale_factor = window.scale_factor
@@ -122,3 +144,18 @@ class Map:
                 )
             )
             self.map_rooms[pos]["sprite"].scale = scale_factor
+            self.map_rooms[pos]["icon"].update(
+                x=(
+                    self.map_window.x +
+                    self.map_window.width//2 -
+                    self.map_rooms[pos]["icon"].width//2 +
+                    pos[0]*12*scale_factor
+                ),
+                y=(
+                    self.map_window.y +
+                    self.map_window.height//2 -
+                    self.map_rooms[pos]["icon"].height//2 +
+                    pos[1]*12*scale_factor
+                )
+            )
+            self.map_rooms[pos]["icon"].scale = scale_factor
