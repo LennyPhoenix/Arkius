@@ -24,13 +24,12 @@ def toMap(matrix):
     return tilemap
 
 
-def add_boundaries(room_map, width, height, doors_enabled, map_data):  # noqa: E501
+def add_boundaries(room_type, room_map, doors_enabled, map_data):
     """Applies boundaries and doors.
 
     Arguments:
+        room_type {int} -- The type of the room.
         room_map {dict} -- The dictionary tilemap to modify.
-        width {int} -- The room's width.
-        height {int} -- The room's height.
         doors_enabled {dict} -- A dict of all enabled doors.
         map_data {dict} -- The data about the map.
 
@@ -40,8 +39,11 @@ def add_boundaries(room_map, width, height, doors_enabled, map_data):  # noqa: E
 
     if map_data is not None:
         border_type = map_data["border_type"]
+        width = map_data["width"]
+        height = map_data["height"]
     else:
         border_type = c.WALL
+        width, height = c.ROOM_INFO[room_type]["default_dimensions"]
 
     door_f = {}
     door_p = {}
@@ -162,12 +164,11 @@ def create_blank(width=7, height=7, tile_type=c.FLOOR):
     return map
 
 
-def generate(width, height, room_map, tile_options, map_data):
+def generate(room_type, room_map, tile_options, map_data):
     """Randomly modify given tilemap with the options specified.
 
     Arguments:
-        width {int} -- The width of the tilemap's room.
-        height {int} -- The height of the tilemap's room.
+        room_type {int} -- The type of the room.
         room_map {dict} -- The dictionary tilemap to randomise.
         tile_options {list} -- The tiles that should be randomised and their
                                options.
@@ -177,6 +178,12 @@ def generate(width, height, room_map, tile_options, map_data):
     """
 
     pre_generation = room_map.copy()
+
+    if map_data is not None:
+        width = map_data["width"]
+        height = map_data["height"]
+    else:
+        width, height = c.ROOM_INFO[room_type]["default_dimensions"]
 
     def blob(options):
         seeded = 0

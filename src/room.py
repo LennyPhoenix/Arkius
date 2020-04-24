@@ -11,7 +11,20 @@ class Room:
     """Room class for dungeon."""
 
     def __init__(self, window, room_type=c.START_ROOM, dungeon_style=c.ICE, room_config=None, doors=None):  # noqa: E501
-        """Initialise the room."""
+        """Initialise the room.
+
+        Arguments:
+            window {Window} -- The application window.
+
+        Keyword Arguments:
+            room_type {int} -- The type of room. (default: {c.START_ROOM})
+            dungeon_style {int} -- The tileset and style to use.
+                                   (default: {c.ICE})
+            room_config {dict} -- The room configuration to use.
+                                  (default: {None})
+            doors {dict} -- The doors that should be open. (default: {None})
+        """
+        self.window = window
         self.type = room_type
         self.doors = doors
         self.tilemap = {}
@@ -63,42 +76,37 @@ class Room:
                     )
 
         self.tilemap = tilemaps.generate(
-            self.width, self.height,
+            self.type,
             self.tilemap,
             self.config["options"],
             self.map_data
         )
 
         self.tilemap = tilemaps.add_boundaries(
+            self.type,
             self.tilemap,
-            self.width,
-            self.height,
             self.doors,
             self.map_data
         )
 
-        self.createSprites(window)
+        self.createSprites()
 
-    def createSprites(self, window):
-        """Create all the sprites for the room tiles.
-
-        Arguments:
-            window {pyglet.window.Window} -- The window for the application.
-        """
+    def createSprites(self):
+        """Create all the sprites for the room tiles."""
 
         for x in range(-(self.width+3), self.width+4):
             for y in range(-(self.height+3), self.height+4):
                 if (x, y) in self.tilemap.keys():
                     tile_type = self.tilemap[(x, y)]
                     if not c.TILES[tile_type]["sprite"]["connective"]:
-                        image = random.choice(window.resources["tiles"][
+                        image = random.choice(self.window.resources["tiles"][
                             self.style
                         ][
                             tile_type
                         ])
                     else:
                         index = self.getImageIndex(x, y)
-                        image = window.resources["tiles"][
+                        image = self.window.resources["tiles"][
                             self.style
                         ][
                             tile_type
@@ -107,7 +115,7 @@ class Room:
                         ]
 
                     tile = prefabs.Tile(
-                        window,
+                        self.window,
                         x, y,
                         tile_type,
                         image
@@ -116,27 +124,19 @@ class Room:
                         self.space.insert_body(tile)
                     self.tiles[(x, y)] = tile
 
-    def update(self, window):
-        """Update all tiles.
-
-        Arguments:
-            window {pyglet.window.Window} -- The window for the application.
-        """
+    def update(self):
+        """Update all tiles."""
         for x in range(-(self.width+3), self.width+4):
             for y in range(-(self.height+3), self.height+4):
                 if (x, y) in self.tiles.keys():
-                    self.tiles[(x, y)].update(window)
+                    self.tiles[(x, y)].update()
 
-    def resize(self, window):
-        """Resize all tiles.
-
-        Arguments:
-            window {pyglet.window.Window} -- The window for the application.
-        """
+    def resize(self):
+        """Resize all tiles."""
         for x in range(-(self.width+3), self.width+4):
             for y in range(-(self.height+3), self.height+4):
                 if (x, y) in self.tiles.keys():
-                    self.tiles[(x, y)].resize(window)
+                    self.tiles[(x, y)].resize()
 
     def getImageIndex(self, x, y):
         """Return the image index for a tile.

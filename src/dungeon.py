@@ -13,13 +13,14 @@ class Dungeon:
         """Define the style and dungeon configuration.
 
         Arguments:
-            window {pyglet.window.Window} -- The window for the application.
+            window {Window} -- The window for the application.
             style {int} -- The tileset/style of the dungeon.
 
         Keyword Arguments:
             config {dict} -- The dungeon config to use for room
                              numbering. (default: {None})
         """
+        self.window = window
         self.style = style
         self.map = {}
         self.config = config
@@ -27,15 +28,11 @@ class Dungeon:
         if self.config is None:
             self.config = c.DUNGEON_BASE
 
-        self.generateRooms(window)
-        self.ui_map = Map(window, self)
+        self.generateRooms()
+        self.ui_map = Map(self.window, self)
 
-    def generateRooms(self, window):
-        """Place and create each room.
-
-        Arguments:
-            window {pyglet.window.Window} -- The window for the application.
-        """
+    def generateRooms(self):
+        """Place and create each room."""
         gen_map = {}
         neighbours = {
             (1, 0): (1, 3),
@@ -120,7 +117,7 @@ class Dungeon:
 
         for pos, data in gen_map.items():
             self.map[pos] = Room(
-                window,
+                self.window,
                 room_type=data["type"],
                 dungeon_style=self.style,
                 doors=data["doors"]

@@ -5,6 +5,13 @@ import pyglet
 
 class Map:
     def __init__(self, window, dungeon):
+        """Initialise the map with all rooms/
+
+        Arguments:
+            window {Window} -- The application window.
+            dungeon {Dungeon} -- The dungeon for the map.
+        """
+        self.window = window
         self.dungeon = dungeon
         map_image = window.resources["ui"]["map"]["window"]
         map_layer = window.layers["ui_layers"]["map_window"]
@@ -80,16 +87,21 @@ class Map:
             self.map_rooms[pos]["visited"] = False
             self.map_rooms[pos]["room"] = room
 
-        self.discover(window, (0, 0))
+        self.discover((0, 0))
 
-    def discover(self, window, pos):
+    def discover(self, pos):
+        """Discover rooms on the map.
+
+        Arguments:
+            pos {tuple} -- The x and y position to discover.
+        """
         neighbours = {
             (1, 0): 1,
             (-1, 0): 3,
             (0, -1): 2,
             (0, 1): 0
         }
-        image = window.resources["ui"]["map"]["rooms"][(
+        image = self.window.resources["ui"]["map"]["rooms"][(
             0, self.map_rooms[pos]["room"].door_value
         )]
         self.map_rooms[pos]["sprite"].image = image
@@ -103,11 +115,11 @@ class Map:
                 self.dungeon.map[pos].doors[door]
             ):
                 if self.map_rooms[(n_x, n_y)]["visited"]:
-                    image = window.resources["ui"]["map"]["rooms"][(
+                    image = self.window.resources["ui"]["map"]["rooms"][(
                         1, self.map_rooms[(n_x, n_y)]["room"].door_value
                     )]
                 else:
-                    image = window.resources["ui"]["map"]["rooms"][(
+                    image = self.window.resources["ui"]["map"]["rooms"][(
                         2, self.map_rooms[(n_x, n_y)]["room"].door_value
                     )]
                 self.map_rooms[(
@@ -115,16 +127,17 @@ class Map:
                 )]["sprite"].image = image
                 self.map_rooms[(n_x, n_y)]["icon"].visible = True
 
-    def resize(self, window):
-        scale_factor = window.scale_factor
+    def resize(self):
+        """Resize the map."""
+        scale_factor = self.window.scale_factor
         self.map_window.scale = scale_factor
         self.map_window.update(
             x=(
-                window.width -
+                self.window.width -
                 self.map_window.width
             ),
             y=(
-                window.height -
+                self.window.height -
                 self.map_window.height
             )
         )
