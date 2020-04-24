@@ -3,6 +3,7 @@ import random
 
 from . import constants as c
 from .room import Room
+from .ui.map import Map
 
 
 class Dungeon:
@@ -27,6 +28,7 @@ class Dungeon:
             self.config = c.DUNGEON_BASE
 
         self.generateRooms(window)
+        self.ui_map = Map(window, self)
 
     def generateRooms(self, window):
         """Place and create each room.

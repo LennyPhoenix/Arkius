@@ -234,6 +234,7 @@ class Player(Basic):
                 )
             else:
                 self.x = 0 + offset
+            window.dungeon.ui_map.discover(window, self.room)
 
         # Left Door
         if self.x < -(window.room.width+3):
@@ -254,6 +255,7 @@ class Player(Basic):
                 )
             else:
                 self.y = 0 + offset
+            window.dungeon.ui_map.discover(window, self.room)
 
         # Top Door
         if self.y > window.room.height+3:
@@ -274,6 +276,7 @@ class Player(Basic):
                 )
             else:
                 self.x = 0 + offset
+            window.dungeon.ui_map.discover(window, self.room)
 
         # Right Door
         if self.x > window.room.width+3:
@@ -294,6 +297,7 @@ class Player(Basic):
                 )
             else:
                 self.y = 0 + offset
+            window.dungeon.ui_map.discover(window, self.room)
 
     @property
     def aabb(self):
