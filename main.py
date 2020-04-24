@@ -49,8 +49,19 @@ class Window(pyglet.window.Window):
 
         self.enable_debugging = True
 
+        self.createLayers()
         self.loadResources()
 
+        self.dungeon = Dungeon(
+            self,
+            c.ICE
+        )
+
+        self.player = prefabs.Player(self)
+        self.push_handlers(self.key_handler)
+
+    def createLayers(self):
+        """Create all layers."""
         self.layers = {}
         self.layers["room"] = pyglet.graphics.OrderedGroup(1)
         room_layers = {}
@@ -74,16 +85,8 @@ class Window(pyglet.window.Window):
         )
         self.layers["ui_layers"] = ui_layers
 
-        self.dungeon = Dungeon(
-            self,
-            c.ICE
-        )
-
-        self.player = prefabs.Player(self)
-        self.push_handlers(self.key_handler)
-
     def loadResources(self):
-        """Preloads all resources."""
+        """Preload all resources."""
         self.resources = {}
 
         tiles = {}
@@ -121,15 +124,15 @@ class Window(pyglet.window.Window):
 
         ui = {}
         ui["map"] = {}
-        ui["map"]["background"] = pyglet.resource.image(
-            "resources/ui/map.png"
+        ui["map"]["window"] = pyglet.resource.image(
+            "resources/ui/map_window.png"
         )
         image = pyglet.resource.image(
             "resources/ui/map_rooms.png"
         )
         image_grid = pyglet.image.ImageGrid(
             image,
-            1, 16
+            4, 16
         )
         ui["map"]["rooms"] = pyglet.image.TextureGrid(image_grid)
         self.resources["ui"] = ui
@@ -189,6 +192,7 @@ class Window(pyglet.window.Window):
         super().on_resize(width, height)
         for pos in self.dungeon.map.keys():
             self.dungeon.map[pos].resize(self)
+        self.dungeon.ui_map.resize(self)
         self.player.resize(self)
 
     def worldToScreen(self, x, y, parallax=False):
