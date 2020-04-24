@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import pyglet
 from pyglet import gl
-from pyglet.window import key
+from pyglet.window import key, mouse
 
 from src import constants as c
 from src import prefabs
@@ -54,7 +54,7 @@ class Window(pyglet.window.Window):
 
         self.dungeon = Dungeon(
             self,
-            c.ICE
+            c.VOLCANO
         )
 
         self.player = prefabs.Player(self)
@@ -193,6 +193,15 @@ class Window(pyglet.window.Window):
         if symbol == key.F11:
             self.set_fullscreen(not self.fullscreen)
 
+    def on_mouse_press(self, x, y, button, modifiers):
+        if button == mouse.MIDDLE:
+            world_x, world_y = self.screenToWorld(
+                x, y,
+                parallax=True
+            )
+            self.player.x, self.player.y = world_x+0.5, world_y
+        return super().on_mouse_press(x, y, button, modifiers)
+
     def on_resize(self, width, height):
         """Resize the room.
 
@@ -213,25 +222,18 @@ class Window(pyglet.window.Window):
             x {float} -- The world x position.
             y {float} -- The world y position.
 
-        Keyword Arguments:
-            parallax {bool} -- Render with parallax. (default: {False})
-
         Returns:
             (int, int) -- The screen position of the object.
         """
         scale_factor = self.scale_factor
 
-        screen_x = (
-            (x * 16 * scale_factor) +
-            (self.width/2) -
-            (8 * scale_factor)
-        )
+        screen_x = (x) * 16 * scale_factor
+        screen_x += self.width/2
+        screen_x -= 8 * scale_factor
 
-        screen_y = (
-            (y * 16 * scale_factor) +
-            (self.height/2) -
-            (8 * scale_factor)
-        )
+        screen_y = (y) * 16 * scale_factor
+        screen_y += self.height/2
+        screen_y -= 8 * scale_factor
 
         if parallax is True:
             screen_x += (
@@ -242,6 +244,38 @@ class Window(pyglet.window.Window):
             )
 
         return (screen_x, screen_y)
+
+    def screenToWorld(self, x, y, parallax=False):
+        """Convert a world position to a screen position.
+
+        Arguments:
+            x {float} -- The screen x position.
+            y {float} -- The screen y position.
+
+        Returns:
+            (int, int) -- The world position of the object.
+        """
+        scale_factor = self.scale_factor
+
+        world_x, world_y = 0, 0
+
+        if parallax is True:
+            world_x += (
+                (self.player.x) * 16 * scale_factor
+            )
+            world_y += (
+                (self.player.y) * 16 * scale_factor
+            )
+
+        world_x += (x+0.5) - self.width / 2
+        world_x += 8 * scale_factor
+        world_x /= 16 * scale_factor
+
+        world_y += (y+0.5) - self.height / 2
+        world_y += 8 * scale_factor
+        world_y /= 16 * scale_factor
+
+        return (world_x, world_y)
 
     @property
     def room(self):
