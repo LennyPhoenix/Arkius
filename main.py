@@ -199,7 +199,7 @@ class Window(pyglet.window.Window):
                 x, y,
                 parallax=True
             )
-            self.player.x, self.player.y = world_x+0.5, world_y
+            self.player.x, self.player.y = world_x-0.5, world_y
         return super().on_mouse_press(x, y, button, modifiers)
 
     def on_resize(self, width, height):
