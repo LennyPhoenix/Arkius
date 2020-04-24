@@ -185,5 +185,5 @@ DUNGEON_BASE = {
         BOSS_ROOM: 2,
         SHOP_ROOM: 1
     },
-    "connections": 7
+    "connections": 9
 }
