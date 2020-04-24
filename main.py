@@ -170,16 +170,16 @@ class Window(pyglet.window.Window):
         if self.key_handler[key.EQUAL]:
             self.scale_divisor -= 100 * dt
             for pos in self.dungeon.map.keys():
-                self.dungeon.map[pos].resize(self)
-            self.player.resize(self)
+                self.dungeon.map[pos].resize()
+            self.player.resize()
         elif self.key_handler[key.MINUS]:
             self.scale_divisor += 100 * dt
             for pos in self.dungeon.map.keys():
-                self.dungeon.map[pos].resize(self)
-            self.player.resize(self)
+                self.dungeon.map[pos].resize()
+            self.player.resize()
 
-        self.player.update(self, dt)
-        self.room.update(self)
+        self.player.update(dt)
+        self.room.update()
 
     def on_key_press(self, symbol, modifiers):
         """Fullscreen the window or create a new room.
@@ -211,9 +211,9 @@ class Window(pyglet.window.Window):
         """
         super().on_resize(width, height)
         for pos in self.dungeon.map.keys():
-            self.dungeon.map[pos].resize(self)
-        self.dungeon.ui_map.resize(self)
-        self.player.resize(self)
+            self.dungeon.map[pos].resize()
+        self.dungeon.ui_map.resize()
+        self.player.resize()
 
     def worldToScreen(self, x, y, parallax=False):
         """Convert a world position to a screen position.
