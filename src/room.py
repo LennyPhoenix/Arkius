@@ -26,6 +26,11 @@ class Room:
         if self.doors is None:
             self.doors = {i: False for i in range(4)}
 
+        self.door_value = 0
+        for i in range(4):
+            if self.doors[i]:
+                self.door_value += 2**i
+
         if self.config is None:
             self.config = random.choice(
                 c.ROOM_INFO[self.type]["configs"][self.style]
