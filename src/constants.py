@@ -180,10 +180,10 @@ ROOM_INFO = {
 # Dungeon Configs
 DUNGEON_BASE = {
     "rooms": {
-        FIGHT_ROOM: 5,
-        TREASURE_ROOM: 2,
-        BOSS_ROOM: 1,
+        FIGHT_ROOM: 20,
+        TREASURE_ROOM: 5,
+        BOSS_ROOM: 2,
         SHOP_ROOM: 1
     },
-    "connections": 4
+    "connections": 7
 }
