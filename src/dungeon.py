@@ -59,9 +59,21 @@ class Dungeon:
                         gen_map[(pos)]["type"] == c.BOSS_ROOM
                     ) and
                     (
-                        room_type == c.START_ROOM and
+                        room_type == c.START_ROOM or
                         room_type == c.BOSS_ROOM
                     )
+                ):
+                    continue
+
+                if (
+                    gen_map[(pos)]["type"] == c.TREASURE_ROOM and
+                    room_type == c.TREASURE_ROOM
+                ):
+                    continue
+
+                if not (
+                    -3 <= n_x <= 3 and
+                    -3 <= n_y <= 3
                 ):
                     continue
 
@@ -91,6 +103,12 @@ class Dungeon:
                         gen_map[(n_x, n_y)]["type"] == c.START_ROOM and
                         gen_map[(n_x, n_y)]["type"] == c.BOSS_ROOM
                     )
+                ):
+                    continue
+
+                if (
+                    gen_map[(pos)]["type"] == c.TREASURE_ROOM and
+                    gen_map[(n_x, n_y)]["type"] == c.TREASURE_ROOM
                 ):
                     continue
 
