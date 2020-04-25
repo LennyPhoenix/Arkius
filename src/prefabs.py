@@ -67,7 +67,7 @@ class Tile(Basic):
             x, y,
             tile_image
         )
-        group = self.window.layers["world_layers"][c.TILES[self.type]["layer"]]
+        group = self.window.layers["world"][c.TILES[self.type]["layer"]]
         if type(group) is dict:
             self.sprite.group = group[self.grid_y]
         else:
@@ -107,7 +107,7 @@ class Player(Basic):
             0, 0,
             player_image
         )
-        layer = self.window.layers["world_layers"]["y_ordered"][self.grid_y]
+        layer = self.window.layers["world"]["y_ordered"][self.grid_y]
         self.sprite.group = layer
         self.ox, self.oy = self.x, self.y
 
@@ -192,7 +192,7 @@ class Player(Basic):
         self.checkDoors()
 
         super().update()
-        layer = self.window.layers["world_layers"]["y_ordered"][self.grid_y]
+        layer = self.window.layers["world"]["y_ordered"][self.grid_y]
         if self.sprite.group != layer:
             self.sprite.group = layer
 

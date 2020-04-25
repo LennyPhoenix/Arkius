@@ -67,30 +67,19 @@ class Window(pyglet.window.Window):
     def createLayers(self):
         """Create all layers."""
         self.layers = {}
-        self.layers["world"] = pyglet.graphics.OrderedGroup(1)
-        world_layers = {}
-        world_layers["ground"] = pyglet.graphics.OrderedGroup(
-            1, parent=self.layers["world"]
-        )
-        world_layers["y_ordered"] = {}
-        for i in range(-50, 51):
-            world_layers["y_ordered"][i] = pyglet.graphics.OrderedGroup(
-                51-i, parent=self.layers["world"]
-            )
-        self.layers["world_layers"] = world_layers
 
-        self.layers["ui"] = pyglet.graphics.OrderedGroup(2)
-        ui_layers = {}
-        ui_layers["map_window"] = pyglet.graphics.OrderedGroup(
-            1, parent=self.layers["ui"]
-        )
-        ui_layers["map_rooms"] = pyglet.graphics.OrderedGroup(
-            2, parent=self.layers["ui"]
-        )
-        ui_layers["map_icons"] = pyglet.graphics.OrderedGroup(
-            3, parent=self.layers["ui"]
-        )
-        self.layers["ui_layers"] = ui_layers
+        world = {}
+        world["ground"] = pyglet.graphics.OrderedGroup(1)
+        world["y_ordered"] = {}
+        for i in range(-50, 51):
+            world["y_ordered"][i] = pyglet.graphics.OrderedGroup(51-i)
+        self.layers["world"] = world
+
+        ui = {}
+        ui["map_window"] = pyglet.graphics.OrderedGroup(1)
+        ui["map_rooms"] = pyglet.graphics.OrderedGroup(2)
+        ui["map_icons"] = pyglet.graphics.OrderedGroup(3)
+        self.layers["ui"] = ui
 
     def loadResources(self):
         """Preload all resources."""

@@ -16,7 +16,7 @@ class Map:
         self.window = window
         self.dungeon = dungeon
         map_image = self.window.resources["ui"]["map"]["window"]
-        map_layer = self.window.layers["ui_layers"]["map_window"]
+        map_layer = self.window.layers["ui"]["map_window"]
         self.map_window = pyglet.sprite.Sprite(
             map_image,
             0, 0,
@@ -42,13 +42,13 @@ class Map:
                 image,
                 0, 0,
                 batch=self.window.ui_batch,
-                group=self.window.layers["ui_layers"]["map_rooms"]
+                group=self.window.layers["ui"]["map_rooms"]
             )
             self.map_rooms[pos]["icon"] = pyglet.sprite.Sprite(
                 icon,
                 0, 0,
                 batch=self.window.ui_batch,
-                group=self.window.layers["ui_layers"]["map_icons"]
+                group=self.window.layers["ui"]["map_icons"]
             )
             self.map_rooms[pos]["icon"].visible = False
             self.map_rooms[pos]["visited"] = False
