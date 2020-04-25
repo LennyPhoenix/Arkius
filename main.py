@@ -64,17 +64,17 @@ class Window(pyglet.window.Window):
     def createLayers(self):
         """Create all layers."""
         self.layers = {}
-        self.layers["room"] = pyglet.graphics.OrderedGroup(1)
-        room_layers = {}
-        room_layers["ground"] = pyglet.graphics.OrderedGroup(
-            1, parent=self.layers["room"]
+        self.layers["world"] = pyglet.graphics.OrderedGroup(1)
+        world_layers = {}
+        world_layers["ground"] = pyglet.graphics.OrderedGroup(
+            1, parent=self.layers["world"]
         )
-        room_layers["y_ordered"] = {}
+        world_layers["y_ordered"] = {}
         for i in range(-50, 51):
-            room_layers["y_ordered"][i] = pyglet.graphics.OrderedGroup(
-                51-i, parent=self.layers["room"]
+            world_layers["y_ordered"][i] = pyglet.graphics.OrderedGroup(
+                51-i, parent=self.layers["world"]
             )
-        self.layers["room_layers"] = room_layers
+        self.layers["world_layers"] = world_layers
 
         self.layers["ui"] = pyglet.graphics.OrderedGroup(2)
         ui_layers = {}
