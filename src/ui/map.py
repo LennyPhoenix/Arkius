@@ -13,22 +13,22 @@ class Map:
         """
         self.window = window
         self.dungeon = dungeon
-        map_image = window.resources["ui"]["map"]["window"]
-        map_layer = window.layers["ui_layers"]["map_window"]
-        scale_factor = window.scale_factor*1.5
+        map_image = self.window.resources["ui"]["map"]["window"]
+        map_layer = self.window.layers["ui_layers"]["map_window"]
+        scale_factor = self.window.scale_factor*1.5
         self.map_window = pyglet.sprite.Sprite(
             map_image,
             x=(
-                window.width -
+                self.window.width -
                 map_image.width *
                 scale_factor
             ),
             y=(
-                window.height -
+                self.window.height -
                 map_image.height *
                 scale_factor
             ),
-            batch=window.batch,
+            batch=self.window.ui_batch,
             group=map_layer
         )
         self.map_window.scale = scale_factor
@@ -42,10 +42,10 @@ class Map:
 
         self.map_rooms = {}
         for pos, room in self.dungeon.map.items():
-            image = window.resources["ui"]["map"]["rooms"][(
+            image = self.window.resources["ui"]["map"]["rooms"][(
                 3, room.door_value
             )]
-            icon = window.resources["ui"]["map"]["icons"][room.type]
+            icon = self.window.resources["ui"]["map"]["icons"][room.type]
             self.map_rooms[pos] = {}
             self.map_rooms[pos]["sprite"] = pyglet.sprite.Sprite(
                 image,
@@ -61,8 +61,8 @@ class Map:
                     image.height//2*scale_factor +
                     pos[1]*12*scale_factor
                 ),
-                batch=window.batch,
-                group=window.layers["ui_layers"]["map_rooms"]
+                batch=self.window.ui_batch,
+                group=self.window.layers["ui_layers"]["map_rooms"]
             )
             self.map_rooms[pos]["sprite"].scale = scale_factor
             self.map_rooms[pos]["icon"] = pyglet.sprite.Sprite(
@@ -79,8 +79,8 @@ class Map:
                     icon.height//2*scale_factor +
                     pos[1]*12*scale_factor
                 ),
-                batch=window.batch,
-                group=window.layers["ui_layers"]["map_icons"]
+                batch=self.window.ui_batch,
+                group=self.window.layers["ui_layers"]["map_icons"]
             )
             self.map_rooms[pos]["icon"].scale = scale_factor
             self.map_rooms[pos]["icon"].visible = False

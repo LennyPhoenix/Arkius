@@ -28,7 +28,7 @@ class Basic:
         self.sprite = pyglet.sprite.Sprite(
             image,
             x=self.screen_x, y=self.screen_y,
-            batch=window.batch
+            batch=self.window.world_batch
         )
         self.sprite.scale = self.window.scale_factor
 

@@ -42,7 +42,8 @@ class Window(pyglet.window.Window):
         super().__init__(*args, **kwargs)
         self.set_minimum_size(*c.MIN_SIZE)
 
-        self.batch = pyglet.graphics.Batch()
+        self.world_batch = pyglet.graphics.Batch()
+        self.ui_batch = pyglet.graphics.Batch()
         self.key_handler = key.KeyStateHandler()
         self.fps_display = pyglet.window.FPSDisplay(window=self)
         self.scale_divisor = c.DEFAULT_SCALE_DIVISOR
@@ -157,7 +158,8 @@ class Window(pyglet.window.Window):
     def on_draw(self):
         """Redraw the window."""
         self.clear()
-        self.batch.draw()
+        self.world_batch.draw()
+        self.ui_batch.draw()
         self.fps_display.draw()
 
     def update(self, dt):
