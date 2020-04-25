@@ -2,6 +2,8 @@
 
 import pyglet
 
+from .. import constants as c
+
 
 class Map:
     def __init__(self, window, dungeon):
@@ -15,23 +17,12 @@ class Map:
         self.dungeon = dungeon
         map_image = self.window.resources["ui"]["map"]["window"]
         map_layer = self.window.layers["ui_layers"]["map_window"]
-        scale_factor = self.window.scale_factor*1.5
         self.map_window = pyglet.sprite.Sprite(
             map_image,
-            x=(
-                self.window.width -
-                map_image.width *
-                scale_factor
-            ),
-            y=(
-                self.window.height -
-                map_image.height *
-                scale_factor
-            ),
+            0, 0,
             batch=self.window.ui_batch,
             group=map_layer
         )
-        self.map_window.scale = scale_factor
         self.map_window.opacity = 200
 
         room_max = 0
@@ -49,45 +40,70 @@ class Map:
             self.map_rooms[pos] = {}
             self.map_rooms[pos]["sprite"] = pyglet.sprite.Sprite(
                 image,
-                x=(
-                    self.map_window.x +
-                    self.map_window.width//2 -
-                    image.width//2*scale_factor +
-                    pos[0]*12*scale_factor
-                ),
-                y=(
-                    self.map_window.y +
-                    self.map_window.height//2 -
-                    image.height//2*scale_factor +
-                    pos[1]*12*scale_factor
-                ),
+                0, 0,
                 batch=self.window.ui_batch,
                 group=self.window.layers["ui_layers"]["map_rooms"]
             )
-            self.map_rooms[pos]["sprite"].scale = scale_factor
             self.map_rooms[pos]["icon"] = pyglet.sprite.Sprite(
                 icon,
-                x=(
-                    self.map_window.x +
-                    self.map_window.width//2 -
-                    icon.width//2*scale_factor +
-                    pos[0]*12*scale_factor
-                ),
-                y=(
-                    self.map_window.y +
-                    self.map_window.height//2 -
-                    icon.height//2*scale_factor +
-                    pos[1]*12*scale_factor
-                ),
+                0, 0,
                 batch=self.window.ui_batch,
                 group=self.window.layers["ui_layers"]["map_icons"]
             )
-            self.map_rooms[pos]["icon"].scale = scale_factor
             self.map_rooms[pos]["icon"].visible = False
             self.map_rooms[pos]["visited"] = False
             self.map_rooms[pos]["room"] = room
 
+        self.update_position()
         self.discover((0, 0))
+        self.window.push_handlers(self)
+
+    def update_position(self):
+        scale = (min(self.window.width, self.window.height) / c.MIN_SIZE[1])
+
+        self.map_window.scale = scale
+        self.map_window.update(
+            x=(
+                self.window.width -
+                self.map_window.width
+            ),
+            y=(
+                self.window.height -
+                self.map_window.height
+            )
+        )
+
+        for pos in self.map_rooms.keys():
+            self.map_rooms[pos]["sprite"].scale = scale
+            self.map_rooms[pos]["sprite"].update(
+                x=(
+                    self.map_window.x +
+                    self.map_window.width//2 -
+                    self.map_rooms[pos]["sprite"].width//2 +
+                    pos[0]*12*scale
+                ),
+                y=(
+                    self.map_window.y +
+                    self.map_window.height//2 -
+                    self.map_rooms[pos]["sprite"].height//2 +
+                    pos[1]*12*scale
+                )
+            )
+            self.map_rooms[pos]["icon"].scale = scale
+            self.map_rooms[pos]["icon"].update(
+                x=(
+                    self.map_window.x +
+                    self.map_window.width//2 -
+                    self.map_rooms[pos]["icon"].width//2 +
+                    pos[0]*12*scale
+                ),
+                y=(
+                    self.map_window.y +
+                    self.map_window.height//2 -
+                    self.map_rooms[pos]["icon"].height//2 +
+                    pos[1]*12*scale
+                )
+            )
 
     def discover(self, pos):
         """Discover rooms on the map.
@@ -127,48 +143,6 @@ class Map:
                 )]["sprite"].image = image
                 self.map_rooms[(n_x, n_y)]["icon"].visible = True
 
-    def resize(self):
-        """Resize the map."""
-        scale_factor = self.window.scale_factor
-        self.map_window.scale = scale_factor
-        self.map_window.update(
-            x=(
-                self.window.width -
-                self.map_window.width
-            ),
-            y=(
-                self.window.height -
-                self.map_window.height
-            )
-        )
-        for pos, room in self.dungeon.map.items():
-            self.map_rooms[pos]["sprite"].update(
-                x=(
-                    self.map_window.x +
-                    self.map_window.width//2 -
-                    self.map_rooms[pos]["sprite"].width//2 +
-                    pos[0]*12*scale_factor
-                ),
-                y=(
-                    self.map_window.y +
-                    self.map_window.height//2 -
-                    self.map_rooms[pos]["sprite"].height//2 +
-                    pos[1]*12*scale_factor
-                )
-            )
-            self.map_rooms[pos]["sprite"].scale = scale_factor
-            self.map_rooms[pos]["icon"].update(
-                x=(
-                    self.map_window.x +
-                    self.map_window.width//2 -
-                    self.map_rooms[pos]["icon"].width//2 +
-                    pos[0]*12*scale_factor
-                ),
-                y=(
-                    self.map_window.y +
-                    self.map_window.height//2 -
-                    self.map_rooms[pos]["icon"].height//2 +
-                    pos[1]*12*scale_factor
-                )
-            )
-            self.map_rooms[pos]["icon"].scale = scale_factor
+    def on_resize(self, width, height):
+        """Update the position and scale of everything."""
+        self.update_position()

@@ -124,20 +124,6 @@ class Room:
                         self.space.insert_body(tile)
                     self.tiles[(x, y)] = tile
 
-    def update(self):
-        """Update all tiles."""
-        for x in range(-(self.width+3), self.width+4):
-            for y in range(-(self.height+3), self.height+4):
-                if (x, y) in self.tiles.keys():
-                    self.tiles[(x, y)].update()
-
-    def resize(self):
-        """Resize all tiles."""
-        for x in range(-(self.width+3), self.width+4):
-            for y in range(-(self.height+3), self.height+4):
-                if (x, y) in self.tiles.keys():
-                    self.tiles[(x, y)].resize()
-
     def getImageIndex(self, x, y):
         """Return the image index for a tile.
 

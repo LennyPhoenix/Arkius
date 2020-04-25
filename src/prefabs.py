@@ -28,13 +28,9 @@ class Basic:
         self.sprite = pyglet.sprite.Sprite(
             image,
             x=self.screen_x, y=self.screen_y,
-            batch=self.window.world_batch
+            batch=self.window.world_batch,
+            subpixel=True
         )
-        self.sprite.scale = self.window.scale_factor
-
-    def draw(self):
-        """Manually draw the sprite."""
-        self.sprite.draw()
 
     def update(self):
         """Update the sprite and any position variables."""
@@ -42,25 +38,13 @@ class Basic:
         self.y = round(self.y*16)/16
         self.grid_x, self.grid_y = floor(self.x), floor(self.y)
 
-        screen_pos = self.window.worldToScreen(self.x, self.y, True)
+        screen_pos = self.window.worldToScreen(self.x, self.y)
         self.screen_x, self.screen_y = screen_pos[0], screen_pos[1]
 
-        visible = (
-            (0-self.sprite.width) < self.screen_x < self.window.width and
-            (0-self.sprite.height) < self.screen_y < self.window.height
+        self.sprite.update(
+            x=self.screen_x,
+            y=self.screen_y
         )
-
-        if visible:
-            self.sprite.update(
-                x=self.screen_x,
-                y=self.screen_y
-            )
-        if self.sprite.visible != visible:
-            self.sprite.visible = visible
-
-    def resize(self):
-        """Resize the sprite."""
-        self.sprite.scale = self.window.scale_factor
 
 
 class Tile(Basic):
@@ -225,6 +209,7 @@ class Player(Basic):
             else:
                 offset = self.x
             self.room = (self.room[0], self.room[1]-1)
+            self.window.room.visibility = True
             self.y = self.window.room.height+3
             if self.window.room.map_data is not None:
                 self.x = (
@@ -246,6 +231,7 @@ class Player(Basic):
             else:
                 offset = self.y
             self.room = (self.room[0]-1, self.room[1])
+            self.window.room.visibility = True
             self.x = self.window.room.width+3
             if self.window.room.map_data is not None:
                 self.y = (
@@ -267,6 +253,7 @@ class Player(Basic):
             else:
                 offset = self.x
             self.room = (self.room[0], self.room[1]+1)
+            self.window.room.visibility = True
             self.y = -(self.window.room.height+3)
             if self.window.room.map_data is not None:
                 self.x = (
@@ -288,6 +275,7 @@ class Player(Basic):
             else:
                 offset = self.y
             self.room = (self.room[0]+1, self.room[1])
+            self.window.room.visibility = True
             self.x = -(self.window.room.width+3)
             if self.window.room.map_data is not None:
                 self.y = (

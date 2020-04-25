@@ -29,6 +29,7 @@ class Dungeon:
             self.config = c.DUNGEON_BASE
 
         self.generateRooms()
+        self.map[(0, 0)].visibility = True
         self.ui_map = Map(self.window, self)
 
     def generateRooms(self):

@@ -17,10 +17,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import pyglet
 from pyglet import gl
-from pyglet.window import key, mouse
+from pyglet.window import key
 
 from src import constants as c
 from src import prefabs
+from src.camera import Camera
 from src.dungeon import Dungeon
 
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
@@ -42,13 +43,13 @@ class Window(pyglet.window.Window):
         super().__init__(*args, **kwargs)
         self.set_minimum_size(*c.MIN_SIZE)
 
-        self.world_batch = pyglet.graphics.Batch()
-        self.ui_batch = pyglet.graphics.Batch()
         self.key_handler = key.KeyStateHandler()
         self.fps_display = pyglet.window.FPSDisplay(window=self)
-        self.scale_divisor = c.DEFAULT_SCALE_DIVISOR
+        self.zoom = 1
 
-        self.enable_debugging = True
+        self.world_camera = Camera(0, 0, 1000)
+        self.world_batch = pyglet.graphics.Batch()
+        self.ui_batch = pyglet.graphics.Batch()
 
         self.createLayers()
         self.loadResources()
@@ -59,6 +60,8 @@ class Window(pyglet.window.Window):
         )
 
         self.player = prefabs.Player(self)
+
+        self.positionCamera()
         self.push_handlers(self.key_handler)
 
     def createLayers(self):
@@ -158,7 +161,8 @@ class Window(pyglet.window.Window):
     def on_draw(self):
         """Redraw the window."""
         self.clear()
-        self.world_batch.draw()
+        with self.world_camera:
+            self.world_batch.draw()
         self.ui_batch.draw()
         self.fps_display.draw()
 
@@ -169,19 +173,24 @@ class Window(pyglet.window.Window):
             dt {float} -- Time passed since last update.
         """
 
+        rezoom = False
         if self.key_handler[key.EQUAL]:
-            self.scale_divisor -= 100 * dt
-            for pos in self.dungeon.map.keys():
-                self.dungeon.map[pos].resize()
-            self.player.resize()
+            self.zoom += 2 * dt
+            rezoom = True
         elif self.key_handler[key.MINUS]:
-            self.scale_divisor += 100 * dt
-            for pos in self.dungeon.map.keys():
-                self.dungeon.map[pos].resize()
-            self.player.resize()
+            self.zoom -= 2 * dt
+            rezoom = True
+        if rezoom:
+            self.zoom = max(c.MIN_ZOOM, min(c.MAX_ZOOM, self.zoom))
+            zoom = (
+                (min(self.width, self.height) / c.MIN_SIZE[1]) *
+                self.zoom
+            )
+            self.world_camera.zoom = round(zoom) if zoom != 0.5 else zoom
+
+        self.positionCamera()
 
         self.player.update(dt)
-        self.room.update()
 
     def on_key_press(self, symbol, modifiers):
         """Fullscreen the window or create a new room.
@@ -190,19 +199,10 @@ class Window(pyglet.window.Window):
             symbol {int} -- The key symbol pressed.
             modifiers {int} -- Bitwise combination of the key modifiers active.
         """
-        super().on_key_press(symbol, modifiers)
-
         if symbol == key.F11:
             self.set_fullscreen(not self.fullscreen)
 
-    def on_mouse_press(self, x, y, button, modifiers):
-        if button == mouse.MIDDLE:
-            world_x, world_y = self.screenToWorld(
-                x, y,
-                parallax=True
-            )
-            self.player.x, self.player.y = world_x-0.5, world_y
-        return super().on_mouse_press(x, y, button, modifiers)
+        return super().on_key_press(symbol, modifiers)
 
     def on_resize(self, width, height):
         """Resize the room.
@@ -211,13 +211,15 @@ class Window(pyglet.window.Window):
             width {int} -- The new window width.
             height {int} -- The new window height.
         """
-        super().on_resize(width, height)
-        for pos in self.dungeon.map.keys():
-            self.dungeon.map[pos].resize()
-        self.dungeon.ui_map.resize()
-        self.player.resize()
+        zoom = (
+            (min(self.width, self.height) / c.MIN_SIZE[1]) *
+            self.zoom
+        )
+        self.world_camera.zoom = round(zoom) if zoom != 0.5 else zoom
 
-    def worldToScreen(self, x, y, parallax=False):
+        return super().on_resize(width, height)
+
+    def worldToScreen(self, x, y):
         """Convert a world position to a screen position.
 
         Arguments:
@@ -227,61 +229,25 @@ class Window(pyglet.window.Window):
         Returns:
             (int, int) -- The screen position of the object.
         """
-        scale_factor = self.scale_factor
-
-        screen_x = (x) * 16 * scale_factor
-        screen_x += self.width/2
-        screen_x -= 8 * scale_factor
-
-        screen_y = (y) * 16 * scale_factor
-        screen_y += self.height/2
-        screen_y -= 8 * scale_factor
-
-        if parallax is True:
-            screen_x += (
-                (self.player.x) * -8 * scale_factor *
-                self.room.width/25
-            )
-            screen_y += (
-                (self.player.y) * -8 * scale_factor *
-                self.room.height/15
-            )
+        screen_x = (x*16) - 8
+        screen_y = (y*16) - 8
 
         return (screen_x, screen_y)
 
-    def screenToWorld(self, x, y, parallax=False):
-        """Convert a world position to a screen position.
-
-        Arguments:
-            x {float} -- The screen x position.
-            y {float} -- The screen y position.
-
-        Returns:
-            (int, int) -- The world position of the object.
-        """
-        scale_factor = self.scale_factor
-
-        world_x, world_y = 0, 0
-
-        if parallax is True:
-            world_x += (
-                (self.player.x) * 8 * scale_factor *
+    def positionCamera(self):
+        """Sets the position of the world_camera."""
+        self.world_camera.position = (
+            round((-self.width/self.world_camera.zoom//2) -
+                  (
+                (self.player.x) * -8 *
                 self.room.width/25
-            )
-            world_y += (
-                (self.player.y) * 8 * scale_factor *
+            )),
+            round((-self.height/self.world_camera.zoom//2) -
+                  (
+                (self.player.y) * -8 *
                 self.room.height/15
-            )
-
-        world_x += (x+0.5) - self.width / 2
-        world_x += 8 * scale_factor
-        world_x /= 16 * scale_factor
-
-        world_y += (y+0.5) - self.height / 2
-        world_y += 8 * scale_factor
-        world_y /= 16 * scale_factor
-
-        return (world_x, world_y)
+            ))
+        )
 
     @property
     def room(self):
@@ -292,16 +258,6 @@ class Window(pyglet.window.Window):
         """
         room_map = self.dungeon.map
         return room_map[self.player.room]
-
-    @property
-    def scale_factor(self):
-        """Return the scale factor of the window.
-
-        Returns:
-            float -- The window's scale factor.
-        """
-        scale_factor = self.height / self.scale_divisor
-        return scale_factor
 
 
 if __name__ == "__main__":

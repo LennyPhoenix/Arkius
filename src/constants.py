@@ -4,8 +4,9 @@ from . import room_configurations as conf
 
 # Window
 MIN_SIZE = (568, 320)
-UPDATE_SPEED = 1/120
-DEFAULT_SCALE_DIVISOR = 321
+UPDATE_SPEED = 1/144
+MIN_ZOOM = 0.5
+MAX_ZOOM = 2
 
 # Player
 PLAYER_SPEED = 4
