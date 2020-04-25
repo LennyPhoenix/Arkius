@@ -68,17 +68,29 @@ class Window(pyglet.window.Window):
         """Create all layers."""
         self.layers = {}
 
+        self.layers["world_master"] = pyglet.graphics.OrderedGroup(0)
         world = {}
-        world["ground"] = pyglet.graphics.OrderedGroup(0)
+        world["ground"] = pyglet.graphics.OrderedGroup(
+            0, parent=self.layers["world_master"]
+        )
         world["y_ordered"] = {}
         for i in range(-50, 51):
-            world["y_ordered"][i] = pyglet.graphics.OrderedGroup(51-i)
+            world["y_ordered"][i] = pyglet.graphics.OrderedGroup(
+                51-i, parent=self.layers["world_master"]
+            )
         self.layers["world"] = world
 
+        self.layers["ui_master"] = pyglet.graphics.OrderedGroup(1)
         ui = {}
-        ui["map_window"] = pyglet.graphics.OrderedGroup(0)
-        ui["map_rooms"] = pyglet.graphics.OrderedGroup(1)
-        ui["map_icons"] = pyglet.graphics.OrderedGroup(2)
+        ui["map_window"] = pyglet.graphics.OrderedGroup(
+            0, self.layers["ui_master"]
+        )
+        ui["map_rooms"] = pyglet.graphics.OrderedGroup(
+            1, self.layers["ui_master"]
+        )
+        ui["map_icons"] = pyglet.graphics.OrderedGroup(
+            2, self.layers["ui_master"]
+        )
         self.layers["ui"] = ui
 
     def loadResources(self):
