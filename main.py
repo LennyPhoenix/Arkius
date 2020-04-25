@@ -187,7 +187,10 @@ class Window(pyglet.window.Window):
                 (min(self.width, self.height) / c.MIN_SIZE[1]) *
                 self.zoom
             )
-            self.world_camera.zoom = round(zoom) if zoom > 1 else zoom
+            if zoom >= 1:
+                self.world_camera.zoom = round(zoom)
+            else:
+                self.world_camera.zoom = round(zoom*4)/4
 
         self.positionCamera()
 
@@ -216,7 +219,10 @@ class Window(pyglet.window.Window):
             (min(self.width, self.height) / c.MIN_SIZE[1]) *
             self.zoom
         )
-        self.world_camera.zoom = round(zoom) if zoom != 0.5 else zoom
+        if zoom >= 1:
+            self.world_camera.zoom = round(zoom)
+        else:
+            self.world_camera.zoom = round(zoom*4)/4
 
         return super().on_resize(width, height)
 
