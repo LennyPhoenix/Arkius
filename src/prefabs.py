@@ -67,11 +67,11 @@ class Tile(Basic):
             x, y,
             tile_image
         )
-        group = self.window.layers["world"][c.TILES[self.type]["layer"]]
-        if type(group) is dict:
-            self.sprite.group = group[self.grid_y]
+        layer = self.window.layers["world"][c.TILES[self.type]["layer"]]
+        if type(layer) is dict:
+            self.sprite.group = layer[self.grid_y]
         else:
-            self.sprite.group = group
+            self.sprite.group = layer
         self.sprite.visible = False
 
         if c.TILES[self.type]["collider"] is not None:
