@@ -105,7 +105,7 @@ class Transition:
                             self.window.room.map_data["door_info"][3]["pos"]
                         )
                     else:
-                        offset = self.y
+                        offset = self.player.y
                     self.player.room = (
                         self.player.room[0]-1, self.player.room[1])
                     self.window.room.visibility = True
