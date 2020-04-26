@@ -71,14 +71,14 @@ class Window(pyglet.window.Window):
         self.layers = {}
 
         world = {}
-        world["ground"] = pyglet.graphics.OrderedGroup(0)
-        world["y_ordered"] = pyglet.graphics.OrderedGroup(1)
+        world["ground"] = pyglet.graphics.OrderedGroup(1)
+        world["y_ordered"] = pyglet.graphics.OrderedGroup(2)
         self.layers["world"] = world
 
         ui = {}
-        ui["map_window"] = pyglet.graphics.OrderedGroup(0)
-        ui["map_rooms"] = pyglet.graphics.OrderedGroup(1)
-        ui["map_icons"] = pyglet.graphics.OrderedGroup(2)
+        ui["map_window"] = pyglet.graphics.OrderedGroup(1)
+        ui["map_rooms"] = pyglet.graphics.OrderedGroup(2)
+        ui["map_icons"] = pyglet.graphics.OrderedGroup(3)
         self.layers["ui"] = ui
 
     def loadResources(self):
