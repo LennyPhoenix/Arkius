@@ -71,8 +71,13 @@ class Window(pyglet.window.Window):
         self.layers = {}
 
         world = {}
-        world["ground"] = pyglet.graphics.OrderedGroup(1)
-        world["y_ordered"] = pyglet.graphics.OrderedGroup(2)
+        world["master"] = pyglet.graphics.Group()
+        world["ground"] = pyglet.graphics.OrderedGroup(
+            1, world["master"]
+        )
+        world["y_ordered"] = pyglet.graphics.OrderedGroup(
+            2, world["master"]
+        )
         self.layers["world"] = world
 
         ui = {}
