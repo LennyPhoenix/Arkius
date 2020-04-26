@@ -322,16 +322,20 @@ class Window(pyglet.window.Window):
     def positionCamera(self):
         """Sets the position of the world_camera."""
         self.world_camera.position = (
-            round((-self.width/self.world_camera.zoom//2) -
-                  (
-                (self.player.x) * -8 *
-                self.room.width/25
-            )),
-            round((-self.height/self.world_camera.zoom//2) -
-                  (
-                (self.player.y) * -8 *
-                self.room.height/15
-            ))
+            round(
+                (-self.width/self.world_camera.zoom//2) -
+                (
+                    (self.player.x) * -8 *
+                    self.room.width/c.PARALLAX_X
+                )
+            ),
+            round(
+                (-self.height/self.world_camera.zoom//2) -
+                (
+                    (self.player.y) * -8 *
+                    self.room.height/c.PARALLAX_Y
+                )
+            )
         )
 
     @property
