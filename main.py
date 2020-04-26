@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import pyglet
 from pyglet import gl
-from pyglet.window import key
+from pyglet.window import key, mouse
 
 from src import constants as c
 from src import prefabs
@@ -207,6 +207,11 @@ class Window(pyglet.window.Window):
             self.set_fullscreen(not self.fullscreen)
 
         return super().on_key_press(symbol, modifiers)
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        if button == mouse.LEFT:
+            world_x, world_y = self.screenToWorld(x, y)
+            self.player.x, self.player.y = world_x-0.5, world_y
 
     def on_resize(self, width, height):
         """Resize the room.
