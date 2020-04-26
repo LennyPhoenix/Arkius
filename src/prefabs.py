@@ -3,7 +3,7 @@
 from pyglet.window import key
 
 from . import constants as c
-from .sprite import Basic
+from .basic import Basic
 
 
 class Tile(Basic):

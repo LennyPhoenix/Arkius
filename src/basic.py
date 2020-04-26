@@ -1,55 +1,10 @@
+"""Contains Basic class."""
+
 from math import floor
 
 import pyglet
 
 from .cardsprite import CardSprite
-
-
-# class AnimationPlayer(pyglet.sprite.Sprite):
-
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self._paused = False
-
-#     def pause_animation(self):
-#         if self._paused or self._animation is None:
-#             return
-#         pyglet.clock.unschedule(self._animate)
-#         self._paused = True
-
-#     def resume_animation(self):
-#         if not self._paused or self._animation is None:
-#             return
-#         frame = self._animation.frames[self._frame_index]
-#         self._texture = frame.image.get_texture()
-#         self._next_dt = frame.duration
-#         if self._next_dt:
-#             pyglet.clock.schedule_once(self._animate, self._next_dt)
-#         self._paused = False
-
-#     @property
-#     def paused(self):
-#         return self._paused
-
-#     @paused.setter
-#     def paused(self, pause):
-#         if pause:
-#             self.pause_animation()
-#         else:
-#             self.resume_animation()
-
-#     @property
-#     def frame_index(self):
-#         return self._frame_index
-
-#     @frame_index.setter
-#     def frame_index(self, index):
-#         # Bound to available number of frames
-#         self._frame_index = max(0, min(index, len(self._animation.frames)-1))
-
-#     def on_animation_end(self):
-#         print("Animation Ended!")
-#         # Do some predefined action
 
 
 class Basic:
