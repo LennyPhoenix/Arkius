@@ -70,13 +70,11 @@ class Window(pyglet.window.Window):
         """Create all layers."""
         self.layers = {}
 
-        self.layers["world_master"] = pyglet.graphics.OrderedGroup(0)
         world = {}
         world["ground"] = pyglet.graphics.OrderedGroup(0)
         world["y_ordered"] = pyglet.graphics.OrderedGroup(1)
         self.layers["world"] = world
 
-        self.layers["ui_master"] = pyglet.graphics.OrderedGroup(1)
         ui = {}
         ui["map_window"] = pyglet.graphics.OrderedGroup(0)
         ui["map_rooms"] = pyglet.graphics.OrderedGroup(1)
