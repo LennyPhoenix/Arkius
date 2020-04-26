@@ -4,6 +4,7 @@ from pyglet.window import key
 
 from . import constants as c
 from .basic import Basic
+from .particle import Shadow
 
 
 class Tile(Basic):
@@ -70,6 +71,9 @@ class Player(Basic):
         self.sprite.group = layer
         self.ox, self.oy = self.x, self.y
 
+        self.last_shadow = 0
+        self.shadow_frequency = 1/25
+
         self.col_x = c.PLAYER_COLLIDER["x"]
         self.col_y = c.PLAYER_COLLIDER["y"]
         self.col_width = c.PLAYER_COLLIDER["width"]
@@ -126,6 +130,16 @@ class Player(Basic):
             if self.window.key_handler[key.LSHIFT]:
                 self.velocity_x *= 5
                 self.velocity_y *= 5
+                self.last_shadow += dt
+                if self.last_shadow >= self.shadow_frequency:
+                    Shadow(
+                        self.window,
+                        self.x, self.y,
+                        self.sprite.image,
+                        0.25,
+                        128
+                    )
+                    self.last_shadow = 0
 
         self.ox, self.oy = self.x, self.y
         self.x += self.velocity_x * dt

@@ -53,6 +53,8 @@ class Window(pyglet.window.Window):
         self.world_batch = pyglet.graphics.Batch()
         self.ui_batch = pyglet.graphics.Batch()
 
+        self.particles = []
+
         self.createLayers()
         self.loadResources()
 
@@ -75,8 +77,11 @@ class Window(pyglet.window.Window):
         world["ground"] = pyglet.graphics.OrderedGroup(
             1, world["master"]
         )
-        world["y_ordered"] = pyglet.graphics.OrderedGroup(
+        world["particles"] = pyglet.graphics.OrderedGroup(
             2, world["master"]
+        )
+        world["y_ordered"] = pyglet.graphics.OrderedGroup(
+            3, world["master"]
         )
         self.layers["world"] = world
 
