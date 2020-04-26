@@ -81,9 +81,10 @@ class Window(pyglet.window.Window):
         self.layers["world"] = world
 
         ui = {}
-        ui["map_window"] = pyglet.graphics.OrderedGroup(1)
-        ui["map_rooms"] = pyglet.graphics.OrderedGroup(2)
-        ui["map_icons"] = pyglet.graphics.OrderedGroup(3)
+        ui["transition"] = pyglet.graphics.OrderedGroup(1)
+        ui["map_window"] = pyglet.graphics.OrderedGroup(2)
+        ui["map_rooms"] = pyglet.graphics.OrderedGroup(3)
+        ui["map_icons"] = pyglet.graphics.OrderedGroup(4)
         self.layers["ui"] = ui
 
     def loadResources(self):
@@ -129,22 +130,15 @@ class Window(pyglet.window.Window):
                         for index in range(frame_grids[0].__len__()):
                             tile_frames = []
                             for i in range(data["animations"][0]["length"]):
-                                if (
-                                    i == data["animations"][0]["length"]-1 and
-                                    not data["animations"][0]["loop"]
-                                ):
-                                    frame_length = None
-                                else:
-                                    frame_length = data["animations"][0]["frame_length"]  # noqa: E501
                                 tile_frames.append(
-                                    pyglet.image.AnimationFrame(
-                                        frame_grids[i][index],
-                                        frame_length
-                                    )
+                                    frame_grids[i][index]
                                 )
-                                image_grid[index] = pyglet.image.Animation(
-                                    tile_frames
-                                )
+                            frame_length = data["animations"][0]["frame_length"]  # noqa: E501
+                            image_grid[index] = pyglet.image.Animation.from_image_sequence(  # noqa: E501
+                                tile_frames,
+                                frame_length,
+                                loop=data["animations"][0]["loop"]
+                            )
                     else:
                         frame_grids = []
                         for frame in range(sprite_sheet.__len__()):
@@ -162,24 +156,17 @@ class Window(pyglet.window.Window):
                         for index in range(frame_grids[0].__len__()):
                             tile_frames = []
                             for i in range(data["animations"][0]["length"]):
-                                if (
-                                    i == data["animations"][0]["length"]-1 and
-                                    not data["animations"][0]["loop"]
-                                ):
-                                    frame_length = None
-                                else:
-                                    frame_length = data["animations"][0]["frame_length"]  # noqa: E501
                                 tile_frames.append(
-                                    pyglet.image.AnimationFrame(
-                                        frame_grids[i][index],
-                                        frame_length
-                                    )
+                                    frame_grids[i][index]
                                 )
-                                image_grid.append(
-                                    pyglet.image.Animation(
-                                        tile_frames
-                                    )
+                            frame_length = data["animations"][0]["frame_length"]  # noqa: E501
+                            image_grid.append(
+                                pyglet.image.Animation.from_image_sequence(
+                                    tile_frames,
+                                    frame_length,
+                                    loop=data["animations"][0]["loop"]
                                 )
+                            )
 
                 except FileNotFoundError:
                     if c.TILES[tile]["sprite"]["connective"]:
@@ -207,6 +194,7 @@ class Window(pyglet.window.Window):
         )
 
         ui = {}
+
         ui["map"] = {}
         ui["map"]["window"] = pyglet.resource.image(
             "resources/ui/map_window.png"
@@ -227,7 +215,43 @@ class Window(pyglet.window.Window):
             1, 5
         )
         ui["map"]["icons"] = pyglet.image.TextureGrid(image_grid)
+
+        image = pyglet.resource.image("resources/transition.png")
+        with open("resources/transition.json", "r") as f:
+            data = json.load(f)
+        ui["transition"] = self.loadAnimation(image, data)
+
         self.resources["ui"] = ui
+
+    def loadAnimation(self, image, data):
+        """Load an animation.
+
+        Arguments:
+            image {pyglet.resource.image} -- The spritesheet.
+            data {dict} -- The animation data.
+        """
+        sprite_sheet = pyglet.image.ImageGrid(
+            image,
+            len(data["animations"]),
+            data["max_length"]
+        )
+        animations = {}
+        for a in range(len(data["animations"])):
+            animation_data = data["animations"][a]
+            frames = []
+            for i in range(animation_data["length"]):
+                frame_length = data["animations"][a]["frame_length"]
+                frames.append(
+                    sprite_sheet[(a, i)]
+                )
+            animations[
+                data["animations"][a]["alias"]
+            ] = pyglet.image.Animation.from_image_sequence(
+                frames,
+                frame_length,
+                loop=data["animations"][a]["loop"]
+            )
+        return animations
 
     def on_draw(self):
         """Redraw the window."""

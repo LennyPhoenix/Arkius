@@ -4,6 +4,7 @@ import random
 from . import constants as c
 from .room import Room
 from .ui.map import Map
+from .ui.transition import Transition
 
 
 class Dungeon:
@@ -32,6 +33,7 @@ class Dungeon:
         self.generateRooms()
         self.map[(0, 0)].visibility = True
         self.ui_map = Map(self.window, self)
+        self.transition = Transition(self.window)
 
     def generateRooms(self):
         """Place and create each room."""

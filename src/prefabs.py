@@ -57,6 +57,7 @@ class Player(Basic):
         Arguments:
             window {Window} -- The window for the application.
         """
+        self._state = "idle"
         player_image = window.resources["player"]
 
         super().__init__(
@@ -81,6 +82,15 @@ class Player(Basic):
         self.velocity_x = 0
         self.velocity_y = 0
 
+    @property
+    def state(self):
+        return self._state
+
+    @state.setter
+    def state(self, state):
+        if state in c.PLAYER_STATES[self.state]:
+            self._state = state
+
     def update(self, dt):
         """Update the player.
 
@@ -90,31 +100,32 @@ class Player(Basic):
 
         # Position
         self.velocity_x, self.velocity_y = 0, 0
-        if self.window.key_handler[key.W]:
-            self.velocity_y += c.PLAYER_SPEED
-        if self.window.key_handler[key.A]:
-            self.velocity_x -= c.PLAYER_SPEED
-        if self.window.key_handler[key.S]:
-            self.velocity_y -= c.PLAYER_SPEED
-        if self.window.key_handler[key.D]:
-            self.velocity_x += c.PLAYER_SPEED
+        if self.state != "locked":
+            if self.window.key_handler[key.W]:
+                self.velocity_y += c.PLAYER_SPEED
+            if self.window.key_handler[key.A]:
+                self.velocity_x -= c.PLAYER_SPEED
+            if self.window.key_handler[key.S]:
+                self.velocity_y -= c.PLAYER_SPEED
+            if self.window.key_handler[key.D]:
+                self.velocity_x += c.PLAYER_SPEED
 
-        if (
-            (
-                self.window.key_handler[key.A] or
-                self.window.key_handler[key.D]
-            ) and
-            (
-                self.window.key_handler[key.W] or
-                self.window.key_handler[key.S]
-            )
-        ):
-            self.velocity_x *= c.DIAGONAL_MULTIPLIER
-            self.velocity_y *= c.DIAGONAL_MULTIPLIER
+            if (
+                (
+                    self.window.key_handler[key.A] or
+                    self.window.key_handler[key.D]
+                ) and
+                (
+                    self.window.key_handler[key.W] or
+                    self.window.key_handler[key.S]
+                )
+            ):
+                self.velocity_x *= c.DIAGONAL_MULTIPLIER
+                self.velocity_y *= c.DIAGONAL_MULTIPLIER
 
-        if self.window.key_handler[key.LSHIFT]:
-            self.velocity_x *= 5
-            self.velocity_y *= 5
+            if self.window.key_handler[key.LSHIFT]:
+                self.velocity_x *= 5
+                self.velocity_y *= 5
 
         self.ox, self.oy = self.x, self.y
         self.x += self.velocity_x * dt
@@ -154,91 +165,19 @@ class Player(Basic):
         """Check if the player is exiting through a door."""
         # Bottom Door
         if self.y < -(self.window.room.height+3):
-            self.window.room.visibility = False
-            if self.window.room.map_data is not None:
-                offset = (
-                    self.x -
-                    self.window.room.map_data["door_info"][2]["pos"]
-                )
-            else:
-                offset = self.x
-            self.room = (self.room[0], self.room[1]-1)
-            self.window.room.visibility = True
-            self.y = self.window.room.height+3
-            if self.window.room.map_data is not None:
-                self.x = (
-                    offset +
-                    self.window.room.map_data["door_info"][0]["pos"]
-                )
-            else:
-                self.x = 0 + offset
-            self.window.dungeon.ui_map.discover(self.room)
+            self.window.dungeon.transition.begin(self, 2)
 
         # Left Door
         if self.x < -(self.window.room.width+3):
-            self.window.room.visibility = False
-            if self.window.room.map_data is not None:
-                offset = (
-                    self.y -
-                    self.window.room.map_data["door_info"][3]["pos"]
-                )
-            else:
-                offset = self.y
-            self.room = (self.room[0]-1, self.room[1])
-            self.window.room.visibility = True
-            self.x = self.window.room.width+3
-            if self.window.room.map_data is not None:
-                self.y = (
-                    offset +
-                    self.window.room.map_data["door_info"][1]["pos"]
-                )
-            else:
-                self.y = 0 + offset
-            self.window.dungeon.ui_map.discover(self.room)
+            self.window.dungeon.transition.begin(self, 3)
 
         # Top Door
         if self.y > self.window.room.height+3:
-            self.window.room.visibility = False
-            if self.window.room.map_data is not None:
-                offset = (
-                    self.x -
-                    self.window.room.map_data["door_info"][0]["pos"]
-                )
-            else:
-                offset = self.x
-            self.room = (self.room[0], self.room[1]+1)
-            self.window.room.visibility = True
-            self.y = -(self.window.room.height+3)
-            if self.window.room.map_data is not None:
-                self.x = (
-                    offset +
-                    self.window.room.map_data["door_info"][2]["pos"]
-                )
-            else:
-                self.x = 0 + offset
-            self.window.dungeon.ui_map.discover(self.room)
+            self.window.dungeon.transition.begin(self, 0)
 
         # Right Door
         if self.x > self.window.room.width+3:
-            self.window.room.visibility = False
-            if self.window.room.map_data is not None:
-                offset = (
-                    self.y -
-                    self.window.room.map_data["door_info"][1]["pos"]
-                )
-            else:
-                offset = self.y
-            self.room = (self.room[0]+1, self.room[1])
-            self.window.room.visibility = True
-            self.x = -(self.window.room.width+3)
-            if self.window.room.map_data is not None:
-                self.y = (
-                    offset +
-                    self.window.room.map_data["door_info"][3]["pos"]
-                )
-            else:
-                self.y = 0 + offset
-            self.window.dungeon.ui_map.discover(self.room)
+            self.window.dungeon.transition.begin(self, 1)
 
     @property
     def aabb(self):
