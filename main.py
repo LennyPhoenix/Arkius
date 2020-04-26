@@ -116,7 +116,8 @@ class Window(pyglet.window.Window):
                                     c.TILESET_DIMENSIONS[1],
                                     c.TILESET_DIMENSIONS[0],
                                     item_width=tile_width,
-                                    item_height=tile_height)
+                                    item_height=tile_height
+                                )
                             )
 
                         image_grid = {}
