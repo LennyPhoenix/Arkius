@@ -1,0 +1,14 @@
+{
+    "frame": [
+        160,
+        80
+    ],
+    "max_length": 4,
+    "animations": [
+        {
+            "alias": "main",
+            "length": 4,
+            "frame_rate": 0.5
+        }
+    ]
+}
