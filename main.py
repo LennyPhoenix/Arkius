@@ -211,12 +211,6 @@ class Window(pyglet.window.Window):
         ui["map"]["icons"] = pyglet.image.TextureGrid(image_grid)
         self.resources["ui"] = ui
 
-        debug = {}
-        debug["collider"] = pyglet.resource.image(
-            "resources/collider.png"
-        )
-        self.resources["debug"] = debug
-
     def on_draw(self):
         """Redraw the window."""
         self.clear()
