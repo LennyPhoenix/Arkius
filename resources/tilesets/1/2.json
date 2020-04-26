@@ -8,7 +8,8 @@
         {
             "alias": "main",
             "length": 4,
-            "frame_rate": 0.5
+            "frame_length": 0.5,
+            "loop": true
         }
     ]
 }

@@ -124,10 +124,17 @@ class Window(pyglet.window.Window):
                         for index in range(frame_grids[0].__len__()):
                             tile_frames = []
                             for i in range(data["animations"][0]["length"]):
+                                if (
+                                    i == data["animations"][0]["length"]-1 and
+                                    not data["animations"][0]["loop"]
+                                ):
+                                    frame_length = None
+                                else:
+                                    frame_length = data["animations"][0]["frame_length"]  # noqa: E501
                                 tile_frames.append(
                                     pyglet.image.AnimationFrame(
                                         frame_grids[i][index],
-                                        data["animations"][0]["frame_rate"]
+                                        frame_length
                                     )
                                 )
                                 image_grid[index] = pyglet.image.Animation(
@@ -150,10 +157,17 @@ class Window(pyglet.window.Window):
                         for index in range(frame_grids[0].__len__()):
                             tile_frames = []
                             for i in range(data["animations"][0]["length"]):
+                                if (
+                                    i == data["animations"][0]["length"]-1 and
+                                    not data["animations"][0]["loop"]
+                                ):
+                                    frame_length = None
+                                else:
+                                    frame_length = data["animations"][0]["frame_length"]  # noqa: E501
                                 tile_frames.append(
                                     pyglet.image.AnimationFrame(
                                         frame_grids[i][index],
-                                        data["animations"][0]["frame_rate"]
+                                        frame_length
                                     )
                                 )
                                 image_grid.append(
