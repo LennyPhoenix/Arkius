@@ -9,6 +9,7 @@ MIN_ZOOM = 0.25
 MAX_ZOOM = 2
 PARALLAX_X = 80
 PARALLAX_Y = 20
+DEFAULT_DUNGEON_SIZE = 3
 
 # Player
 PLAYER_SPEED = 4
@@ -182,6 +183,7 @@ ROOM_INFO = {
 
 # Dungeon Configs
 DUNGEON_BASE = {
+    "size": 3,
     "rooms": {
         FIGHT_ROOM: 20,
         TREASURE_ROOM: 5,

@@ -27,6 +27,7 @@ class Dungeon:
 
         if self.config is None:
             self.config = c.DUNGEON_BASE
+        self.size = self.config["size"]
 
         self.generateRooms()
         self.map[(0, 0)].visibility = True
@@ -72,8 +73,8 @@ class Dungeon:
                     continue
 
                 if not (
-                    -3 <= n_x <= 3 and
-                    -3 <= n_y <= 3
+                    -self.size <= n_x <= self.size and
+                    -self.size <= n_y <= self.size
                 ):
                     continue
 

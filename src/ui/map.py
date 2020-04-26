@@ -74,34 +74,42 @@ class Map:
         )
 
         for pos in self.map_rooms.keys():
-            self.map_rooms[pos]["sprite"].scale = scale
+            self.map_rooms[pos]["sprite"].scale = (
+                scale / (self.dungeon.size / c.DEFAULT_DUNGEON_SIZE)
+            )
             self.map_rooms[pos]["sprite"].update(
                 x=(
                     self.map_window.x +
                     self.map_window.width//2 -
                     self.map_rooms[pos]["sprite"].width//2 +
-                    pos[0]*12*scale
+                    pos[0]*12 *
+                    scale/(self.dungeon.size/c.DEFAULT_DUNGEON_SIZE)
                 ),
                 y=(
                     self.map_window.y +
                     self.map_window.height//2 -
                     self.map_rooms[pos]["sprite"].height//2 +
-                    pos[1]*12*scale
+                    pos[1]*12 *
+                    scale/(self.dungeon.size/c.DEFAULT_DUNGEON_SIZE)
                 )
             )
-            self.map_rooms[pos]["icon"].scale = scale
+            self.map_rooms[pos]["icon"].scale = (
+                scale / (self.dungeon.size / c.DEFAULT_DUNGEON_SIZE)
+            )
             self.map_rooms[pos]["icon"].update(
                 x=(
                     self.map_window.x +
                     self.map_window.width//2 -
                     self.map_rooms[pos]["icon"].width//2 +
-                    pos[0]*12*scale
+                    pos[0]*12 *
+                    scale/(self.dungeon.size/c.DEFAULT_DUNGEON_SIZE)
                 ),
                 y=(
                     self.map_window.y +
                     self.map_window.height//2 -
                     self.map_rooms[pos]["icon"].height//2 +
-                    pos[1]*12*scale
+                    pos[1]*12 *
+                    scale/(self.dungeon.size/c.DEFAULT_DUNGEON_SIZE)
                 )
             )
 
