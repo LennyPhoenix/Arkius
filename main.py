@@ -67,6 +67,7 @@ class Window(pyglet.window.Window):
 
         self.positionCamera()
         self.push_handlers(self.key_handler)
+        pyglet.clock.schedule_interval(self.update, c.UPDATE_SPEED)
 
     def createLayers(self):
         """Create all layers."""
@@ -403,6 +404,4 @@ if __name__ == "__main__":
         fullscreen=True,
         vsync=True
     )
-    pyglet.clock.schedule_interval(window.update, c.UPDATE_SPEED)
-    window.push_handlers(pyglet.window.event.WindowEventLogger())
     pyglet.app.run()
