@@ -15,6 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import json
+
 import pyglet
 from pyglet import gl
 from pyglet.window import key, mouse
@@ -70,27 +72,15 @@ class Window(pyglet.window.Window):
 
         self.layers["world_master"] = pyglet.graphics.OrderedGroup(0)
         world = {}
-        world["ground"] = pyglet.graphics.OrderedGroup(
-            0, parent=self.layers["world_master"]
-        )
-        world["y_ordered"] = {}
-        for i in range(-50, 51):
-            world["y_ordered"][i] = pyglet.graphics.OrderedGroup(
-                51-i, parent=self.layers["world_master"]
-            )
+        world["ground"] = pyglet.graphics.OrderedGroup(0)
+        world["y_ordered"] = pyglet.graphics.OrderedGroup(1)
         self.layers["world"] = world
 
         self.layers["ui_master"] = pyglet.graphics.OrderedGroup(1)
         ui = {}
-        ui["map_window"] = pyglet.graphics.OrderedGroup(
-            0, self.layers["ui_master"]
-        )
-        ui["map_rooms"] = pyglet.graphics.OrderedGroup(
-            1, self.layers["ui_master"]
-        )
-        ui["map_icons"] = pyglet.graphics.OrderedGroup(
-            2, self.layers["ui_master"]
-        )
+        ui["map_window"] = pyglet.graphics.OrderedGroup(0)
+        ui["map_rooms"] = pyglet.graphics.OrderedGroup(1)
+        ui["map_icons"] = pyglet.graphics.OrderedGroup(2)
         self.layers["ui"] = ui
 
     def loadResources(self):
@@ -101,29 +91,97 @@ class Window(pyglet.window.Window):
         for style in c.STYLES:
             tiles[style] = {}
             for tile in c.TILES.keys():
+                tile_width = c.TILES[tile]["sprite"]["width"]
+                tile_height = c.TILES[tile]["sprite"]["height"]
                 image = pyglet.resource.image(
                     f"resources/tilesets/{style}/{tile}.png"
                 )
+                try:
+                    data_path = f"resources/tilesets/{style}/{tile}.json"
+                    with open(data_path, "r") as f:
+                        data = json.load(f)
 
-                if c.TILES[tile]["sprite"]["connective"]:
-                    image_grid = pyglet.image.ImageGrid(
+                    sprite_sheet = pyglet.image.ImageGrid(
                         image,
-                        c.TILESET_DIMENSIONS[1],
-                        c.TILESET_DIMENSIONS[0],
-                        item_width=c.TILES[tile]["sprite"]["width"],
-                        item_height=c.TILES[tile]["sprite"]["height"]
+                        len(data["animations"]),
+                        data["max_length"],
+                        item_width=data["frame"][0],
+                        item_height=data["frame"][1]
                     )
-                else:
-                    image_grid = pyglet.image.ImageGrid(
-                        image,
-                        image.height // c.TILES[tile]["sprite"]["height"],
-                        image.width // c.TILES[tile]["sprite"]["width"],
-                        item_width=c.TILES[tile]["sprite"]["width"],
-                        item_height=c.TILES[tile]["sprite"]["height"]
-                    )
-                tiles[style][tile] = pyglet.image.TextureGrid(image_grid)
-                # if image.width > c.TILESET_DIMENSIONS[0] * 16:
-                #     frames = image.
+
+                    if c.TILES[tile]["sprite"]["connective"]:
+                        frame_grids = []
+                        for frame in range(sprite_sheet.__len__()):
+                            frame_grids.append(
+                                pyglet.image.ImageGrid(
+                                    sprite_sheet[frame],
+                                    c.TILESET_DIMENSIONS[1],
+                                    c.TILESET_DIMENSIONS[0],
+                                    item_width=tile_width,
+                                    item_height=tile_height)
+                            )
+
+                        image_grid = {}
+                        for index in range(frame_grids[0].__len__()):
+                            tile_frames = []
+                            for i in range(data["animations"][0]["length"]):
+                                tile_frames.append(
+                                    pyglet.image.AnimationFrame(
+                                        frame_grids[i][index],
+                                        data["animations"][0]["frame_rate"]
+                                    )
+                                )
+                                image_grid[index] = pyglet.image.Animation(
+                                    tile_frames
+                                )
+                    else:
+                        frame_grids = []
+                        for frame in range(sprite_sheet.__len__()):
+                            frame_grids.append(
+                                pyglet.image.ImageGrid(
+                                    sprite_sheet[frame],
+                                    image.height // tile_height,
+                                    image.width // tile_width,
+                                    item_width=tile_width,
+                                    item_height=tile_height
+                                )
+                            )
+
+                        image_grid = []
+                        for index in range(frame_grids[0].__len__()):
+                            tile_frames = []
+                            for i in range(data["animations"][0]["length"]):
+                                tile_frames.append(
+                                    pyglet.image.AnimationFrame(
+                                        frame_grids[i][index],
+                                        data["animations"][0]["frame_rate"]
+                                    )
+                                )
+                                image_grid.append(
+                                    pyglet.image.Animation(
+                                        tile_frames
+                                    )
+                                )
+
+                except FileNotFoundError:
+                    if c.TILES[tile]["sprite"]["connective"]:
+                        image_grid = pyglet.image.ImageGrid(
+                            image,
+                            c.TILESET_DIMENSIONS[1],
+                            c.TILESET_DIMENSIONS[0],
+                            item_width=c.TILES[tile]["sprite"]["width"],
+                            item_height=c.TILES[tile]["sprite"]["height"]
+                        )
+                    else:
+                        image_grid = pyglet.image.ImageGrid(
+                            image,
+                            image.height // c.TILES[tile]["sprite"]["height"],
+                            image.width // c.TILES[tile]["sprite"]["width"],
+                            item_width=c.TILES[tile]["sprite"]["width"],
+                            item_height=c.TILES[tile]["sprite"]["height"]
+                        )
+
+                tiles[style][tile] = image_grid
         self.resources["tiles"] = tiles
 
         self.resources["player"] = pyglet.resource.image(

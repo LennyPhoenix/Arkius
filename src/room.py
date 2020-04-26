@@ -212,4 +212,5 @@ class Room:
             tile = self.tiles[pos]
             if tile.sprite.visible != visible:
                 tile.sprite.visible = visible
+                # tile.sprite.paused = visible
         self._visible = visible

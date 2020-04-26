@@ -1,50 +1,9 @@
 """Contains classes for tiles, the player, enemies, etc."""
-from math import floor
 
-import pyglet
 from pyglet.window import key
 
 from . import constants as c
-
-
-class Basic:
-    """Basic entity."""
-
-    def __init__(self, window, x, y, image):
-        """Initialise with position, dimensions and a sprite.
-
-        Arguments:
-            window {Window} -- The window for the application.
-            x {float} -- The world X position of the entity.
-            y {float} -- The world Y position of the entity.
-            image {pyglet.image} -- The image to be used for the sprite.
-        """
-        self.window = window
-        self.x = x
-        self.y = y
-        self.grid_x, self.grid_y = floor(self.x), floor(self.y)
-
-        self.screen_x, self.screen_y = window.worldToScreen(self.x, self.y)
-        self.sprite = pyglet.sprite.Sprite(
-            image,
-            x=self.screen_x, y=self.screen_y,
-            batch=self.window.world_batch,
-            subpixel=True
-        )
-
-    def update(self):
-        """Update the sprite and any position variables."""
-        self.x = round(self.x*16)/16
-        self.y = round(self.y*16)/16
-        self.grid_x, self.grid_y = floor(self.x), floor(self.y)
-
-        screen_pos = self.window.worldToScreen(self.x, self.y)
-        self.screen_x, self.screen_y = screen_pos[0], screen_pos[1]
-
-        self.sprite.update(
-            x=self.screen_x,
-            y=self.screen_y
-        )
+from .sprite import Basic
 
 
 class Tile(Basic):
@@ -65,13 +24,11 @@ class Tile(Basic):
         super().__init__(
             window,
             x, y,
-            tile_image
+            tile_image,
+            self.type == c.WALL
         )
         layer = self.window.layers["world"][c.TILES[self.type]["layer"]]
-        if type(layer) is dict:
-            self.sprite.group = layer[self.grid_y]
-        else:
-            self.sprite.group = layer
+        self.sprite.group = layer
         self.sprite.visible = False
 
         if c.TILES[self.type]["collider"] is not None:
@@ -105,9 +62,10 @@ class Player(Basic):
         super().__init__(
             window,
             0, 0,
-            player_image
+            player_image,
+            True
         )
-        layer = self.window.layers["world"]["y_ordered"][self.grid_y]
+        layer = self.window.layers["world"]["y_ordered"]
         self.sprite.group = layer
         self.ox, self.oy = self.x, self.y
 
@@ -122,7 +80,6 @@ class Player(Basic):
 
         self.velocity_x = 0
         self.velocity_y = 0
-        self.moving = False
 
     def update(self, dt):
         """Update the player.
@@ -192,9 +149,6 @@ class Player(Basic):
         self.checkDoors()
 
         super().update()
-        layer = self.window.layers["world"]["y_ordered"][self.grid_y]
-        if self.sprite.group != layer:
-            self.sprite.group = layer
 
     def checkDoors(self):
         """Check if the player is exiting through a door."""
