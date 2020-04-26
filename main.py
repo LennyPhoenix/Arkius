@@ -241,6 +241,27 @@ class Window(pyglet.window.Window):
 
         return (screen_x, screen_y)
 
+    def screenToWorld(self, x, y):
+        """Convert a screen position to a world position.
+
+        Arguments:
+            x {int} -- The screen X position.
+            y {int} -- The screen Y position.
+        """
+        world_x = (
+            (x+self.world_camera.offset_x*self.world_camera.zoom) /
+            self.world_camera.zoom
+        )
+        world_y = (
+            (y+self.world_camera.offset_y*self.world_camera.zoom) /
+            self.world_camera.zoom
+        )
+
+        world_x = world_x/16+0.5
+        world_y = world_y/16+0.5
+
+        return world_x, world_y
+
     def positionCamera(self):
         """Sets the position of the world_camera."""
         self.world_camera.position = (
