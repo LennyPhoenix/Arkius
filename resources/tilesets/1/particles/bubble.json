@@ -1,0 +1,15 @@
+{
+    "frame": [
+        8,
+        8
+    ],
+    "max_length": 7,
+    "animations": [
+        {
+            "alias": "main",
+            "length": 7,
+            "frame_length": 0.15,
+            "loop": false
+        }
+    ]
+}
