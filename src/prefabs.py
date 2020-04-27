@@ -49,7 +49,7 @@ class Tile(Basic):
         except AttributeError:
             pass
 
-        r = random.randint(0, 5)
+        r = random.randint(0, 3)
         if (
             self.type == c.PIT and
             self.window.dungeon_style == c.VOLCANO and

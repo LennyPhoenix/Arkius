@@ -56,8 +56,8 @@ class Transition:
         if self.state == "fade_out":
             self.state = "black"
         elif self.state == "black":
-            for particle in self.window.particles:
-                particle.destroy()
+            while len(self.window.particles) > 0:
+                self.window.particles[0].destroy()
             self.window.room.visibility = False
             if self.player is not None:
                 if self.door == 0:
