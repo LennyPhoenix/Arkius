@@ -15,11 +15,11 @@ class Particle(Basic):
 
 
 class TimedParticle(Particle):
-    def __init__(self, window, x, y, image, lifetime, card_sprite=False):
+    def __init__(self, window, x, y, image, lifetime, update=1/15, card_sprite=False):  # noqa: E501
         super().__init__(window, x, y, image, card_sprite=card_sprite)
         self.lifetime = lifetime
         self.time = 0
-        pyglet.clock.schedule_interval_soft(self.update, 1/15)
+        pyglet.clock.schedule_interval_soft(self.update, update)
 
     def update(self, dt):
         self.time += dt
@@ -44,7 +44,7 @@ class AnimationBasedParticle(Particle):
 
 class Shadow(TimedParticle):
     def __init__(self, window, x, y, image, lifetime, initial_opacity):
-        super().__init__(window, x, y, image, lifetime)
+        super().__init__(window, x, y, image, lifetime, update=1/30)
         self.sprite.group = self.window.layers["world"]["y_ordered"]
         self.initial_opacity = initial_opacity
         self.opacity_step = self.initial_opacity/self.lifetime
