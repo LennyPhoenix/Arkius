@@ -58,9 +58,10 @@ class Window(pyglet.window.Window):
         self.createLayers()
         self.loadResources()
 
+        self.dungeon_style = c.VOLCANO
         self.dungeon = Dungeon(
             self,
-            c.VOLCANO
+            self.dungeon_style
         )
 
         self.player = prefabs.Player(self)
@@ -198,6 +199,13 @@ class Window(pyglet.window.Window):
         self.resources["player"] = pyglet.resource.image(
             "resources/sprites/player.png"
         )
+
+        image = pyglet.resource.image(
+            "resources/tilesets/1/particles/bubble.png"
+        )
+        with open("resources/tilesets/1/particles/bubble.json", "r") as f:
+            data = json.load(f)
+        self.resources["lava_bubble"] = self.loadAnimation(image, data)["main"]
 
         ui = {}
 

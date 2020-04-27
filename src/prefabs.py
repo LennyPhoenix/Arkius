@@ -1,10 +1,13 @@
 """Contains classes for tiles, the player, enemies, etc."""
 
+import random
+
+import pyglet
 from pyglet.window import key
 
 from . import constants as c
 from .basic import Basic
-from .particle import Shadow
+from . import particle
 
 
 class Tile(Basic):
@@ -30,13 +33,52 @@ class Tile(Basic):
         )
         layer = self.window.layers["world"][c.TILES[self.type]["layer"]]
         self.sprite.group = layer
-        self.sprite.visible = False
+        self.unload()
 
         if c.TILES[self.type]["collider"] is not None:
             self.col_x = c.TILES[self.type]["collider"]["x"]
             self.col_y = c.TILES[self.type]["collider"]["y"]
             self.col_width = c.TILES[self.type]["collider"]["width"]
             self.col_height = c.TILES[self.type]["collider"]["height"]
+
+    def load(self):
+        self.loaded = True
+        self.sprite.visible = True
+        try:
+            self.sprite._animate(0)
+        except AttributeError:
+            pass
+
+        r = random.randint(0, 5)
+        if (
+            self.type == c.PIT and
+            self.window.dungeon_style == c.VOLCANO and
+            r == 0
+        ):
+            pyglet.clock.schedule_interval_soft(self.emitter, 0.5)
+            self.last_bubble = 0
+            self.to_wait = random.randint(2, 16)/2
+
+    def unload(self):
+        self.loaded = False
+        self.sprite.visible = False
+        pyglet.clock.unschedule(self.sprite._animate)
+        pyglet.clock.unschedule(self.emitter)
+
+    def emitter(self, dt):
+        if self.sprite.visible:
+            self.last_bubble += dt
+            if self.last_bubble >= self.to_wait:
+                x = self.x+random.randint(2, 6)/16
+                y = self.y+random.randint(2, 4)/16
+                particle.AnimationBasedParticle(
+                    self.window,
+                    x,
+                    y,
+                    self.window.resources["lava_bubble"]
+                )
+                self.last_bubble = 0
+                self.to_wait = random.randint(4, 16)/2
 
     @property
     def aabb(self):
@@ -132,7 +174,7 @@ class Player(Basic):
                 self.velocity_y *= 5
                 self.last_shadow += dt
                 if self.last_shadow >= self.shadow_frequency:
-                    Shadow(
+                    particle.Shadow(
                         self.window,
                         self.x, self.y,
                         self.sprite.image,

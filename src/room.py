@@ -210,7 +210,8 @@ class Room:
         """
         for pos in self.tiles.keys():
             tile = self.tiles[pos]
-            if tile.sprite.visible != visible:
-                tile.sprite.visible = visible
-                # tile.sprite.paused = visible
+            if not tile.loaded and visible:
+                tile.load()
+            elif tile.loaded and not visible:
+                tile.unload()
         self._visible = visible

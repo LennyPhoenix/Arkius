@@ -86,6 +86,7 @@ class CardSprite(event.EventDispatcher):
     _scale = 1.0
     _visible = True
     _vertex_list = None
+    _frame_index = 0
     _z = 1
 
     def __init__(self,
