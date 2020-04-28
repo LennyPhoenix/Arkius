@@ -16,7 +16,7 @@ PLAYER_SPEED = 4
 DIAGONAL_MULTIPLIER = 0.7
 PLAYER_COLLIDER = {
     "x": 1/16,
-    "y": -1/16,
+    "y": 2/16,
     "width": 14/16,
     "height": 10/16
 }
