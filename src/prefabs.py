@@ -150,35 +150,57 @@ class Player(Basic):
             dt {float} -- Time passed since last update.
         """
 
+        controls = {
+            "up": (
+                self.window.key_handler[key.W] or
+                self.window.key_handler[key.UP]
+            ),
+            "down": (
+                self.window.key_handler[key.S] or
+                self.window.key_handler[key.DOWN]
+            ),
+            "left": (
+                self.window.key_handler[key.A] or
+                self.window.key_handler[key.LEFT]
+            ),
+            "right": (
+                self.window.key_handler[key.D] or
+                self.window.key_handler[key.RIGHT]
+            ),
+            "dash": (
+                self.window.key_handler[key.LSHIFT]
+            )
+        }
+
         # Position
         self.velocity_x, self.velocity_y = 0, 0
         if self.state != "locked":
-            if self.window.key_handler[key.W]:
+            if controls["up"]:
                 self.velocity_y += c.PLAYER_SPEED
-            if self.window.key_handler[key.S]:
+            if controls["down"]:
                 self.velocity_y -= c.PLAYER_SPEED
 
             if (
-                self.window.key_handler[key.W] or
-                self.window.key_handler[key.S]
+                controls["up"] or
+                controls["down"]
             ):
                 if self.state == "idle_left":
                     self.state = "walk_left"
                 elif self.state == "idle_right":
                     self.state = "walk_right"
 
-            if self.window.key_handler[key.A]:
+            if controls["left"]:
                 self.velocity_x -= c.PLAYER_SPEED
                 self.state = "walk_left"
-            if self.window.key_handler[key.D]:
+            if controls["right"]:
                 self.velocity_x += c.PLAYER_SPEED
                 self.state = "walk_right"
 
             if not (
-                self.window.key_handler[key.D] or
-                self.window.key_handler[key.A] or
-                self.window.key_handler[key.W] or
-                self.window.key_handler[key.S]
+                controls["up"] or
+                controls["down"] or
+                controls["left"] or
+                controls["right"]
             ):
                 if self.state == "walk_left":
                     self.state = "idle_left"
@@ -187,18 +209,18 @@ class Player(Basic):
 
             if (
                 (
-                    self.window.key_handler[key.A] or
-                    self.window.key_handler[key.D]
+                    controls["left"] or
+                    controls["right"]
                 ) and
                 (
-                    self.window.key_handler[key.W] or
-                    self.window.key_handler[key.S]
+                    controls["up"] or
+                    controls["down"]
                 )
             ):
                 self.velocity_x *= c.DIAGONAL_MULTIPLIER
                 self.velocity_y *= c.DIAGONAL_MULTIPLIER
 
-            if self.window.key_handler[key.LSHIFT]:
+            if controls["dash"]:
                 self.velocity_x *= 5
                 self.velocity_y *= 5
                 self.last_shadow += dt
