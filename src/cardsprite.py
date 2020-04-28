@@ -1,13 +1,13 @@
 import math
 
-from pyglet import event, image, clock, graphics
-from pyglet.gl import GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_QUADS, GL_COLOR_BUFFER_BIT, GL_BLEND
-from pyglet.gl import GL_DEPTH_BUFFER_BIT, GL_ALPHA_TEST, GL_LESS, GL_GREATER, GL_DEPTH_TEST
-from pyglet.gl import glEnable, glDisable, glBindTexture, glPushAttrib, glPopAttrib
-from pyglet.gl import glDepthFunc, glAlphaFunc, glBlendFunc
+from pyglet.gl import *
+from pyglet import clock
+from pyglet import event
+from pyglet import graphics
+from pyglet import image
 
 
-class CardSpriteGroup(graphics.Group):
+class SpriteGroup(graphics.Group):
     """Shared sprite rendering group.
 
     The group is automatically coalesced with other sprite groups sharing the
@@ -32,7 +32,7 @@ class CardSpriteGroup(graphics.Group):
             `parent` : `Group`
                 Optional parent group.
         """
-        super(CardSpriteGroup, self).__init__(parent)
+        super(SpriteGroup, self).__init__(parent)
         self.texture = texture
         self.blend_src = blend_src
         self.blend_dest = blend_dest
@@ -86,8 +86,6 @@ class CardSprite(event.EventDispatcher):
     _scale = 1.0
     _visible = True
     _vertex_list = None
-    _frame_index = 0
-    _z = 1
 
     def __init__(self,
                  img, x=0, y=0,
@@ -96,7 +94,8 @@ class CardSprite(event.EventDispatcher):
                  batch=None,
                  group=None,
                  usage='dynamic',
-                 subpixel=False):
+                 subpixel=False,
+                 tilt=1):
         """Create a sprite.
 
         :Parameters:
@@ -127,6 +126,9 @@ class CardSprite(event.EventDispatcher):
         if batch is not None:
             self._batch = batch
 
+        self._x = x
+        self._y = y
+
         if isinstance(img, image.Animation):
             self._animation = img
             self._frame_index = 0
@@ -137,13 +139,10 @@ class CardSprite(event.EventDispatcher):
         else:
             self._texture = img.get_texture()
 
-        self._x = x
-        self._y = y
-
-        self._group = CardSpriteGroup(
-            self._texture, blend_src, blend_dest, group)
+        self._group = SpriteGroup(self._texture, blend_src, blend_dest, group)
         self._usage = usage
         self._subpixel = subpixel
+        self._tilt = tilt
         self._create_vertex_list()
 
     def __del__(self):
@@ -229,10 +228,10 @@ class CardSprite(event.EventDispatcher):
     def group(self, group):
         if self._group.parent == group:
             return
-        self._group = CardSpriteGroup(self._texture,
-                                      self._group.blend_src,
-                                      self._group.blend_dest,
-                                      group)
+        self._group = SpriteGroup(self._texture,
+                                  self._group.blend_src,
+                                  self._group.blend_dest,
+                                  group)
         if self._batch is not None:
             self._batch.migrate(self._vertex_list, GL_QUADS, self._group,
                                 self._batch)
@@ -262,15 +261,14 @@ class CardSprite(event.EventDispatcher):
                 clock.schedule_once(self._animate, self._next_dt)
         else:
             self._set_texture(img.get_texture())
-        self._z = self._texture.height / image.get_max_texture_size()
         self._update_position()
 
     def _set_texture(self, texture):
         if texture.id is not self._texture.id:
-            self._group = CardSpriteGroup(texture,
-                                          self._group.blend_src,
-                                          self._group.blend_dest,
-                                          self._group.parent)
+            self._group = SpriteGroup(texture,
+                                      self._group.blend_src,
+                                      self._group.blend_dest,
+                                      self._group.parent)
             if self._batch is None:
                 self._vertex_list.tex_coords[:] = texture.tex_coords
             else:
@@ -298,6 +296,7 @@ class CardSprite(event.EventDispatcher):
     def _update_position(self):
         img = self._texture
         scale = self._scale
+        top_z = self._tilt
         if not self._visible:
             vertices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         elif self._rotation:
@@ -318,32 +317,46 @@ class CardSprite(event.EventDispatcher):
             cy = x2 * sr + y2 * cr + y
             dx = x1 * cr - y2 * sr + x
             dy = x1 * sr + y2 * cr + y
-            vertices = [ax, ay, 0, bx, by, 0, cx, cy, self._z, dx, dy, self._z]
+            vertices = [ax, ay, 0, bx, by, 0, cx, cy, top_z, dx, dy, top_z]
         elif scale != 1.0:
             x1 = self._x - img.anchor_x * scale
             y1 = self._y - img.anchor_y * scale
             x2 = x1 + img.width * scale
             y2 = y1 + img.height * scale
-            vertices = [x1, y1, 0, x2, y1, 0, x2, y2, self._z, x1, y2, self._z]
+            vertices = [x1, y1, 0, x2, y1, 0, x2, y2, top_z, x1, y2, top_z]
         else:
             x1 = self._x - img.anchor_x
             y1 = self._y - img.anchor_y
             x2 = x1 + img.width
             y2 = y1 + img.height
-            vertices = [x1, y1, 0, x2, y1, 0, x2, y2, self._z, x1, y2, self._z]
+            vertices = [x1, y1, 0, x2, y1, 0, x2, y2, top_z, x1, y2, top_z]
         if not self._subpixel:
-            vertices = (int(vertices[0]), int(vertices[1]),
-                        vertices[2], int(vertices[3]),
-                        int(vertices[4]), vertices[5],
-                        int(vertices[6]), int(vertices[7]),
-                        vertices[8], int(vertices[9]),
-                        int(vertices[10]), vertices[11])
-
+            vertices = list(map(int, vertices))
         self._vertex_list.vertices[:] = vertices
 
     def _update_color(self):
         r, g, b = self._rgb
         self._vertex_list.colors[:] = [r, g, b, int(self._opacity)] * 4
+
+    @property
+    def image_aabb(self):
+        img = self._texture
+        l = self._x - img.anchor_x
+        b = self._y - img.anchor_y
+        r = l + img.width
+        t = b + img.height
+        return l, b, r, t
+
+    @property
+    def polygon(self):
+        v = self._vertex_list.vertices
+        # vertices = [ax, ay, z, bx, by, z, cx, cy, z, dx, dy, z]
+        return v[0], v[1], v[3], v[4], v[6], v[7], v[9], v[10]
+
+    @property
+    def corners(self):
+        v = self._vertex_list.vertices
+        return (v[0], v[1]), (v[3], v[4]), (v[6], v[7]), (v[9], v[10])
 
     @property
     def position(self):
@@ -355,11 +368,11 @@ class CardSprite(event.EventDispatcher):
             `y` : int
                 Y coordinate of the sprite.
         """
-        return self._x, self._y, self._z
+        return self._x, self._y
 
     @position.setter
     def position(self, pos):
-        self._x, self._y, self._z = pos
+        self._x, self._y = pos
         self._update_position()
 
     @property
@@ -426,7 +439,7 @@ class CardSprite(event.EventDispatcher):
         The reason for this extra method is performance only. If
         the sprite changes two or the three components position,
         rotation and scale at the same time, there will be a benefit
-        from calling this method, rather than using its position
+        from calling this method, rather than using its position 
         setter followed by its rotation setter for instance.
 
         :Parameters:
@@ -537,3 +550,6 @@ class CardSprite(event.EventDispatcher):
         self._group.set_state_recursive()
         self._vertex_list.draw(GL_QUADS)
         self._group.unset_state_recursive()
+
+
+CardSprite.register_event_type('on_animation_end')
