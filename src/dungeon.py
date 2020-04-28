@@ -48,45 +48,36 @@ class Dungeon:
             "type": c.START_ROOM,
             "doors": {i: False for i in range(4)}
         }
-        for room_type in self.config["rooms"].keys():
-            planted = 0
-            while planted < self.config["rooms"][room_type]:
-                pos = random.choice(list(gen_map.keys()))
-                x, y = random.choice(list(neighbours.keys()))
-                n_x, n_y = pos[0] + x, pos[1] + y
-                doors = neighbours[(x, y)]
+        config = self.config.copy()
+        while len(config["rooms"]) > 0:
+            room_type = random.choice(list(config["rooms"].keys()))
+            pos = random.choice(list(gen_map.keys()))
+            x, y = random.choice(list(neighbours.keys()))
+            n_x, n_y = pos[0] + x, pos[1] + y
+            doors = neighbours[(x, y)]
 
-                if (
-                    (
-                        gen_map[(pos)]["type"] == c.START_ROOM or
-                        gen_map[(pos)]["type"] == c.BOSS_ROOM
-                    ) and
-                    (
-                        room_type == c.START_ROOM or
-                        room_type == c.BOSS_ROOM
-                    )
-                ):
-                    continue
+            if (
+                room_type in c.ROOM_INFO[
+                    gen_map[pos]["type"]
+                ]["dont_connect"]
+            ):
+                continue
 
-                if (
-                    gen_map[(pos)]["type"] == c.TREASURE_ROOM and
-                    room_type == c.TREASURE_ROOM
-                ):
-                    continue
+            if not (
+                -self.size <= n_x <= self.size and
+                -self.size <= n_y <= self.size
+            ):
+                continue
 
-                if not (
-                    -self.size <= n_x <= self.size and
-                    -self.size <= n_y <= self.size
-                ):
-                    continue
-
-                if (n_x, n_y) not in gen_map.keys():
-                    gen_map[pos]["doors"][doors[0]] = True
-                    gen_map[(n_x, n_y)] = {
-                        "type": room_type,
-                        "doors": {i: (i == doors[1]) for i in range(4)}
-                    }
-                    planted += 1
+            if (n_x, n_y) not in gen_map.keys():
+                gen_map[pos]["doors"][doors[0]] = True
+                gen_map[(n_x, n_y)] = {
+                    "type": room_type,
+                    "doors": {i: (i == doors[1]) for i in range(4)}
+                }
+                config["rooms"][room_type] -= 1
+                if config["rooms"][room_type] <= 0:
+                    del config["rooms"][room_type]
 
         planted = 0
         while planted < self.config["connections"]:
@@ -96,22 +87,13 @@ class Dungeon:
             doors = neighbours[(x, y)]
 
             if (n_x, n_y) in gen_map.keys():
-
                 if (
-                    (
-                        gen_map[(pos)]["type"] == c.START_ROOM or
-                        gen_map[(pos)]["type"] == c.BOSS_ROOM
-                    ) and
-                    (
-                        gen_map[(n_x, n_y)]["type"] == c.START_ROOM or
-                        gen_map[(n_x, n_y)]["type"] == c.BOSS_ROOM
-                    )
-                ):
-                    continue
-
-                if (
-                    gen_map[(pos)]["type"] == c.TREASURE_ROOM and
-                    gen_map[(n_x, n_y)]["type"] == c.TREASURE_ROOM
+                    gen_map[pos]["type"] in c.ROOM_INFO[
+                        gen_map[(n_x, n_y)]["type"]
+                    ]["dont_connect"] or
+                    gen_map[(n_x, n_y)]["type"] in c.ROOM_INFO[
+                        gen_map[pos]["type"]
+                    ]["dont_connect"]
                 ):
                     continue
 

@@ -135,15 +135,17 @@ TREASURE_ROOM = 2
 BOSS_ROOM = 3
 SHOP_ROOM = 4
 ROOM_INFO = {
-    0: {
+    START_ROOM: {
         "default_dimensions": (6, 6),
+        "dont_connect": [BOSS_ROOM, START_ROOM, SHOP_ROOM],
         "configs": {
             ICE: [conf.C_START],
             VOLCANO: [conf.C_START]
         }
     },
-    1: {
+    FIGHT_ROOM: {
         "default_dimensions": (7, 7),
+        "dont_connect": [],
         "configs": {
             ICE: [
                 conf.C_FIGHT_LARGE,
@@ -158,22 +160,25 @@ ROOM_INFO = {
             ]
         }
     },
-    2: {
+    TREASURE_ROOM: {
         "default_dimensions": (6, 5),
+        "dont_connect": [TREASURE_ROOM, SHOP_ROOM],
         "configs": {
             ICE: [conf.C_TREASURE],
             VOLCANO: [conf.C_TREASURE]
         }
     },
-    3: {
+    BOSS_ROOM: {
         "default_dimensions": (9, 9),
+        "dont_connect": [START_ROOM, FIGHT_ROOM, BOSS_ROOM],
         "configs": {
             ICE: [conf.C_BOSS_CENTRED],
             VOLCANO: [conf.C_BOSS_CENTRED]
         }
     },
-    4: {
+    SHOP_ROOM: {
         "default_dimensions": (10, 7),
+        "dont_connect": [SHOP_ROOM],
         "configs": {
             ICE: [conf.C_EMPTY],
             VOLCANO: [conf.C_EMPTY]
@@ -183,12 +188,12 @@ ROOM_INFO = {
 
 # Dungeon Configs
 DUNGEON_BASE = {
-    "size": 3,
+    "size": 5,
     "rooms": {
-        FIGHT_ROOM: 20,
-        TREASURE_ROOM: 5,
-        BOSS_ROOM: 2,
-        SHOP_ROOM: 1
+        FIGHT_ROOM: 60,
+        TREASURE_ROOM: 20,
+        BOSS_ROOM: 5,
+        SHOP_ROOM: 3
     },
-    "connections": 9
+    "connections": 30
 }
