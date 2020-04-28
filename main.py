@@ -319,10 +319,10 @@ class Window(pyglet.window.Window):
 
         return super().on_key_press(symbol, modifiers)
 
-    def on_mouse_press(self, x, y, button, modifiers):
-        if button == mouse.LEFT:
-            world_x, world_y = self.screenToWorld(x, y)
-            self.player.x, self.player.y = world_x-0.5, world_y
+    # def on_mouse_press(self, x, y, button, modifiers):
+    #     if button == mouse.LEFT:
+    #         world_x, world_y = self.screenToWorld(x, y)
+    #         self.player.x, self.player.y = world_x-0.5, world_y
 
     def on_resize(self, width, height):
         """Resize the room.
