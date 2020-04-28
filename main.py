@@ -196,9 +196,12 @@ class Window(pyglet.window.Window):
                 tiles[style][tile] = image_grid
         self.resources["tiles"] = tiles
 
-        self.resources["player"] = pyglet.resource.image(
+        image = pyglet.resource.image(
             "resources/sprites/player.png"
         )
+        with open("resources/sprites/player.json", "r") as f:
+            data = json.load(f)
+        self.resources["player"] = self.loadAnimation(image, data)
 
         image = pyglet.resource.image(
             "resources/tilesets/1/particles/bubble.png"

@@ -1,0 +1,33 @@
+{
+    "frame": [
+        16,
+        32
+    ],
+    "max_length": 4,
+    "animations": [
+        {
+            "alias": "idle_left",
+            "length": 2,
+            "frame_length": 0.5,
+            "loop": true
+        },
+        {
+            "alias": "idle_right",
+            "length": 2,
+            "frame_length": 0.5,
+            "loop": true
+        },
+        {
+            "alias": "walk_left",
+            "length": 4,
+            "frame_length": 0.1,
+            "loop": true
+        },
+        {
+            "alias": "walk_right",
+            "length": 4,
+            "frame_length": 0.1,
+            "loop": true
+        }
+    ]
+}
