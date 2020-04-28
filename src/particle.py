@@ -44,7 +44,14 @@ class AnimationBasedParticle(Particle):
 
 class Shadow(TimedParticle):
     def __init__(self, window, x, y, image, lifetime, initial_opacity):
-        super().__init__(window, x, y, image, lifetime, update=1/30)
+        super().__init__(
+            window,
+            x, y,
+            image,
+            lifetime,
+            update=1/30,
+            card_sprite=True
+        )
         self.sprite.group = self.window.layers["world"]["y_ordered"]
         self.initial_opacity = initial_opacity
         self.opacity_step = self.initial_opacity/self.lifetime
