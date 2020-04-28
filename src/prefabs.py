@@ -100,17 +100,15 @@ class Player(Basic):
         Arguments:
             window {Window} -- The window for the application.
         """
-        self._state = "idle"
-        player_image = window.resources["player"]
-
+        self._state = "idle_right"
+        anim = window.resources["player"]["idle_right"]
         super().__init__(
             window,
             0, 0,
-            player_image,
-            True
+            anim,
+            card_sprite=True
         )
-        layer = self.window.layers["world"]["y_ordered"]
-        self.sprite.group = layer
+        self.sprite.group = self.window.layers["world"]["y_ordered"]
         self.ox, self.oy = self.x, self.y
 
         self.last_shadow = 0
@@ -134,7 +132,15 @@ class Player(Basic):
 
     @state.setter
     def state(self, state):
-        if state in c.PLAYER_STATES[self.state]:
+        if state != self.state:
+            if state in self.window.resources["player"].keys():
+                anim = self.window.resources["player"][state]
+                self.sprite.image = anim
+            elif state == "locked":
+                if self._state == "walk_right":
+                    self.state = "idle_right"
+                elif self._state == "walk_left":
+                    self.state = "idle_left"
             self._state = state
 
     def update(self, dt):
@@ -149,12 +155,35 @@ class Player(Basic):
         if self.state != "locked":
             if self.window.key_handler[key.W]:
                 self.velocity_y += c.PLAYER_SPEED
-            if self.window.key_handler[key.A]:
-                self.velocity_x -= c.PLAYER_SPEED
             if self.window.key_handler[key.S]:
                 self.velocity_y -= c.PLAYER_SPEED
+
+            if (
+                self.window.key_handler[key.W] or
+                self.window.key_handler[key.S]
+            ):
+                if self.state == "idle_left":
+                    self.state = "walk_left"
+                elif self.state == "idle_right":
+                    self.state = "walk_right"
+
+            if self.window.key_handler[key.A]:
+                self.velocity_x -= c.PLAYER_SPEED
+                self.state = "walk_left"
             if self.window.key_handler[key.D]:
                 self.velocity_x += c.PLAYER_SPEED
+                self.state = "walk_right"
+
+            if not (
+                self.window.key_handler[key.D] or
+                self.window.key_handler[key.A] or
+                self.window.key_handler[key.W] or
+                self.window.key_handler[key.S]
+            ):
+                if self.state == "walk_left":
+                    self.state = "idle_left"
+                elif self.state == "walk_right":
+                    self.state = "idle_right"
 
             if (
                 (
@@ -174,10 +203,13 @@ class Player(Basic):
                 self.velocity_y *= 5
                 self.last_shadow += dt
                 if self.last_shadow >= self.shadow_frequency:
+                    shadow_image = self.sprite.image.frames[
+                        self.sprite._frame_index
+                    ].image
                     particle.Shadow(
                         self.window,
                         self.x, self.y,
-                        self.sprite.image,
+                        shadow_image,
                         0.25,
                         128
                     )

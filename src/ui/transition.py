@@ -30,6 +30,7 @@ class Transition:
         if self.state == "empty":
             self.state = "fade_out"
             self.player = player
+            self.player_state = str(self.player.state)
             self.player.state = "locked"
             self.door = door
 
@@ -144,7 +145,8 @@ class Transition:
             self.state = "fade_in"
         elif self.state == "fade_in":
             if self.player is not None:
-                self.player.state = "idle"
+                self.player.state = self.player_state
+                self.player_state = None
                 self.player = None
             self.state = "empty"
 

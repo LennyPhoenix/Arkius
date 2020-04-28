@@ -20,11 +20,6 @@ PLAYER_COLLIDER = {
     "width": 14/16,
     "height": 10/16
 }
-PLAYER_STATES = {
-    "idle": ["walking", "locked"],
-    "walking": ["idle", "locked"],
-    "locked": ["walking", "idle"]
-}
 
 # Styles
 TILESET_DIMENSIONS = (10, 5)
