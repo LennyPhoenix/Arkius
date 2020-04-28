@@ -103,7 +103,7 @@ class Dungeon:
                         gen_map[(pos)]["type"] == c.BOSS_ROOM
                     ) and
                     (
-                        gen_map[(n_x, n_y)]["type"] == c.START_ROOM and
+                        gen_map[(n_x, n_y)]["type"] == c.START_ROOM or
                         gen_map[(n_x, n_y)]["type"] == c.BOSS_ROOM
                     )
                 ):
