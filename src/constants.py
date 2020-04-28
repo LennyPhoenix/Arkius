@@ -137,7 +137,12 @@ SHOP_ROOM = 4
 ROOM_INFO = {
     START_ROOM: {
         "default_dimensions": (6, 6),
-        "dont_connect": [BOSS_ROOM, START_ROOM, SHOP_ROOM],
+        "dont_connect": [
+            BOSS_ROOM,
+            START_ROOM,
+            TREASURE_ROOM,
+            SHOP_ROOM
+        ],
         "configs": {
             ICE: [conf.C_START],
             VOLCANO: [conf.C_START]
@@ -162,7 +167,11 @@ ROOM_INFO = {
     },
     TREASURE_ROOM: {
         "default_dimensions": (6, 5),
-        "dont_connect": [TREASURE_ROOM, SHOP_ROOM],
+        "dont_connect": [
+            TREASURE_ROOM,
+            SHOP_ROOM,
+            BOSS_ROOM
+        ],
         "configs": {
             ICE: [conf.C_TREASURE],
             VOLCANO: [conf.C_TREASURE]
@@ -170,7 +179,13 @@ ROOM_INFO = {
     },
     BOSS_ROOM: {
         "default_dimensions": (9, 9),
-        "dont_connect": [START_ROOM, FIGHT_ROOM, BOSS_ROOM],
+        "dont_connect": [
+            START_ROOM,
+            FIGHT_ROOM,
+            BOSS_ROOM,
+            TREASURE_ROOM,
+            SHOP_ROOM
+        ],
         "configs": {
             ICE: [conf.C_BOSS_CENTRED],
             VOLCANO: [conf.C_BOSS_CENTRED]
@@ -178,7 +193,12 @@ ROOM_INFO = {
     },
     SHOP_ROOM: {
         "default_dimensions": (10, 7),
-        "dont_connect": [SHOP_ROOM],
+        "dont_connect": [
+            START_ROOM,
+            FIGHT_ROOM,
+            TREASURE_ROOM,
+            SHOP_ROOM
+        ],
         "configs": {
             ICE: [conf.C_EMPTY],
             VOLCANO: [conf.C_EMPTY]
