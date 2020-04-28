@@ -208,6 +208,17 @@ ROOM_INFO = {
 
 # Dungeon Configs
 DUNGEON_BASE = {
+    "size": 3,
+    "rooms": {
+        FIGHT_ROOM: 20,
+        TREASURE_ROOM: 5,
+        BOSS_ROOM: 2,
+        SHOP_ROOM: 1
+    },
+    "connections": 9
+}
+
+DUNGEON_BIG = {
     "size": 5,
     "rooms": {
         FIGHT_ROOM: 60,
