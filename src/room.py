@@ -27,6 +27,7 @@ class Room:
         self.window = window
         self.type = room_type
         self.doors = doors
+        self.base = {}
         self.tilemap = {}
         self.tiles = {}
         self.cleared = self.type == c.START_ROOM
@@ -59,7 +60,7 @@ class Room:
             self.width = c.ROOM_INFO[self.type]["default_dimensions"][0]
             self.height = c.ROOM_INFO[self.type]["default_dimensions"][1]
 
-        self.tilemap = tilemaps.create_blank(
+        self.base = tilemaps.create_blank(
             self.width,
             self.height
         )
@@ -68,26 +69,119 @@ class Room:
             self.map_data is not None and
             self.map_data["matrix"] is not None
         ):
-            self.tilemap.update(tilemaps.toMap(self.map_data["matrix"]))
+            self.base.update(tilemaps.toMap(self.map_data["matrix"]))
             for i in range(4):
                 if type(self.map_data["door_info"][i]["pos"]) is tuple:
                     self.map_data["door_info"][i]["pos"] = random.randint(
                         *self.map_data["door_info"][i]["pos"]
                     )
 
-        self.tilemap = tilemaps.generate(
-            self.type,
-            self.tilemap,
-            self.config["options"],
-            self.map_data
-        )
+        active_doors = [key for key, value in self.doors.items() if value]
+        possible = False
+        while not possible:
+            self.tilemap = self.base.copy()
+            self.tilemap = tilemaps.generate(
+                self.type,
+                self.tilemap,
+                self.config["options"],
+                self.map_data
+            )
+            self.tilemap = tilemaps.add_boundaries(
+                self.type,
+                self.tilemap,
+                self.doors,
+                self.map_data
+            )
 
-        self.tilemap = tilemaps.add_boundaries(
-            self.type,
-            self.tilemap,
-            self.doors,
-            self.map_data
-        )
+            starting_door = random.choice(active_doors)
+            door_p = {}
+            for i in range(4):
+                if self.map_data is not None:
+                    if i == 0:
+                        door_p[i] = (
+                            self.map_data["door_info"][i]["pos"],
+                            self.height
+                        )
+                    elif i == 1:
+                        door_p[i] = (
+                            self.width,
+                            self.map_data["door_info"][i]["pos"]
+                        )
+                    elif i == 2:
+                        door_p[i] = (
+                            self.map_data["door_info"][i]["pos"],
+                            -self.height
+                        )
+                    elif i == 3:
+                        door_p[i] = (
+                            -self.width,
+                            self.map_data["door_info"][i]["pos"]
+                        )
+                else:
+                    if i == 0:
+                        door_p[i] = (
+                            0,
+                            self.height
+                        )
+                    elif i == 1:
+                        door_p[i] = (
+                            self.width,
+                            0
+                        )
+                    elif i == 2:
+                        door_p[i] = (
+                            0,
+                            -self.height
+                        )
+                    elif i == 3:
+                        door_p[i] = (
+                            -self.width,
+                            0
+                        )
+
+            neighbours = [
+                (0, 1),
+                (1, 0),
+                (0, -1),
+                (-1, 0)
+            ]
+            reached = [door_p[starting_door]]
+            reachable = []
+            for x, y in neighbours:
+                n_x = x+door_p[starting_door][0]
+                n_y = y+door_p[starting_door][1]
+                if (
+                    (n_x, n_y) in self.tilemap.keys() and
+                    (n_x, n_y) not in reachable and
+                    (n_x, n_y) not in reached and
+                    c.TILES[self.tilemap[
+                        (n_x, n_y)
+                    ]]["collider"] is None
+                ):
+                    reachable.append((n_x, n_y))
+
+            while len(reachable) > 0:
+                pos = random.choice(reachable)
+                reached.append(pos)
+                reachable.remove(pos)
+
+                for x, y in neighbours:
+                    n_x = x+pos[0]
+                    n_y = y+pos[1]
+                    if (
+                        (n_x, n_y) in self.tilemap.keys() and
+                        (n_x, n_y) not in reachable and
+                        (n_x, n_y) not in reached and
+                        c.TILES[self.tilemap[
+                            (n_x, n_y)
+                        ]]["collider"] is None
+                    ):
+                        reachable.append((n_x, n_y))
+
+            possible = True
+            for x, y in door_p.values():
+                if (x, y) not in reached:
+                    possible = False
 
         self.createSprites()
 
