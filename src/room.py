@@ -35,7 +35,7 @@ class Room:
         self.style = dungeon_style
         self.config = room_config
 
-        self.space = Space(cell_size=4)
+        self.space = Space(cell_size=3)
 
         if self.doors is None:
             self.doors = {i: False for i in range(4)}
