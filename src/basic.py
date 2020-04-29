@@ -157,8 +157,6 @@ class Basic:
         self.vy *= dt
 
         collision_time = 1
-        normal_x = 0
-        normal_y = 0
         for body in [
             body for body in self.window.room.space
             if (
@@ -171,8 +169,49 @@ class Basic:
                 c_time, n_x, n_y = self.sweptAABB(body)
                 if c_time < collision_time:
                     collision_time = c_time
-                    normal_x = n_x
-                    normal_y = n_y
 
         self.x += self.vx*collision_time
         self.y += self.vy*collision_time
+
+        if collision_time < 1:
+            remaining_time = 1-collision_time
+            self.vy *= remaining_time
+            vx = self.vx
+            self.vx = 0
+
+            collision_time = 1
+            for body in [
+                body for body in self.window.room.space
+                if (
+                    body != self and
+                    self.x-4 < body.x < self.x+4 and
+                    self.y-4 < body.y < self.y+4
+                )
+            ]:
+                if self.broadCheck(body):
+                    c_time, n_x, n_y = self.sweptAABB(body)
+                    if c_time < collision_time:
+                        collision_time = c_time
+
+            self.vy *= collision_time
+            self.y += self.vy
+
+            self.vy = 0
+            self.vx = vx
+
+            collision_time = 1
+            for body in [
+                body for body in self.window.room.space
+                if (
+                    body != self and
+                    self.x-4 < body.x < self.x+4 and
+                    self.y-4 < body.y < self.y+4
+                )
+            ]:
+                if self.broadCheck(body):
+                    c_time, n_x, n_y = self.sweptAABB(body)
+                    if c_time < collision_time:
+                        collision_time = c_time
+
+            self.vx *= collision_time
+            self.x += self.vx
