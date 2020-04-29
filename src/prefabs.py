@@ -36,10 +36,10 @@ class Tile(Basic):
         self.unload()
 
         if c.TILES[self.type]["collider"] is not None:
-            self.col_x = c.TILES[self.type]["collider"]["x"]
-            self.col_y = c.TILES[self.type]["collider"]["y"]
-            self.col_width = c.TILES[self.type]["collider"]["width"]
-            self.col_height = c.TILES[self.type]["collider"]["height"]
+            self.cx = c.TILES[self.type]["collider"]["x"]
+            self.cy = c.TILES[self.type]["collider"]["y"]
+            self.cw = c.TILES[self.type]["collider"]["width"]
+            self.ch = c.TILES[self.type]["collider"]["height"]
 
     def load(self):
         self.loaded = True
@@ -84,10 +84,10 @@ class Tile(Basic):
     def aabb(self):
         if c.TILES[self.type]["collider"] is not None:
             return (
-                self.x + self.col_x,
-                self.y + self.col_y,
-                self.x + self.col_x + self.col_width,
-                self.y + self.col_y + self.col_height
+                self.x + self.cx,
+                self.y + self.cy,
+                self.x + self.cx + self.cw,
+                self.y + self.cy + self.ch
             )
 
 
@@ -114,17 +114,17 @@ class Player(Basic):
         self.last_shadow = 0
         self.shadow_frequency = 1/25
 
-        self.col_x = c.PLAYER_COLLIDER["x"]
-        self.col_y = c.PLAYER_COLLIDER["y"]
-        self.col_width = c.PLAYER_COLLIDER["width"]
-        self.col_height = c.PLAYER_COLLIDER["height"]
+        self.cx = c.PLAYER_COLLIDER["x"]
+        self.cy = c.PLAYER_COLLIDER["y"]
+        self.cw = c.PLAYER_COLLIDER["width"]
+        self.ch = c.PLAYER_COLLIDER["height"]
 
         # window.room.space.insert_body(self)
 
         self.room = (0, 0)
 
-        self.velocity_x = 0
-        self.velocity_y = 0
+        self.vx = 0
+        self.vy = 0
 
     @property
     def state(self):
@@ -173,12 +173,12 @@ class Player(Basic):
         }
 
         # Position
-        self.velocity_x, self.velocity_y = 0, 0
+        self.vx, self.vy = 0, 0
         if self.state != "locked":
             if controls["up"]:
-                self.velocity_y += c.PLAYER_SPEED
+                self.vy += c.PLAYER_SPEED
             if controls["down"]:
-                self.velocity_y -= c.PLAYER_SPEED
+                self.vy -= c.PLAYER_SPEED
 
             if (
                 controls["up"] or
@@ -190,10 +190,10 @@ class Player(Basic):
                     self.state = "walk_right"
 
             if controls["left"]:
-                self.velocity_x -= c.PLAYER_SPEED
+                self.vx -= c.PLAYER_SPEED
                 self.state = "walk_left"
             if controls["right"]:
-                self.velocity_x += c.PLAYER_SPEED
+                self.vx += c.PLAYER_SPEED
                 self.state = "walk_right"
 
             if not (
@@ -217,12 +217,12 @@ class Player(Basic):
                     controls["down"]
                 )
             ):
-                self.velocity_x *= c.DIAGONAL_MULTIPLIER
-                self.velocity_y *= c.DIAGONAL_MULTIPLIER
+                self.vx *= c.DIAGONAL_MULTIPLIER
+                self.vy *= c.DIAGONAL_MULTIPLIER
 
             if controls["dash"]:
-                self.velocity_x *= 5
-                self.velocity_y *= 5
+                self.vx *= 5
+                self.vy *= 5
                 self.last_shadow += dt
                 if self.last_shadow >= self.shadow_frequency:
                     shadow_image = self.sprite.image.frames[
@@ -238,8 +238,8 @@ class Player(Basic):
                     self.last_shadow = 0
 
         self.ox, self.oy = self.x, self.y
-        self.x += self.velocity_x * dt
-        self.y += self.velocity_y * dt
+        self.x += self.vx * dt
+        self.y += self.vy * dt
 
         hits = self.window.room.space.get_hits(self.aabb)
         for body in hits:
@@ -247,25 +247,25 @@ class Player(Basic):
                 self.aabb[1] <= body.aabb[3] and
                 self.old_aabb[1] >= body.aabb[3]
             ):
-                self.y = body.aabb[3] - self.col_y
+                self.y = body.aabb[3] - self.cy
 
             elif (
                 self.aabb[3] >= body.aabb[1] and
                 self.old_aabb[3] <= body.aabb[1]
             ):
-                self.y = body.aabb[1] - self.col_y - self.col_height
+                self.y = body.aabb[1] - self.cy - self.ch
 
             if (
                 self.aabb[2] >= body.aabb[0] and
                 self.old_aabb[2] <= body.aabb[0]
             ):
-                self.x = body.aabb[0] - self.col_x - self.col_width
+                self.x = body.aabb[0] - self.cx - self.cw
 
             elif (
                 self.aabb[0] <= body.aabb[2] and
                 self.old_aabb[0] >= body.aabb[2]
             ):
-                self.x = body.aabb[2] - self.col_x
+                self.x = body.aabb[2] - self.cx
 
         self.checkDoors()
 
@@ -292,17 +292,17 @@ class Player(Basic):
     @property
     def aabb(self):
         return (
-            self.x + self.col_x,
-            self.y + self.col_y,
-            self.x + self.col_x + self.col_width,
-            self.y + self.col_y + self.col_height
+            self.x + self.cx,
+            self.y + self.cy,
+            self.x + self.cx + self.cw,
+            self.y + self.cy + self.ch
         )
 
     @property
     def old_aabb(self):
         return (
-            self.ox + self.col_x,
-            self.oy + self.col_y,
-            self.ox + self.col_x + self.col_width,
-            self.oy + self.col_y + self.col_height
+            self.ox + self.cx,
+            self.oy + self.cy,
+            self.ox + self.cx + self.ch,
+            self.oy + self.cy + self.ch
         )

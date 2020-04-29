@@ -1,7 +1,5 @@
 """Contains Basic class."""
 
-from math import floor
-
 import pyglet
 
 from .cardsprite import CardSprite
@@ -23,20 +21,19 @@ class Basic:
         self.window = window
         self.x = x
         self.y = y
-        self.grid_x, self.grid_y = floor(self.x), floor(self.y)
 
-        self.screen_x, self.screen_y = window.worldToScreen(self.x, self.y)
+        self.sx, self.sy = window.worldToScreen(self.x, self.y)
         if card_sprite:
             self.sprite = CardSprite(
                 image,
-                x=self.screen_x, y=self.screen_y,
+                x=self.sx, y=self.sy,
                 batch=self.window.world_batch,
                 subpixel=True
             )
         else:
             self.sprite = pyglet.sprite.Sprite(
                 image,
-                x=self.screen_x, y=self.screen_y,
+                x=self.sx, y=self.sy,
                 batch=self.window.world_batch,
                 subpixel=True
             )
@@ -45,12 +42,10 @@ class Basic:
         """Update the sprite and any position variables."""
         self.x = round(self.x*16)/16
         self.y = round(self.y*16)/16
-        self.grid_x, self.grid_y = floor(self.x), floor(self.y)
 
-        screen_pos = self.window.worldToScreen(self.x, self.y)
-        self.screen_x, self.screen_y = screen_pos[0], screen_pos[1]
+        self.sx, self.sy = self.window.worldToScreen(self.x, self.y)
 
         self.sprite.update(
-            x=self.screen_x,
-            y=self.screen_y
+            x=self.sx,
+            y=self.sy
         )
