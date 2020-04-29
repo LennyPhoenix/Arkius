@@ -217,8 +217,8 @@ class Player(Basic):
                     controls["down"]
                 )
             ):
-                self.vx *= c.DIAGONAL_MULTIPLIER
-                self.vy *= c.DIAGONAL_MULTIPLIER
+                self.vx /= 2**0.5
+                self.vy /= 2**0.5
 
             if controls["dash"]:
                 self.vx *= 5
