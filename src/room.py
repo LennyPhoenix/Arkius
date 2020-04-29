@@ -4,7 +4,6 @@ import random
 
 from . import constants as c
 from . import prefabs, tilemaps
-from .spatial import Space
 
 
 class Room:
@@ -35,7 +34,7 @@ class Room:
         self.style = dungeon_style
         self.config = room_config
 
-        self.space = Space(cell_size=3)
+        self.space = set()
 
         if self.doors is None:
             self.doors = {i: False for i in range(4)}
@@ -210,12 +209,11 @@ class Room:
 
                     tile = prefabs.Tile(
                         self.window,
+                        self,
                         x, y,
                         tile_type,
                         image
                     )
-                    if c.TILES[tile.type]["collider"] is not None:
-                        self.space.insert_body(tile)
                     self.tiles[(x, y)] = tile
 
     def getImageIndex(self, x, y):

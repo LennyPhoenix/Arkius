@@ -13,33 +13,31 @@ from . import particle
 class Tile(Basic):
     """Tile object. Contains basic sprite renderer."""
 
-    def __init__(self, window, x, y, tile_type, tile_image):
+    def __init__(self, window, room, x, y, tile_type, tile_image):
         """Initialise the Tile class.
 
         Arguments:
             window {Window} -- The window for the application.
+            room {Room} -- The room for the tile.
             x {float} -- The x position of the tile.
             y {float} -- The y position of the tile.
             tile_type {int} -- The tile's type.
             tile_image {pyglet.image} -- The image for the tile.
         """
         self.type = tile_type
+        self.room = room
 
         super().__init__(
             window,
             x, y,
             tile_image,
-            self.type == c.WALL
+            card_sprite=self.type == c.WALL,
+            collider=c.TILES[self.type]["collider"],
+            space=self.room.space
         )
         layer = self.window.layers["world"][c.TILES[self.type]["layer"]]
         self.sprite.group = layer
         self.unload()
-
-        if c.TILES[self.type]["collider"] is not None:
-            self.cx = c.TILES[self.type]["collider"]["x"]
-            self.cy = c.TILES[self.type]["collider"]["y"]
-            self.cw = c.TILES[self.type]["collider"]["width"]
-            self.ch = c.TILES[self.type]["collider"]["height"]
 
     def load(self):
         self.loaded = True
@@ -80,16 +78,6 @@ class Tile(Basic):
                 self.last_bubble = 0
                 self.to_wait = random.randint(4, 16)/2
 
-    @property
-    def aabb(self):
-        if c.TILES[self.type]["collider"] is not None:
-            return (
-                self.x + self.cx,
-                self.y + self.cy,
-                self.x + self.cx + self.cw,
-                self.y + self.cy + self.ch
-            )
-
 
 class Player(Basic):
     """Player object. Contains basic renderer and controller."""
@@ -106,10 +94,13 @@ class Player(Basic):
             window,
             0, 0,
             anim,
-            card_sprite=True
+            card_sprite=True,
+            collider=c.PLAYER_COLLIDER,
+            static=False
         )
         self.sprite.group = self.window.layers["world"]["y_ordered"]
-        self.ox, self.oy = self.x, self.y
+
+        self.room = (0, 0)
 
         self.last_shadow = 0
         self.shadow_frequency = 1/25
@@ -118,10 +109,6 @@ class Player(Basic):
         self.cy = c.PLAYER_COLLIDER["y"]
         self.cw = c.PLAYER_COLLIDER["width"]
         self.ch = c.PLAYER_COLLIDER["height"]
-
-        # window.room.space.insert_body(self)
-
-        self.room = (0, 0)
 
         self.vx = 0
         self.vy = 0
@@ -237,38 +224,8 @@ class Player(Basic):
                     )
                     self.last_shadow = 0
 
-        self.ox, self.oy = self.x, self.y
-        self.x += self.vx * dt
-        self.y += self.vy * dt
-
-        hits = self.window.room.space.get_hits(self.aabb)
-        for body in hits:
-            if (
-                self.aabb[1] <= body.aabb[3] and
-                self.old_aabb[1] >= body.aabb[3]
-            ):
-                self.y = body.aabb[3] - self.cy
-
-            elif (
-                self.aabb[3] >= body.aabb[1] and
-                self.old_aabb[3] <= body.aabb[1]
-            ):
-                self.y = body.aabb[1] - self.cy - self.ch
-
-            if (
-                self.aabb[2] >= body.aabb[0] and
-                self.old_aabb[2] <= body.aabb[0]
-            ):
-                self.x = body.aabb[0] - self.cx - self.cw
-
-            elif (
-                self.aabb[0] <= body.aabb[2] and
-                self.old_aabb[0] >= body.aabb[2]
-            ):
-                self.x = body.aabb[2] - self.cx
-
+        self.move(dt)
         self.checkDoors()
-
         super().update()
 
     def checkDoors(self):
@@ -288,21 +245,3 @@ class Player(Basic):
         # Right Door
         if self.x > self.window.room.width+3:
             self.window.dungeon.transition.begin(self, 1)
-
-    @property
-    def aabb(self):
-        return (
-            self.x + self.cx,
-            self.y + self.cy,
-            self.x + self.cx + self.cw,
-            self.y + self.cy + self.ch
-        )
-
-    @property
-    def old_aabb(self):
-        return (
-            self.ox + self.cx,
-            self.oy + self.cy,
-            self.ox + self.cx + self.ch,
-            self.oy + self.cy + self.ch
-        )
