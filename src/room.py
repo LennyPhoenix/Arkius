@@ -144,7 +144,7 @@ class Room:
                 (0, -1),
                 (-1, 0)
             ]
-            reached = [door_p[starting_door]]
+            self.reached = [door_p[starting_door]]
             reachable = []
             for x, y in neighbours:
                 n_x = x+door_p[starting_door][0]
@@ -152,7 +152,7 @@ class Room:
                 if (
                     (n_x, n_y) in self.tilemap.keys() and
                     (n_x, n_y) not in reachable and
-                    (n_x, n_y) not in reached and
+                    (n_x, n_y) not in self.reached and
                     c.TILES[self.tilemap[
                         (n_x, n_y)
                     ]]["collider"] is None
@@ -161,7 +161,7 @@ class Room:
 
             while len(reachable) > 0:
                 pos = random.choice(reachable)
-                reached.append(pos)
+                self.reached.append(pos)
                 reachable.remove(pos)
 
                 for x, y in neighbours:
@@ -170,7 +170,7 @@ class Room:
                     if (
                         (n_x, n_y) in self.tilemap.keys() and
                         (n_x, n_y) not in reachable and
-                        (n_x, n_y) not in reached and
+                        (n_x, n_y) not in self.reached and
                         c.TILES[self.tilemap[
                             (n_x, n_y)
                         ]]["collider"] is None
@@ -179,7 +179,7 @@ class Room:
 
             possible = True
             for x, y in door_p.values():
-                if (x, y) not in reached:
+                if (x, y) not in self.reached:
                     possible = False
 
         self.createSprites()
