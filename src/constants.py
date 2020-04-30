@@ -209,12 +209,12 @@ ROOM_INFO = {
 DUNGEON_BASE = {
     "size": 3,
     "rooms": {
-        FIGHT_ROOM: 20,
-        TREASURE_ROOM: 5,
-        BOSS_ROOM: 2,
+        FIGHT_ROOM: 30,
+        TREASURE_ROOM: 8,
+        BOSS_ROOM: 3,
         SHOP_ROOM: 1
     },
-    "connections": 9
+    "connections": 30
 }
 
 DUNGEON_BIG = {
