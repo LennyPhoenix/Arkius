@@ -166,9 +166,13 @@ class Player(Basic):
                 self.vy += c.PLAYER_SPEED
             if controls["down"]:
                 self.vy -= c.PLAYER_SPEED
+            if controls["left"]:
+                self.vx -= c.PLAYER_SPEED
+            if controls["right"]:
+                self.vx += c.PLAYER_SPEED
 
             if (
-                controls["up"] or
+                controls["up"] ^
                 controls["down"]
             ):
                 if self.state == "idle_left":
@@ -176,18 +180,18 @@ class Player(Basic):
                 elif self.state == "idle_right":
                     self.state = "walk_right"
 
-            if controls["left"]:
-                self.vx -= c.PLAYER_SPEED
-                self.state = "walk_left"
-            if controls["right"]:
-                self.vx += c.PLAYER_SPEED
-                self.state = "walk_right"
-
-            if not (
-                controls["up"] or
-                controls["down"] or
-                controls["left"] or
+            if (
+                controls["left"] ^
                 controls["right"]
+            ):
+                if controls["left"] and self.state != "walk_left":
+                    self.state = "walk_left"
+                if controls["right"] and self.state != "walk_right":
+                    self.state = "walk_right"
+
+            if (
+                self.vx == 0 and
+                self.vy == 0
             ):
                 if self.state == "walk_left":
                     self.state = "idle_left"
