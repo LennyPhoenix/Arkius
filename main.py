@@ -66,7 +66,7 @@ class Window(pyglet.window.Window):
 
         self.player = prefabs.Player(self)
 
-        self.positionCamera()
+        self.positionCamera(self.world_camera)
         self.push_handlers(self.key_handler)
         pyglet.clock.schedule_interval(self.update, c.UPDATE_SPEED)
 
@@ -303,7 +303,7 @@ class Window(pyglet.window.Window):
             else:
                 self.world_camera.zoom = round(zoom*4)/4
 
-        self.positionCamera()
+        self.positionCamera(self.world_camera)
 
         self.player.update(dt)
 
@@ -378,23 +378,24 @@ class Window(pyglet.window.Window):
 
         return world_x, world_y
 
-    def positionCamera(self):
-        """Sets the position of the world_camera."""
-        self.world_camera.position = (
-            round(
-                (-self.width/self.world_camera.zoom//2) -
-                (
-                    (self.player.x) * -8 *
-                    self.room.width/c.PARALLAX_X
-                )
-            ),
-            round(
-                (-self.height/self.world_camera.zoom//2) -
-                (
-                    (self.player.y) * -8 *
-                    self.room.height/c.PARALLAX_Y
-                )
+    def positionCamera(self, camera, parallax=True):
+        """Sets the position of the camera."""
+        x = (-self.width/camera.zoom//2)
+        y = (-self.height/camera.zoom//2)
+
+        if parallax:
+            x -= (
+                (self.player.x) * -8 *
+                self.room.width/c.PARALLAX_X
             )
+            y -= (
+                (self.player.y) * -8 *
+                self.room.height/c.PARALLAX_Y
+            )
+
+        camera.position = (
+            round(x),
+            round(y)
         )
 
     @property
