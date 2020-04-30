@@ -152,9 +152,9 @@ class Basic:
             self.broad_phase_box[1] < body.aabb[3]
         )
 
-    def move(self, dt):
-        self.vx *= dt
-        self.vy *= dt
+    def collideWith(self, vx, vy):
+        tvx, tvy = self.vx, self.vy
+        self.vx, self.vy = vx, vy
 
         collision_time = 1
         for body in [
@@ -172,46 +172,13 @@ class Basic:
 
         self.x += self.vx*collision_time
         self.y += self.vy*collision_time
+        self.vx, self.vy = tvx, tvy
+        return collision_time
 
-        if collision_time < 1:
-            remaining_time = 1-collision_time
-            self.vy *= remaining_time
-            vx = self.vx
-            self.vx = 0
+    def move(self, dt):
+        self.vx *= dt
+        self.vy *= dt
 
-            collision_time = 1
-            for body in [
-                body for body in self.window.room.space
-                if (
-                    body != self and
-                    self.x-4 < body.x < self.x+4 and
-                    self.y-4 < body.y < self.y+4
-                )
-            ]:
-                if self.broadCheck(body):
-                    c_time, n_x, n_y = self.sweptAABB(body)
-                    if c_time < collision_time:
-                        collision_time = c_time
-
-            self.vy *= collision_time
-            self.y += self.vy
-
-            self.vy = 0
-            self.vx = vx
-
-            collision_time = 1
-            for body in [
-                body for body in self.window.room.space
-                if (
-                    body != self and
-                    self.x-4 < body.x < self.x+4 and
-                    self.y-4 < body.y < self.y+4
-                )
-            ]:
-                if self.broadCheck(body):
-                    c_time, n_x, n_y = self.sweptAABB(body)
-                    if c_time < collision_time:
-                        collision_time = c_time
-
-            self.vx *= collision_time
-            self.x += self.vx
+        if self.collideWith(self.vx, self.vy) < 1:
+            if self.collideWith(self.vx, 0) < 1:
+                self.collideWith(0, self.vy)
