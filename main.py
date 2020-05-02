@@ -204,9 +204,9 @@ class Window(pyglet.window.Window):
         self.resources["player"] = self.loadAnimation(image, data)
 
         image = pyglet.resource.image(
-            "resources/tilesets/1/particles/bubble.png"
+            "resources/tilesets/2/particles/bubble.png"
         )
-        with open("resources/tilesets/1/particles/bubble.json", "r") as f:
+        with open("resources/tilesets/2/particles/bubble.json", "r") as f:
             data = json.load(f)
         self.resources["lava_bubble"] = self.loadAnimation(image, data)["main"]
 
