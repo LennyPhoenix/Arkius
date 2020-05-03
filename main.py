@@ -25,6 +25,7 @@ from src import constants as c
 from src import prefabs
 from src.camera import Camera
 from src.dungeon import Dungeon
+from src.ui.transition import Transition
 
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
@@ -57,6 +58,8 @@ class Window(pyglet.window.Window):
 
         self.createLayers()
         self.loadResources()
+
+        self.transition = Transition(self)
 
         self.dungeon_style = c.VOLCANO
         self.dungeon = Dungeon(

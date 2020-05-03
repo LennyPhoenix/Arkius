@@ -14,6 +14,11 @@ class Transition:
         self.player = None
         self.door = None
 
+        self.on_black = None
+        self.on_black_args = None
+        self.on_done = None
+        self.on_done_args = None
+
         self.states = self.window.resources["ui"]["transition"]
         self.sprite = pyglet.sprite.Sprite(
             self.states[self.state],
@@ -26,13 +31,18 @@ class Transition:
         self.window.push_handlers(self)
         self.sprite.push_handlers(self)
 
-    def begin(self, player, door):
-        if self.state == "empty":
-            self.state = "fade_out"
-            self.player = player
-            self.player_state = str(self.player.state)
-            self.player.state = "locked"
-            self.door = door
+    def begin(
+        self,
+        on_black=None, on_black_args=[],
+        on_done=None, on_done_args=[]
+    ):
+        self.state = "fade_out"
+
+        self.on_black = on_black
+        self.on_black_args = on_black_args
+
+        self.on_done = on_done
+        self.on_done_args = on_done_args
 
     @property
     def state(self):
@@ -57,97 +67,14 @@ class Transition:
         if self.state == "fade_out":
             self.state = "black"
         elif self.state == "black":
-            while len(self.window.particles) > 0:
-                self.window.particles[0].destroy()
-            self.window.room.visibility = False
-            if self.player is not None:
-                if self.door == 0:
-                    self.window.room.visibility = False
-                    if self.window.room.map_data is not None:
-                        offset = (
-                            self.player.x -
-                            self.window.room.map_data["door_info"][0]["pos"]
-                        )
-                    else:
-                        offset = self.player.x
-                    self.player.room = (
-                        self.player.room[0], self.player.room[1]+1)
-                    self.window.room.visibility = True
-                    self.player.y = -(self.window.room.height+3)
-                    if self.window.room.map_data is not None:
-                        self.player.x = (
-                            offset +
-                            self.window.room.map_data["door_info"][2]["pos"]
-                        )
-                    else:
-                        self.player.x = 0 + offset
-                elif self.door == 1:
-                    if self.window.room.map_data is not None:
-                        offset = (
-                            self.player.y -
-                            self.window.room.map_data["door_info"][1]["pos"]
-                        )
-                    else:
-                        offset = self.player.y
-                    self.player.room = (
-                        self.player.room[0]+1, self.player.room[1])
-                    self.window.room.visibility = True
-                    self.player.x = -(self.window.room.width+3)
-                    if self.window.room.map_data is not None:
-                        self.player.y = (
-                            offset +
-                            self.window.room.map_data["door_info"][3]["pos"]
-                        )
-                    else:
-                        self.player.y = 0 + offset
-                elif self.door == 3:
-                    self.window.room.visibility = False
-                    if self.window.room.map_data is not None:
-                        offset = (
-                            self.player.y -
-                            self.window.room.map_data["door_info"][3]["pos"]
-                        )
-                    else:
-                        offset = self.player.y
-                    self.player.room = (
-                        self.player.room[0]-1, self.player.room[1])
-                    self.window.room.visibility = True
-                    self.player.x = self.window.room.width+3
-                    if self.window.room.map_data is not None:
-                        self.player.y = (
-                            offset +
-                            self.window.room.map_data["door_info"][1]["pos"]
-                        )
-                    else:
-                        self.player.y = 0 + offset
-                elif self.door == 2:
-                    self.window.room.visibility = False
-                    if self.window.room.map_data is not None:
-                        offset = (
-                            self.player.x -
-                            self.window.room.map_data["door_info"][2]["pos"]
-                        )
-                    else:
-                        offset = self.player.x
-                    self.player.room = (
-                        self.player.room[0], self.player.room[1]-1)
-                    self.window.room.visibility = True
-                    self.player.y = self.window.room.height+3
-                    if self.window.room.map_data is not None:
-                        self.player.x = (
-                            offset +
-                            self.window.room.map_data["door_info"][0]["pos"]
-                        )
-                    else:
-                        self.player.x = 0 + offset
-                self.window.dungeon.ui_map.discover(self.player.room)
-                self.door = None
+            if self.on_black is not None:
+                self.on_black(*self.on_black_args)
+            del self.on_black, self.on_black_args
             self.state = "fade_in"
         elif self.state == "fade_in":
-            if self.player is not None:
-                self.player.state = self.player_state
-                self.player_state = None
-                self.player = None
+            if self.on_done is not None:
+                self.on_done(*self.on_done_args)
+            del self.on_done, self.on_done_args
             self.state = "empty"
 
     def on_resize(self, width, height):

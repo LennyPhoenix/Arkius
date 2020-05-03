@@ -234,18 +234,129 @@ class Player(Basic):
 
     def checkDoors(self):
         """Check if the player is exiting through a door."""
-        # Bottom Door
-        if self.y < -(self.window.room.height+3):
-            self.window.dungeon.transition.begin(self, 2)
 
-        # Left Door
-        if self.x < -(self.window.room.width+3):
-            self.window.dungeon.transition.begin(self, 3)
+        def on_black(door):
+            while len(self.window.particles) > 0:
+                self.window.particles[0].destroy()
+            self.window.room.visibility = False
+            if door == 0:
+                self.window.room.visibility = False
+                if self.window.room.map_data is not None:
+                    offset = (
+                        self.x -
+                        self.window.room.map_data["door_info"][0]["pos"]
+                    )
+                else:
+                    offset = self.x
+                self.room = (
+                    self.room[0], self.room[1]+1
+                )
+                self.window.room.visibility = True
+                self.y = -(self.window.room.height+3)
+                if self.window.room.map_data is not None:
+                    self.x = (
+                        offset +
+                        self.window.room.map_data["door_info"][2]["pos"]
+                    )
+                else:
+                    self.x = 0 + offset
+            elif door == 1:
+                if self.window.room.map_data is not None:
+                    offset = (
+                        self.y -
+                        self.window.room.map_data["door_info"][1]["pos"]
+                    )
+                else:
+                    offset = self.y
+                self.room = (
+                    self.room[0]+1, self.room[1]
+                )
+                self.window.room.visibility = True
+                self.x = -(self.window.room.width+3)
+                if self.window.room.map_data is not None:
+                    self.y = (
+                        offset +
+                        self.window.room.map_data["door_info"][3]["pos"]
+                    )
+                else:
+                    self.y = 0 + offset
+            elif door == 3:
+                self.window.room.visibility = False
+                if self.window.room.map_data is not None:
+                    offset = (
+                        self.y -
+                        self.window.room.map_data["door_info"][3]["pos"]
+                    )
+                else:
+                    offset = self.y
+                self.room = (
+                    self.room[0]-1, self.room[1]
+                )
+                self.window.room.visibility = True
+                self.x = self.window.room.width+3
+                if self.window.room.map_data is not None:
+                    self.y = (
+                        offset +
+                        self.window.room.map_data["door_info"][1]["pos"]
+                    )
+                else:
+                    self.y = 0 + offset
+            elif door == 2:
+                self.window.room.visibility = False
+                if self.window.room.map_data is not None:
+                    offset = (
+                        self.x -
+                        self.window.room.map_data["door_info"][2]["pos"]
+                    )
+                else:
+                    offset = self.x
+                self.room = (
+                    self.room[0], self.room[1]-1
+                )
+                self.window.room.visibility = True
+                self.y = self.window.room.height+3
+                if self.window.room.map_data is not None:
+                    self.x = (
+                        offset +
+                        self.window.room.map_data["door_info"][0]["pos"]
+                    )
+                else:
+                    self.x = 0 + offset
+            self.window.dungeon.ui_map.discover(self.room)
+            self.door = None
 
-        # Top Door
-        if self.y > self.window.room.height+3:
-            self.window.dungeon.transition.begin(self, 0)
+        def on_done():
+            self.state = self.pre_locked
 
-        # Right Door
-        if self.x > self.window.room.width+3:
-            self.window.dungeon.transition.begin(self, 1)
+        if self.state != "locked":
+            # Bottom Door
+            if self.y < -(self.window.room.height+3):
+                self.pre_locked = str(self.state)
+                self.state = "locked"
+                self.window.transition.begin(
+                    on_black=on_black, on_black_args=[2], on_done=on_done
+                )
+
+            # Left Door
+            if self.x < -(self.window.room.width+3):
+                self.pre_locked = str(self.state)
+                self.state = "locked"
+                self.window.transition.begin(
+                    on_black=on_black, on_black_args=[3], on_done=on_done
+                )
+
+            # Top Door
+            if self.y > self.window.room.height+3:
+                self.pre_locked = str(self.state)
+                self.state = "locked"
+                self.window.transition.begin(
+                    on_black=on_black, on_black_args=[0], on_done=on_done
+                )
+
+            # Right Door
+            if self.x > self.window.room.width+3:
+                self.pre_locked = str(self.state)
+                self.state = "locked"
+                self.window.transition.begin(
+                    on_black=on_black, on_black_args=[1], on_done=on_done
+                )
