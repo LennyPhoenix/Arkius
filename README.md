@@ -6,3 +6,8 @@
 An open source project.
 
 Arkius will be a top-down roguelite shooter, it has been in development since 06/02/2020.
+
+## Links
+
+- [Itch.io Page.](https://doaltplusf4.itch.io/arkius)
+- [Trello Roadmap.](https://trello.com/b/iY409XXi/arkius)
