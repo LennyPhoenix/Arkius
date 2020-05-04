@@ -26,7 +26,7 @@ HUB = 0
 ICE = 1
 VOLCANO = 2
 FOREST = 3
-STYLES = [ICE, VOLCANO]
+STYLES = [HUB, ICE, VOLCANO]
 
 # Tile Types
 FLOOR = 0
@@ -144,6 +144,7 @@ ROOM_INFO = {
             SHOP_ROOM
         ],
         "configs": {
+            HUB: [conf.C_START],
             ICE: [conf.C_START],
             VOLCANO: [conf.C_START]
         }
@@ -152,6 +153,11 @@ ROOM_INFO = {
         "default_dimensions": (7, 7),
         "dont_connect": [],
         "configs": {
+            HUB: [
+                conf.C_FIGHT_LARGE,
+                conf.C_FIGHT_SEMI_RANDOM,
+                conf.C_FIGHT_RANDOM
+            ],
             ICE: [
                 conf.C_FIGHT_LARGE,
                 conf.C_FIGHT_SEMI_RANDOM,
@@ -173,6 +179,7 @@ ROOM_INFO = {
             BOSS_ROOM
         ],
         "configs": {
+            HUB: [conf.C_TREASURE],
             ICE: [conf.C_TREASURE],
             VOLCANO: [conf.C_TREASURE]
         }
@@ -187,6 +194,7 @@ ROOM_INFO = {
             SHOP_ROOM
         ],
         "configs": {
+            HUB: [conf.C_BOSS_CENTRED],
             ICE: [conf.C_BOSS_CENTRED],
             VOLCANO: [conf.C_BOSS_CENTRED]
         }
@@ -200,6 +208,7 @@ ROOM_INFO = {
             SHOP_ROOM
         ],
         "configs": {
+            HUB: [conf.C_EMPTY],
             ICE: [conf.C_EMPTY],
             VOLCANO: [conf.C_EMPTY]
         }

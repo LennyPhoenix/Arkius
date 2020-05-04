@@ -61,7 +61,7 @@ class Window(pyglet.window.Window):
 
         self.transition = Transition(self)
 
-        self.dungeon_style = c.VOLCANO
+        self.dungeon_style = c.HUB
         self.dungeon = Dungeon(
             self,
             self.dungeon_style
