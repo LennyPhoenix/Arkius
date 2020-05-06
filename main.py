@@ -61,10 +61,9 @@ class Window(pyglet.window.Window):
 
         self.transition = Transition(self)
 
-        self.dungeon_style = c.HUB
-        self.dungeon = Dungeon(
+        self.world = Dungeon(
             self,
-            self.dungeon_style
+            c.HUB
         )
 
         self.player = prefabs.Player(self)
@@ -408,8 +407,8 @@ class Window(pyglet.window.Window):
         Returns:
             Room -- The active room.
         """
-        room_map = self.dungeon.map
-        return room_map[self.player.room]
+        room = self.world.map[self.player.room]
+        return room
 
 
 if __name__ == "__main__":

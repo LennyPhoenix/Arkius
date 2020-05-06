@@ -103,6 +103,6 @@ class Dungeon:
             self.map[pos] = Room(
                 self.window,
                 room_type=data["type"],
-                dungeon_style=self.style,
+                style=self.style,
                 doors=data["doors"]
             )

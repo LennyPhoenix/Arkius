@@ -1,4 +1,4 @@
-"""The ui map for a dungeon."""
+"""The ui map for a world."""
 
 import pyglet
 
@@ -6,15 +6,15 @@ from .. import constants as c
 
 
 class Map:
-    def __init__(self, window, dungeon):
+    def __init__(self, window, world):
         """Initialise the map with all rooms/
 
         Arguments:
             window {Window} -- The application window.
-            dungeon {Dungeon} -- The dungeon for the map.
+            world {World} -- The world for the map.
         """
         self.window = window
-        self.dungeon = dungeon
+        self.world = world
         map_image = self.window.resources["ui"]["map"]["window"]
         map_layer = self.window.layers["ui"]["map_window"]
         self.map_window = pyglet.sprite.Sprite(
@@ -26,13 +26,13 @@ class Map:
         self.map_window.opacity = 200
 
         room_max = 0
-        for pos in self.dungeon.map.keys():
+        for pos in self.world.map.keys():
             for i in range(2):
                 if abs(pos[i]) > room_max:
                     room_max = abs(pos[i])
 
         self.map_rooms = {}
-        for pos, room in self.dungeon.map.items():
+        for pos, room in self.world.map.items():
             image = self.window.resources["ui"]["map"]["rooms"][(
                 3, room.door_value
             )]
@@ -75,7 +75,7 @@ class Map:
 
         for pos in self.map_rooms.keys():
             self.map_rooms[pos]["sprite"].scale = (
-                scale / (self.dungeon.size / c.DEFAULT_DUNGEON_SIZE)
+                scale / (self.world.size / c.DEFAULT_WORLD_SIZE)
             )
             self.map_rooms[pos]["sprite"].update(
                 x=(
@@ -83,18 +83,18 @@ class Map:
                     self.map_window.width//2 -
                     self.map_rooms[pos]["sprite"].width//2 +
                     pos[0]*12 *
-                    scale/(self.dungeon.size/c.DEFAULT_DUNGEON_SIZE)
+                    scale/(self.world.size/c.DEFAULT_WORLD_SIZE)
                 ),
                 y=(
                     self.map_window.y +
                     self.map_window.height//2 -
                     self.map_rooms[pos]["sprite"].height//2 +
                     pos[1]*12 *
-                    scale/(self.dungeon.size/c.DEFAULT_DUNGEON_SIZE)
+                    scale/(self.world.size/c.DEFAULT_WORLD_SIZE)
                 )
             )
             self.map_rooms[pos]["icon"].scale = (
-                scale / (self.dungeon.size / c.DEFAULT_DUNGEON_SIZE)
+                scale / (self.world.size / c.DEFAULT_WORLD_SIZE)
             )
             self.map_rooms[pos]["icon"].update(
                 x=(
@@ -102,14 +102,14 @@ class Map:
                     self.map_window.width//2 -
                     self.map_rooms[pos]["icon"].width//2 +
                     pos[0]*12 *
-                    scale/(self.dungeon.size/c.DEFAULT_DUNGEON_SIZE)
+                    scale/(self.world.size/c.DEFAULT_WORLD_SIZE)
                 ),
                 y=(
                     self.map_window.y +
                     self.map_window.height//2 -
                     self.map_rooms[pos]["icon"].height//2 +
                     pos[1]*12 *
-                    scale/(self.dungeon.size/c.DEFAULT_DUNGEON_SIZE)
+                    scale/(self.world.size/c.DEFAULT_WORLD_SIZE)
                 )
             )
 
@@ -136,7 +136,7 @@ class Map:
             n_x, n_y = x+pos[0], y+pos[1]
             if (
                 (n_x, n_y) in self.map_rooms.keys() and
-                self.dungeon.map[pos].doors[door]
+                self.world.map[pos].doors[door]
             ):
                 if self.map_rooms[(n_x, n_y)]["visited"]:
                     image = self.window.resources["ui"]["map"]["rooms"][(

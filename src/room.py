@@ -7,9 +7,9 @@ from . import prefabs, tilemaps
 
 
 class Room:
-    """Room class for dungeon."""
+    """Room class."""
 
-    def __init__(self, window, room_type=c.START_ROOM, dungeon_style=c.ICE, room_config=None, doors=None):  # noqa: E501
+    def __init__(self, window, room_type=c.START_ROOM, style=None, room_config=None, doors=None):  # noqa: E501
         """Initialise the room.
 
         Arguments:
@@ -17,8 +17,8 @@ class Room:
 
         Keyword Arguments:
             room_type {int} -- The type of room. (default: {c.START_ROOM})
-            dungeon_style {int} -- The tileset and style to use.
-                                   (default: {c.ICE})
+            style {int} -- The tileset and style to use.
+                                   (default: {None})
             room_config {dict} -- The room configuration to use.
                                   (default: {None})
             doors {dict} -- The doors that should be open. (default: {None})
@@ -31,10 +31,13 @@ class Room:
         self.tiles = {}
         self.cleared = self.type == c.START_ROOM
         self._visible = False
-        self.style = dungeon_style
+        self.style = style
         self.config = room_config
 
         self.space = set()
+
+        if self.style is None:
+            self.style = self.window.world.style
 
         if self.doors is None:
             self.doors = {i: False for i in range(4)}

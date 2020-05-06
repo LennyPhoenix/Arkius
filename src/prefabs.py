@@ -50,7 +50,7 @@ class Tile(Basic):
         r = random.randint(0, 3)
         if (
             self.type == c.PIT and
-            self.window.dungeon_style == c.VOLCANO and
+            self.room.style == c.VOLCANO and
             r == 0
         ):
             pyglet.clock.schedule_interval_soft(self.emitter, 0.5)
@@ -322,7 +322,7 @@ class Player(Basic):
                     )
                 else:
                     self.x = 0 + offset
-            self.window.dungeon.ui_map.discover(self.room)
+            self.window.world.ui_map.discover(self.room)
             self.door = None
 
         def on_done():

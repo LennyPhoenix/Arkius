@@ -9,7 +9,7 @@ MIN_ZOOM = 0.25
 MAX_ZOOM = 2
 PARALLAX_X = 70
 PARALLAX_Y = 15
-DEFAULT_DUNGEON_SIZE = 3
+DEFAULT_WORLD_SIZE = 3
 
 # Player
 PLAYER_SPEED = 4
@@ -96,37 +96,6 @@ TILES = {
         "layer": "ground"
     }
 }
-
-# Tilemaps
-DEFAULT_ROOM_SIZE = 7
-DEFAULT_MAP_SETTINGS = [
-    {
-        "id": SECONDARY_FLOOR,
-        "overrides": [FLOOR],
-        "seed_amount": 3,
-        "seed_type": "blob",
-        "b_spread_amount": 20,
-        "b_spread_additional": 20,
-        "b_spread_compound": False
-    },
-    {
-        "id": PIT,
-        "overrides": [FLOOR, SECONDARY_FLOOR],
-        "seed_amount": 1,
-        "seed_type": "blob",
-        "b_spread_amount": 50,
-        "b_spread_additional": 50,
-        "b_spread_compound": True
-    },
-    {
-        "id": WALL,
-        "overrides": [FLOOR, PIT, SECONDARY_FLOOR],
-        "seed_amount": 2,
-        "seed_type": "line",
-        "l_hole_amount": 3,
-        "l_hole_size_range": (2, 4)
-    },
-]
 
 # Room Types
 START_ROOM = 0
