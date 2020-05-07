@@ -6,12 +6,16 @@ from .. import constants as c
 
 
 class Map:
-    def __init__(self, window, world):
-        """Initialise the map with all rooms/
+    def __init__(self, window, world, discover=False):
+        """Initialise the map with all rooms.
 
         Arguments:
             window {Window} -- The application window.
             world {World} -- The world for the map.
+
+        Keyword Arguments:
+            discover {bool} -- Start with all maps discovered.
+                               (default: {False})
         """
         self.window = window
         self.world = world
@@ -33,9 +37,14 @@ class Map:
 
         self.map_rooms = {}
         for pos, room in self.world.map.items():
-            image = self.window.resources["ui"]["map"]["rooms"][(
-                3, room.door_value
-            )]
+            if discover:
+                image = self.window.resources["ui"]["map"]["rooms"][(
+                    1, room.door_value
+                )]
+            else:
+                image = self.window.resources["ui"]["map"]["rooms"][(
+                    3, room.door_value
+                )]
             icon = self.window.resources["ui"]["map"]["icons"][room.type]
             self.map_rooms[pos] = {}
             self.map_rooms[pos]["sprite"] = pyglet.sprite.Sprite(
@@ -50,8 +59,8 @@ class Map:
                 batch=self.window.ui_batch,
                 group=self.window.layers["ui"]["map_icons"]
             )
-            self.map_rooms[pos]["icon"].visible = False
-            self.map_rooms[pos]["visited"] = False
+            self.map_rooms[pos]["icon"].visible = discover
+            self.map_rooms[pos]["visited"] = discover
             self.map_rooms[pos]["room"] = room
 
         self.update_position()
