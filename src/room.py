@@ -95,81 +95,64 @@ class Room:
                 self.map_data
             )
 
-            starting_door = random.choice(active_doors)
-            door_p = {}
-            for i in range(4):
-                if self.map_data is not None:
-                    if i == 0:
-                        door_p[i] = (
-                            self.map_data["door_info"][i]["pos"],
-                            self.height
-                        )
-                    elif i == 1:
-                        door_p[i] = (
-                            self.width,
-                            self.map_data["door_info"][i]["pos"]
-                        )
-                    elif i == 2:
-                        door_p[i] = (
-                            self.map_data["door_info"][i]["pos"],
-                            -self.height
-                        )
-                    elif i == 3:
-                        door_p[i] = (
-                            -self.width,
-                            self.map_data["door_info"][i]["pos"]
-                        )
-                else:
-                    if i == 0:
-                        door_p[i] = (
-                            0,
-                            self.height
-                        )
-                    elif i == 1:
-                        door_p[i] = (
-                            self.width,
-                            0
-                        )
-                    elif i == 2:
-                        door_p[i] = (
-                            0,
-                            -self.height
-                        )
-                    elif i == 3:
-                        door_p[i] = (
-                            -self.width,
-                            0
-                        )
+            if len(active_doors) > 0:
+                starting_door = random.choice(active_doors)
+                door_p = {}
+                for i in range(4):
+                    if self.map_data is not None:
+                        if i == 0:
+                            door_p[i] = (
+                                self.map_data["door_info"][i]["pos"],
+                                self.height
+                            )
+                        elif i == 1:
+                            door_p[i] = (
+                                self.width,
+                                self.map_data["door_info"][i]["pos"]
+                            )
+                        elif i == 2:
+                            door_p[i] = (
+                                self.map_data["door_info"][i]["pos"],
+                                -self.height
+                            )
+                        elif i == 3:
+                            door_p[i] = (
+                                -self.width,
+                                self.map_data["door_info"][i]["pos"]
+                            )
+                    else:
+                        if i == 0:
+                            door_p[i] = (
+                                0,
+                                self.height
+                            )
+                        elif i == 1:
+                            door_p[i] = (
+                                self.width,
+                                0
+                            )
+                        elif i == 2:
+                            door_p[i] = (
+                                0,
+                                -self.height
+                            )
+                        elif i == 3:
+                            door_p[i] = (
+                                -self.width,
+                                0
+                            )
 
-            neighbours = [
-                (0, 1),
-                (1, 0),
-                (0, -1),
-                (-1, 0)
-            ]
-            self.reached = [door_p[starting_door]]
-            reachable = []
-            for x, y in neighbours:
-                n_x = x+door_p[starting_door][0]
-                n_y = y+door_p[starting_door][1]
-                if (
-                    (n_x, n_y) in self.tilemap.keys() and
-                    (n_x, n_y) not in reachable and
-                    (n_x, n_y) not in self.reached and
-                    c.TILES[self.tilemap[
-                        (n_x, n_y)
-                    ]]["collider"] is None
-                ):
-                    reachable.append((n_x, n_y))
-
-            while len(reachable) > 0:
-                pos = random.choice(reachable)
-                self.reached.append(pos)
-                reachable.remove(pos)
-
+                neighbours = [
+                    (0, 1),
+                    (1, 0),
+                    (0, -1),
+                    (-1, 0)
+                ]
+                self.reached = [door_p[starting_door]]
+                reachable = []
                 for x, y in neighbours:
-                    n_x = x+pos[0]
-                    n_y = y+pos[1]
+                    n_x = x+door_p[starting_door][0]
+                    n_y = y+door_p[starting_door][1]
                     if (
                         (n_x, n_y) in self.tilemap.keys() and
                         (n_x, n_y) not in reachable and
@@ -180,10 +163,30 @@ class Room:
                     ):
                         reachable.append((n_x, n_y))
 
-            possible = True
-            for x, y in door_p.values():
-                if (x, y) not in self.reached:
-                    possible = False
+                while len(reachable) > 0:
+                    pos = random.choice(reachable)
+                    self.reached.append(pos)
+                    reachable.remove(pos)
+
+                    for x, y in neighbours:
+                        n_x = x+pos[0]
+                        n_y = y+pos[1]
+                        if (
+                            (n_x, n_y) in self.tilemap.keys() and
+                            (n_x, n_y) not in reachable and
+                            (n_x, n_y) not in self.reached and
+                            c.TILES[self.tilemap[
+                                (n_x, n_y)
+                            ]]["collider"] is None
+                        ):
+                            reachable.append((n_x, n_y))
+
+                possible = True
+                for x, y in door_p.values():
+                    if (x, y) not in self.reached:
+                        possible = False
+            else:
+                possible = True
 
         self.createSprites()
 
