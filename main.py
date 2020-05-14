@@ -6,11 +6,12 @@ import pyglet
 from pyglet import gl
 from pyglet.window import key, mouse
 
-from src import constants as c
-from src import prefabs
-from src.camera import Camera
-from src.dungeon import Dungeon
-from src.ui.transition import Transition
+import source
+from source import constants as c
+from source import prefabs
+from source.camera import Camera
+from source.dungeon import Dungeon
+from source.ui.transition import Transition
 
 pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
@@ -48,8 +49,6 @@ class Application:
         self.world = Dungeon(self, c.HUB)
 
         self.player = prefabs.Player(self)
-
-        self.positionCamera(self.world_camera)
 
     def createLayers(self):
         self.layers = {}
