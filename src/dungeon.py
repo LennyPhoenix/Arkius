@@ -1,4 +1,3 @@
-"""Contains dungeon class."""
 import random
 
 from . import constants as c
@@ -7,20 +6,9 @@ from .ui.map import Map
 
 
 class Dungeon:
-    """Dungeon class, contains room map."""
 
-    def __init__(self, window, style, config=None):
-        """Define the style and dungeon configuration.
-
-        Arguments:
-            window {Window} -- The window for the application.
-            style {int} -- The tileset/style of the dungeon.
-
-        Keyword Arguments:
-            config {dict} -- The dungeon config to use for room
-                             numbering. (default: {None})
-        """
-        self.window = window
+    def __init__(self, application, style, config=None):
+        self.application = application
         self.style = style
         self.map = {}
         self.config = config
@@ -31,10 +19,9 @@ class Dungeon:
 
         self.generateRooms()
         self.map[(0, 0)].visibility = True
-        self.ui_map = Map(self.window, self)
+        self.ui_map = Map(self.application, self)
 
     def generateRooms(self):
-        """Place and create each room."""
         gen_map = {}
         neighbours = {
             (1, 0): (1, 3),
@@ -101,8 +88,14 @@ class Dungeon:
 
         for pos, data in gen_map.items():
             self.map[pos] = Room(
-                self.window,
+                self.application,
                 room_type=data["type"],
                 style=self.style,
                 doors=data["doors"]
             )
+
+    def delete(self):
+        for pos in self.map.keys():
+            room = self.map[pos]
+            room.delete()
+        self.map = None

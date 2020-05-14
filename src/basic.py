@@ -1,30 +1,18 @@
-"""Contains Basic class."""
-
 import pyglet
 
 from .cardsprite import CardSprite
 
 
 class Basic:
-    """Basic entity."""
 
-    def __init__(self, window, x, y, image, card_sprite=False, collider=None, space=None, static=True):  # noqa: E501
-        """Initalise with position, collider (if necessary) and sprite.
-
-        Arguments:
-            window {Window} -- The application window.
-            x {float} -- The X position.
-            y {float} -- The Y position.
-            image {pyglet.AbstractImage} -- The image/animation to use.
-
-        Keyword Arguments:
-            card_sprite {bool} -- Use the custom card sprite class?
-                                  (default: {False})
-            collider {dict} -- The collider to use. (default: {None})
-            space {Space} -- The space to use. (default: {None})
-            static {bool} -- If the object is static. (default: {True})
-        """
-        self.window = window
+    def __init__(
+        self,
+        application,
+        x, y,
+        image, card_sprite=False,
+        collider=None, space=None, static=True
+    ):
+        self.application = application
         self.x = x
         self.y = y
 
@@ -40,30 +28,25 @@ class Basic:
             self.space = space
             if self.space is not None:
                 self.space.add(self)
-
-        self.sx, self.sy = window.worldToScreen(self.x, self.y)
         if card_sprite:
             self.sprite = CardSprite(
                 image,
-                x=self.sx, y=self.sy,
-                batch=self.window.world_batch,
+                x=self.x*16, y=self.y*16,
+                batch=self.application.world_batch,
                 subpixel=True
             )
         else:
             self.sprite = pyglet.sprite.Sprite(
                 image,
-                x=self.sx, y=self.sy,
-                batch=self.window.world_batch,
+                x=self.x*16, y=self.y*16,
+                batch=self.application.world_batch,
                 subpixel=True
             )
 
     def update(self):
-        """Update the sprite and any position variables."""
-        self.sx, self.sy = self.window.worldToScreen(self.x, self.y)
-
         self.sprite.update(
-            x=self.sx,
-            y=self.sy
+            x=self.x*16,
+            y=self.y*16,
         )
 
     @property
@@ -158,7 +141,7 @@ class Basic:
 
         collision_time = 1
         for body in [
-            body for body in self.window.room.space
+            body for body in self.application.room.space
             if (
                 body != self and
                 self.x-4 < body.x < self.x+4 and

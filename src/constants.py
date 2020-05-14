@@ -1,5 +1,3 @@
-"""Contains constants used for the game."""
-
 from . import room_configurations as conf
 
 # Window

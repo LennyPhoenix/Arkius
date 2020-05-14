@@ -1,5 +1,3 @@
-"""Contains classes for tiles, the player, enemies, etc."""
-
 import random
 
 import pyglet
@@ -11,31 +9,42 @@ from . import particle
 
 
 class Tile(Basic):
-    """Tile object. Contains basic sprite renderer."""
 
-    def __init__(self, window, room, x, y, tile_type, tile_image):
-        """Initialise the Tile class.
-
-        Arguments:
-            window {Window} -- The window for the application.
-            room {Room} -- The room for the tile.
-            x {float} -- The x position of the tile.
-            y {float} -- The y position of the tile.
-            tile_type {int} -- The tile's type.
-            tile_image {pyglet.image} -- The image for the tile.
-        """
-        self.type = tile_type
+    def __init__(self, application, room, x, y):
         self.room = room
+        self.type = self.room.tilemap[(x, y)]
+
+        if not c.TILES[self.type]["sprite"]["connective"]:
+            image = random.choice(
+                application.resources[
+                    "tiles"
+                ][
+                    self.room.style
+                ][
+                    self.type
+                ]
+            )
+        else:
+            index = self.room.getImageIndex(x, y)
+            image = application.resources[
+                "tiles"
+            ][
+                self.room.style
+            ][
+                self.type
+            ][
+                index
+            ]
 
         super().__init__(
-            window,
+            application,
             x, y,
-            tile_image,
+            image,
             card_sprite=self.type == c.WALL,
             collider=c.TILES[self.type]["collider"],
             space=self.room.space
         )
-        layer = self.window.layers["world"][c.TILES[self.type]["layer"]]
+        layer = self.application.layers["world"][c.TILES[self.type]["layer"]]
         self.sprite.group = layer
         self.unload()
 
@@ -70,35 +79,28 @@ class Tile(Basic):
                 x = self.x+random.randint(2, 6)/16
                 y = self.y+random.randint(2, 4)/16
                 particle.AnimationBasedParticle(
-                    self.window,
+                    self.application,
                     x,
                     y,
-                    self.window.resources["lava_bubble"]
+                    self.application.resources["lava_bubble"]
                 )
                 self.last_bubble = 0
                 self.to_wait = random.randint(4, 16)/2
 
 
 class Player(Basic):
-    """Player object. Contains basic renderer and controller."""
-
-    def __init__(self, window):
-        """Initialise the player class.
-
-        Arguments:
-            window {Window} -- The window for the application.
-        """
+    def __init__(self, application):
         self._state = "idle_right"
-        anim = window.resources["player"]["idle_right"]
+        anim = application.resources["player"]["idle_right"]
         super().__init__(
-            window,
+            application,
             0, 0,
             anim,
             card_sprite=True,
             collider=c.PLAYER_COLLIDER,
             static=False
         )
-        self.sprite.group = self.window.layers["world"]["y_ordered"]
+        self.sprite.group = self.application.layers["world"]["y_ordered"]
 
         self.room = (0, 0)
 
@@ -120,8 +122,8 @@ class Player(Basic):
     @state.setter
     def state(self, state):
         if state != self.state:
-            if state in self.window.resources["player"].keys():
-                anim = self.window.resources["player"][state]
+            if state in self.application.resources["player"].keys():
+                anim = self.application.resources["player"][state]
                 self.sprite.image = anim
             elif state == "locked":
                 if self._state == "walk_right":
@@ -131,31 +133,25 @@ class Player(Basic):
             self._state = state
 
     def update(self, dt):
-        """Update the player.
-
-        Arguments:
-            dt {float} -- Time passed since last update.
-        """
-
         controls = {
             "up": (
-                self.window.key_handler[key.W] or
-                self.window.key_handler[key.UP]
+                self.application.key_handler[key.W] or
+                self.application.key_handler[key.UP]
             ),
             "down": (
-                self.window.key_handler[key.S] or
-                self.window.key_handler[key.DOWN]
+                self.application.key_handler[key.S] or
+                self.application.key_handler[key.DOWN]
             ),
             "left": (
-                self.window.key_handler[key.A] or
-                self.window.key_handler[key.LEFT]
+                self.application.key_handler[key.A] or
+                self.application.key_handler[key.LEFT]
             ),
             "right": (
-                self.window.key_handler[key.D] or
-                self.window.key_handler[key.RIGHT]
+                self.application.key_handler[key.D] or
+                self.application.key_handler[key.RIGHT]
             ),
             "dash": (
-                self.window.key_handler[key.LSHIFT]
+                self.application.key_handler[key.LSHIFT]
             )
         }
 
@@ -220,7 +216,7 @@ class Player(Basic):
                         self.sprite._frame_index
                     ].image
                     particle.Shadow(
-                        self.window,
+                        self.application,
                         self.x, self.y,
                         shadow_image,
                         0.25,
@@ -233,96 +229,94 @@ class Player(Basic):
         super().update()
 
     def checkDoors(self):
-        """Check if the player is exiting through a door."""
-
         def on_black(door):
-            while len(self.window.particles) > 0:
-                self.window.particles[0].destroy()
-            self.window.room.visibility = False
+            while len(self.application.particles) > 0:
+                self.application.particles[0].destroy()
+            self.application.room.visibility = False
             if door == 0:
-                self.window.room.visibility = False
-                if self.window.room.map_data is not None:
+                self.application.room.visibility = False
+                if self.application.room.map_data is not None:
                     offset = (
                         self.x -
-                        self.window.room.map_data["door_info"][0]["pos"]
+                        self.application.room.map_data["door_info"][0]["pos"]
                     )
                 else:
                     offset = self.x
                 self.room = (
                     self.room[0], self.room[1]+1
                 )
-                self.window.room.visibility = True
-                self.y = -(self.window.room.height+3)
-                if self.window.room.map_data is not None:
+                self.application.room.visibility = True
+                self.y = -(self.application.room.height+3)
+                if self.application.room.map_data is not None:
                     self.x = (
                         offset +
-                        self.window.room.map_data["door_info"][2]["pos"]
+                        self.application.room.map_data["door_info"][2]["pos"]
                     )
                 else:
                     self.x = 0 + offset
             elif door == 1:
-                if self.window.room.map_data is not None:
+                if self.application.room.map_data is not None:
                     offset = (
                         self.y -
-                        self.window.room.map_data["door_info"][1]["pos"]
+                        self.application.room.map_data["door_info"][1]["pos"]
                     )
                 else:
                     offset = self.y
                 self.room = (
                     self.room[0]+1, self.room[1]
                 )
-                self.window.room.visibility = True
-                self.x = -(self.window.room.width+3)
-                if self.window.room.map_data is not None:
+                self.application.room.visibility = True
+                self.x = -(self.application.room.width+3)
+                if self.application.room.map_data is not None:
                     self.y = (
                         offset +
-                        self.window.room.map_data["door_info"][3]["pos"]
+                        self.application.room.map_data["door_info"][3]["pos"]
                     )
                 else:
                     self.y = 0 + offset
             elif door == 3:
-                self.window.room.visibility = False
-                if self.window.room.map_data is not None:
+                self.application.room.visibility = False
+                if self.application.room.map_data is not None:
                     offset = (
                         self.y -
-                        self.window.room.map_data["door_info"][3]["pos"]
+                        self.application.room.map_data["door_info"][3]["pos"]
                     )
                 else:
                     offset = self.y
                 self.room = (
                     self.room[0]-1, self.room[1]
                 )
-                self.window.room.visibility = True
-                self.x = self.window.room.width+3
-                if self.window.room.map_data is not None:
+                self.application.room.visibility = True
+                self.x = self.application.room.width+3
+                if self.application.room.map_data is not None:
                     self.y = (
                         offset +
-                        self.window.room.map_data["door_info"][1]["pos"]
+                        self.application.room.map_data["door_info"][1]["pos"]
                     )
                 else:
                     self.y = 0 + offset
             elif door == 2:
-                self.window.room.visibility = False
-                if self.window.room.map_data is not None:
+                self.application.room.visibility = False
+                if self.application.room.map_data is not None:
                     offset = (
                         self.x -
-                        self.window.room.map_data["door_info"][2]["pos"]
+                        self.application.room.map_data["door_info"][2]["pos"]
                     )
                 else:
                     offset = self.x
                 self.room = (
                     self.room[0], self.room[1]-1
                 )
-                self.window.room.visibility = True
-                self.y = self.window.room.height+3
-                if self.window.room.map_data is not None:
+                self.application.room.visibility = True
+                self.y = self.application.room.height+3
+                if self.application.room.map_data is not None:
                     self.x = (
                         offset +
-                        self.window.room.map_data["door_info"][0]["pos"]
+                        self.application.room.map_data["door_info"][0]["pos"]
                     )
                 else:
                     self.x = 0 + offset
-            self.window.world.ui_map.discover(self.room)
+            self.application.world.ui_map.discover(self.room)
             self.door = None
 
         def on_done():
@@ -330,33 +324,33 @@ class Player(Basic):
 
         if self.state != "locked":
             # Bottom Door
-            if self.y < -(self.window.room.height+3):
+            if self.y < -(self.application.room.height+3):
                 self.pre_locked = str(self.state)
                 self.state = "locked"
-                self.window.transition.begin(
+                self.application.transition.begin(
                     on_black=on_black, on_black_args=[2], on_done=on_done
                 )
 
             # Left Door
-            if self.x < -(self.window.room.width+3):
+            if self.x < -(self.application.room.width+3):
                 self.pre_locked = str(self.state)
                 self.state = "locked"
-                self.window.transition.begin(
+                self.application.transition.begin(
                     on_black=on_black, on_black_args=[3], on_done=on_done
                 )
 
             # Top Door
-            if self.y > self.window.room.height+3:
+            if self.y > self.application.room.height+3:
                 self.pre_locked = str(self.state)
                 self.state = "locked"
-                self.window.transition.begin(
+                self.application.transition.begin(
                     on_black=on_black, on_black_args=[0], on_done=on_done
                 )
 
             # Right Door
-            if self.x > self.window.room.width+3:
+            if self.x > self.application.room.width+3:
                 self.pre_locked = str(self.state)
                 self.state = "locked"
-                self.window.transition.begin(
+                self.application.transition.begin(
                     on_black=on_black, on_black_args=[1], on_done=on_done
                 )

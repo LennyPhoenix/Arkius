@@ -1,19 +1,9 @@
-"""Contains tilemap generator and premade tilemaps for rooms."""
-
 import random
 
 from . import constants as c
 
 
 def toMap(matrix):
-    """Convert a matrix to a tilemap dict.
-
-    Arguments:
-        matrix {list} -- The tile matrix to convert.
-
-    Returns:
-        dict -- The converted tilemap dict.
-    """
     height = len(matrix)//2
     width = len(matrix[0])//2
     tilemap = {}
@@ -25,18 +15,6 @@ def toMap(matrix):
 
 
 def add_boundaries(room_type, room_map, doors_enabled, map_data):
-    """Applies boundaries and doors.
-
-    Arguments:
-        room_type {int} -- The type of the room.
-        room_map {dict} -- The dictionary tilemap to modify.
-        doors_enabled {dict} -- A dict of all enabled doors.
-        map_data {dict} -- The data about the map.
-
-    Returns:
-        dict -- The modified tilemap.
-    """
-
     if map_data is not None:
         border_type = map_data["border_type"]
         width = map_data["width"]
@@ -147,16 +125,6 @@ def add_boundaries(room_type, room_map, doors_enabled, map_data):
 
 
 def create_blank(width=7, height=7, tile_type=c.FLOOR):
-    """Creates a coordinate based dictionary with the specified width and height.
-
-    Keyword Arguments:
-        width {int} -- The room's width. (default: {7})
-        height {int} -- The room's height. (default: {7})
-        type {int} -- The tile type that should be used. (default: {c.FLOOR})
-
-    Returns:
-        dict -- The empty map.
-    """
     map = {}
     for x in range(-width, width+1):
         for y in range(-height, height+1):
@@ -165,18 +133,6 @@ def create_blank(width=7, height=7, tile_type=c.FLOOR):
 
 
 def generate(room_type, room_map, tile_options, map_data):
-    """Randomly modify given tilemap with the options specified.
-
-    Arguments:
-        room_type {int} -- The type of the room.
-        room_map {dict} -- The dictionary tilemap to randomise.
-        tile_options {list} -- The tiles that should be randomised and their
-                               options.
-
-    Returns:
-        dict -- The randomised tilemap dict.
-    """
-
     pre_generation = room_map.copy()
 
     if map_data is not None:

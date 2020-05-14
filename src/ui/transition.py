@@ -1,13 +1,9 @@
-"""Transition UI element."""
-
 import pyglet
 
 
 class Transition:
-    """Moves between the different transition animations."""
-
-    def __init__(self, window):
-        self.window = window
+    def __init__(self, application):
+        self.application = application
         self._visible = False
         self._state = "fade_in"
 
@@ -19,16 +15,16 @@ class Transition:
         self.on_done = None
         self.on_done_args = None
 
-        self.states = self.window.resources["ui"]["transition"]
+        self.states = self.application.resources["ui"]["transition"]
         self.sprite = pyglet.sprite.Sprite(
             self.states[self.state],
             0, 0,
-            batch=self.window.ui_batch,
-            group=self.window.layers["ui"]["transition"]
+            batch=self.application.ui_batch,
+            group=self.application.layers["ui"]["transition"]
         )
         self.update_position()
 
-        self.window.push_handlers(self)
+        self.application.window.push_handlers(self)
         self.sprite.push_handlers(self)
 
     def begin(
@@ -59,8 +55,10 @@ class Transition:
 
     def update_position(self):
         self.sprite.scale = max(
-            self.window.width/(self.sprite.width/self.sprite.scale),
-            self.window.height/(self.sprite.height/self.sprite.scale)
+            self.application.window.width /
+            (self.sprite.width/self.sprite.scale),
+            self.application.window.height /
+            (self.sprite.height/self.sprite.scale)
         )
 
     def on_animation_end(self):
@@ -78,5 +76,4 @@ class Transition:
             self.state = "empty"
 
     def on_resize(self, width, height):
-        """Update the position and scale of everything."""
         self.update_position()

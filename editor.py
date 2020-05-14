@@ -12,7 +12,6 @@ class Window(pyglet.window.Window):
         self.ui_batch = pyglet.graphics.Batch()
 
     def loadResources(self):
-        """Preload all resources."""
         self.resources = {}
 
         tiles = {}

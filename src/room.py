@@ -1,5 +1,3 @@
-"""Contains class objects for Room."""
-
 import random
 
 from . import constants as c
@@ -7,23 +5,14 @@ from . import prefabs, tilemaps
 
 
 class Room:
-    """Room class."""
 
-    def __init__(self, window, room_type=c.START_ROOM, style=None, room_config=None, doors=None):  # noqa: E501
-        """Initialise the room.
-
-        Arguments:
-            window {Window} -- The application window.
-
-        Keyword Arguments:
-            room_type {int} -- The type of room. (default: {c.START_ROOM})
-            style {int} -- The tileset and style to use.
-                                   (default: {None})
-            room_config {dict} -- The room configuration to use.
-                                  (default: {None})
-            doors {dict} -- The doors that should be open. (default: {None})
-        """
-        self.window = window
+    def __init__(
+        self,
+        application,
+        room_type=c.START_ROOM,
+        style=None, room_config=None, doors=None
+    ):
+        self.application = application
         self.type = room_type
         self.doors = doors
         self.base = {}
@@ -37,7 +26,7 @@ class Room:
         self.space = set()
 
         if self.style is None:
-            self.style = self.window.world.style
+            self.style = self.application.world.style
 
         if self.doors is None:
             self.doors = {i: False for i in range(4)}
@@ -191,47 +180,17 @@ class Room:
         self.createSprites()
 
     def createSprites(self):
-        """Create all the sprites for the room tiles."""
-
         for x in range(-(self.width+3), self.width+4):
             for y in range(-(self.height+3), self.height+4):
                 if (x, y) in self.tilemap.keys():
-                    tile_type = self.tilemap[(x, y)]
-                    if not c.TILES[tile_type]["sprite"]["connective"]:
-                        image = random.choice(self.window.resources["tiles"][
-                            self.style
-                        ][
-                            tile_type
-                        ])
-                    else:
-                        index = self.getImageIndex(x, y)
-                        image = self.window.resources["tiles"][
-                            self.style
-                        ][
-                            tile_type
-                        ][
-                            index
-                        ]
-
                     tile = prefabs.Tile(
-                        self.window,
+                        self.application,
                         self,
-                        x, y,
-                        tile_type,
-                        image
+                        x, y
                     )
                     self.tiles[(x, y)] = tile
 
     def getImageIndex(self, x, y):
-        """Return the image index for a tile.
-
-        Arguments:
-            x {int} -- The x position of the tile.
-            y {int} -- The y position of the tile.
-
-        Returns:
-            int -- The image index of the tile.
-        """
         tilemap = self.tilemap
         tileID = tilemap[(x, y)]
         value = 0
@@ -292,20 +251,14 @@ class Room:
 
     @property
     def visibility(self):
-        """The room's visibility.
-
-        Returns:
-            bool -- Is the room marked as visible?
-        """
         return self._visible
 
     @visibility.setter
     def visibility(self, visible):
-        """Sets the visibility of each tile.
 
-        Arguments:
-            visible {bool} -- The visibility for each tile.
-        """
+        if self.visibility == visible:
+            return
+
         for pos in self.tiles.keys():
             tile = self.tiles[pos]
             if not tile.loaded and visible:
@@ -313,3 +266,9 @@ class Room:
             elif tile.loaded and not visible:
                 tile.unload()
         self._visible = visible
+
+    def delete(self):
+        for pos in self.tiles.keys():
+            tile = self.tiles[pos]
+            tile.sprite.delete()
+        self.tiles = None

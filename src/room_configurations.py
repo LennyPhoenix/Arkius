@@ -1,5 +1,3 @@
-"""Contains room configurations."""
-
 GENERATION_OPTIONS = [
     {
         "id": int,

@@ -1,19 +1,4 @@
-"""
-Copyright (C) 2020,  DoAltPlusF4.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-"""
 
 import json
 
@@ -31,23 +16,22 @@ pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
 
 
-class Window(pyglet.window.Window):
-    """Custom Window class.
+class Application:
 
-    Arguments:
-        pyglet {window.Window} -- Pyglet's window class.
-
-    Returns:
-        Window -- Custom window class.
-    """
-
-    def __init__(self, *args, **kwargs):
-        """Initialise the window class."""
-        super().__init__(*args, **kwargs)
-        self.set_minimum_size(*c.MIN_SIZE)
+    def __init__(self):
+        self.window = pyglet.window.Window(
+            caption="Arkius",
+            resizable=True,
+            fullscreen=False,
+            vsync=True
+        )
+        self.window.set_minimum_size(*c.MIN_SIZE)
+        self.window.push_handlers(self)
 
         self.key_handler = key.KeyStateHandler()
-        self.fps_display = pyglet.window.FPSDisplay(window=self)
+        self.window.push_handlers(self.key_handler)
+
+        self.fps_display = pyglet.window.FPSDisplay(window=self.window)
         self.zoom = 1
 
         self.world_camera = Camera(0, 0, 1000)
@@ -61,19 +45,13 @@ class Window(pyglet.window.Window):
 
         self.transition = Transition(self)
 
-        self.world = Dungeon(
-            self,
-            c.HUB
-        )
+        self.world = Dungeon(self, c.HUB)
 
         self.player = prefabs.Player(self)
 
         self.positionCamera(self.world_camera)
-        self.push_handlers(self.key_handler)
-        pyglet.clock.schedule_interval(self.update, c.UPDATE_SPEED)
 
     def createLayers(self):
-        """Create all layers."""
         self.layers = {}
 
         world = {}
@@ -97,7 +75,6 @@ class Window(pyglet.window.Window):
         self.layers["ui"] = ui
 
     def loadResources(self):
-        """Preload all resources."""
         self.resources = {}
 
         tiles = {}
@@ -243,12 +220,6 @@ class Window(pyglet.window.Window):
         self.resources["ui"] = ui
 
     def loadAnimation(self, image, data):
-        """Load an animation.
-
-        Arguments:
-            image {pyglet.resource.image} -- The spritesheet.
-            data {dict} -- The animation data.
-        """
         sprite_sheet = pyglet.image.ImageGrid(
             image,
             len(data["animations"]),
@@ -272,21 +243,7 @@ class Window(pyglet.window.Window):
             )
         return animations
 
-    def on_draw(self):
-        """Redraw the window."""
-        self.clear()
-        with self.world_camera:
-            self.world_batch.draw()
-        self.ui_batch.draw()
-        self.fps_display.draw()
-
     def update(self, dt):
-        """Update all sprites.
-
-        Arguments:
-            dt {float} -- Time passed since last update.
-        """
-
         rezoom = False
         if self.key_handler[key.EQUAL]:
             self.zoom += 2 * dt
@@ -294,10 +251,11 @@ class Window(pyglet.window.Window):
         elif self.key_handler[key.MINUS]:
             self.zoom -= 2 * dt
             rezoom = True
+
         if rezoom:
             self.zoom = max(c.MIN_ZOOM, min(c.MAX_ZOOM, self.zoom))
             zoom = (
-                (min(self.width, self.height) / c.MIN_SIZE[1]) *
+                (min(self.window.width, self.window.height) / c.MIN_SIZE[1]) *
                 self.zoom
             )
             if zoom >= 1:
@@ -309,17 +267,16 @@ class Window(pyglet.window.Window):
 
         self.player.update(dt)
 
-    def on_key_press(self, symbol, modifiers):
-        """Fullscreen the window or create a new room.
+    def on_draw(self):
+        self.window.clear()
+        with self.world_camera:
+            self.world_batch.draw()
+        self.ui_batch.draw()
+        self.fps_display.draw()
 
-        Arguments:
-            symbol {int} -- The key symbol pressed.
-            modifiers {int} -- Bitwise combination of the key modifiers active.
-        """
+    def on_key_press(self, symbol, modifiers):
         if symbol == key.F11:
             self.set_fullscreen(not self.fullscreen)
-
-        return super().on_key_press(symbol, modifiers)
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT:
@@ -327,14 +284,8 @@ class Window(pyglet.window.Window):
             self.player.x, self.player.y = world_x-0.5, world_y
 
     def on_resize(self, width, height):
-        """Resize the room.
-
-        Arguments:
-            width {int} -- The new window width.
-            height {int} -- The new window height.
-        """
         zoom = (
-            (min(self.width, self.height) / c.MIN_SIZE[1]) *
+            (min(width, height) / c.MIN_SIZE[1]) *
             self.zoom
         )
         if zoom >= 1:
@@ -342,30 +293,7 @@ class Window(pyglet.window.Window):
         else:
             self.world_camera.zoom = round(zoom*4)/4
 
-        return super().on_resize(width, height)
-
-    def worldToScreen(self, x, y):
-        """Convert a world position to a screen position.
-
-        Arguments:
-            x {float} -- The world x position.
-            y {float} -- The world y position.
-
-        Returns:
-            (int, int) -- The screen position of the object.
-        """
-        screen_x = (x*16) - 8
-        screen_y = (y*16) - 8
-
-        return (screen_x, screen_y)
-
     def screenToWorld(self, x, y):
-        """Convert a screen position to a world position.
-
-        Arguments:
-            x {int} -- The screen X position.
-            y {int} -- The screen Y position.
-        """
         world_x = (
             (x+self.world_camera.offset_x*self.world_camera.zoom) /
             self.world_camera.zoom
@@ -380,10 +308,9 @@ class Window(pyglet.window.Window):
 
         return world_x, world_y
 
-    def positionCamera(self, camera, parallax=True):
-        """Sets the position of the camera."""
-        x = (-self.width/camera.zoom//2)
-        y = (-self.height/camera.zoom//2)
+    def positionCamera(self, parallax=True):
+        x = (-self.window.width//2 + 8)/self.world_camera.zoom
+        y = (-self.window.height//2 + 8)/self.world_camera.zoom
 
         if parallax:
             x -= (
@@ -395,27 +322,21 @@ class Window(pyglet.window.Window):
                 self.room.height/c.PARALLAX_Y
             )
 
-        camera.position = (
+        self.world_camera.position = (
             round(x),
             round(y)
         )
 
     @property
     def room(self):
-        """Gets the room occupied by the player.
-
-        Returns:
-            Room -- The active room.
-        """
         room = self.world.map[self.player.room]
         return room
 
+    def run(self):
+        pyglet.clock.schedule_interval(self.update, c.UPDATE_SPEED)
+        pyglet.app.run()
+
 
 if __name__ == "__main__":
-    window = Window(
-        caption="Arkius",
-        resizable=True,
-        fullscreen=True,
-        vsync=True
-    )
-    pyglet.app.run()
+    application = Application()
+    application.run()
