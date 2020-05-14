@@ -331,6 +331,13 @@ class Application:
         room = self.world.map[self.player.room]
         return room
 
+    @room.setter
+    def room(self, pos):
+        room = self.world.map[pos]
+        self.room.visibility = False
+        self.player.room = pos
+        room.visibility = True
+
     def run(self):
         pyglet.clock.schedule_interval(self.update, c.UPDATE_SPEED)
         pyglet.app.run()
