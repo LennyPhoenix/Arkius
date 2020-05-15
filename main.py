@@ -23,7 +23,9 @@ class Application:
         self.window = pyglet.window.Window(
             caption="Arkius",
             resizable=True,
-            vsync=True
+            vsync=True,
+            width=1400,
+            height=800
         )
         self.window.set_minimum_size(*c.MIN_SIZE)
         self.window.push_handlers(self)
