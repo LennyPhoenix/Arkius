@@ -10,13 +10,20 @@ PARALLAX_Y = 15
 DEFAULT_WORLD_SIZE = 3
 
 # Player
-PLAYER_SPEED = 4
+PLAYER_SPEED = 3200
 PLAYER_COLLIDER = {
-    "x": 1/16,
-    "y": 2/16,
-    "width": 14/16,
-    "height": 10/16
+    "type": "circle",
+    "radius": 7,
+    "offset": (8, 5)
 }
+# PLAYER_COLLIDER = {
+#     "type": "rect",
+#     "x": 1,
+#     "y": 1,
+#     "width": 14,
+#     "height": 12,
+#     "radius": 0
+# }
 
 # Styles
 TILESET_DIMENSIONS = (10, 5)
@@ -51,10 +58,12 @@ TILES = {
             "connects": [WALL]
         },
         "collider": {
+            "type": "rect",
             "x": 0,
             "y": 0,
-            "width": 1,
-            "height": 1
+            "width": 16,
+            "height": 16,
+            "radius": 0
         },
         "layer": "y_ordered"
     },
@@ -66,10 +75,12 @@ TILES = {
             "connects": [PIT]
         },
         "collider": {
-            "x": 2/16,
-            "y": 3/16,
-            "width": 11/16,
-            "height": 11/16
+            "type": "rect",
+            "x": 2,
+            "y": 2,
+            "width": 12,
+            "height": 12,
+            "radius": 0
         },
         "layer": "ground"
     },

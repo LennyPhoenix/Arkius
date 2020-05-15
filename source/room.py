@@ -1,4 +1,5 @@
 import random
+import pymunk
 
 from . import constants as c
 from . import prefabs, tilemaps
@@ -23,7 +24,9 @@ class Room:
         self.style = style
         self.config = room_config
 
-        self.space = set()
+        self.space = pymunk.Space(threaded=True)
+        self.space.damping = 1/10**999
+        self.space.collision_slop = 0.4
 
         if self.style is None:
             self.style = self.application.world.style

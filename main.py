@@ -3,31 +3,35 @@
 import json
 
 import pyglet
-from pyglet import gl
 from pyglet.window import key, mouse
 
-import source
+import pymunk.pyglet_util
+
 from source import constants as c
 from source import prefabs
 from source.camera import Camera
 from source.dungeon import Dungeon
 from source.ui.transition import Transition
 
-pyglet.image.Texture.default_mag_filter = gl.GL_NEAREST
-pyglet.image.Texture.default_min_filter = gl.GL_NEAREST
+pyglet.image.Texture.default_mag_filter = pyglet.gl.GL_NEAREST
+pyglet.image.Texture.default_min_filter = pyglet.gl.GL_NEAREST
 
 
 class Application:
+    _borderless = False
+    _pre_borderless_location = (0, 0)
+    _pre_borderless_size = (0, 0)
 
     def __init__(self):
         self.window = pyglet.window.Window(
             caption="Arkius",
             resizable=True,
-            fullscreen=False,
             vsync=True
         )
         self.window.set_minimum_size(*c.MIN_SIZE)
         self.window.push_handlers(self)
+
+        self.debug_mode = False
 
         self.key_handler = key.KeyStateHandler()
         self.window.push_handlers(self.key_handler)
@@ -45,9 +49,7 @@ class Application:
         self.loadResources()
 
         self.transition = Transition(self)
-
-        self.world = Dungeon(self, c.HUB)
-
+        self.world = Dungeon(self, c.VOLCANO)
         self.player = prefabs.Player(self)
 
     def createLayers(self):
@@ -243,6 +245,7 @@ class Application:
         return animations
 
     def update(self, dt):
+        self.room.space.step(dt)
         rezoom = False
         if self.key_handler[key.EQUAL]:
             self.zoom += 2 * dt
@@ -262,25 +265,30 @@ class Application:
             else:
                 self.world_camera.zoom = round(zoom*4)/4
 
-        self.positionCamera(self.world_camera)
-
+        self.positionCamera()
         self.player.update(dt)
 
     def on_draw(self):
         self.window.clear()
         with self.world_camera:
             self.world_batch.draw()
+            if self.debug_mode:
+                debug_options = pymunk.pyglet_util.DrawOptions()
+                self.room.space.debug_draw(debug_options)
         self.ui_batch.draw()
         self.fps_display.draw()
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.F11:
-            self.set_fullscreen(not self.fullscreen)
+            if not self.borderless:
+                self.borderless = True
+            elif self.borderless:
+                self.borderless = False
 
     def on_mouse_press(self, x, y, button, modifiers):
-        if button == mouse.LEFT:
+        if button == mouse.LEFT and self.debug_mode:
             world_x, world_y = self.screenToWorld(x, y)
-            self.player.x, self.player.y = world_x-0.5, world_y
+            self.player.position = (world_x-8, world_y)
 
     def on_resize(self, width, height):
         zoom = (
@@ -302,29 +310,26 @@ class Application:
             self.world_camera.zoom
         )
 
-        world_x = world_x/16+0.5
-        world_y = world_y/16+0.5
-
         return world_x, world_y
 
     def positionCamera(self, parallax=True):
-        x = (-self.window.width//2 + 8)/self.world_camera.zoom
-        y = (-self.window.height//2 + 8)/self.world_camera.zoom
+        x = (-self.window.width//2)/self.world_camera.zoom
+        y = (-self.window.height//2)/self.world_camera.zoom
 
         if parallax:
             x -= (
-                (self.player.x) * -8 *
+                (self.player.position.x) * -0.5 *
                 self.room.width/c.PARALLAX_X
             )
             y -= (
-                (self.player.y) * -8 *
+                (self.player.position.y) * -0.5 *
                 self.room.height/c.PARALLAX_Y
             )
 
-        self.world_camera.position = (
-            round(x),
-            round(y)
-        )
+        x = round(x)
+        y = round(y)
+
+        self.world_camera.position = (x, y)
 
     @property
     def room(self):
