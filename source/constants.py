@@ -16,14 +16,6 @@ PLAYER_COLLIDER = {
     "radius": 7,
     "offset": (8, 5)
 }
-# PLAYER_COLLIDER = {
-#     "type": "rect",
-#     "x": 1,
-#     "y": 1,
-#     "width": 14,
-#     "height": 12,
-#     "radius": 0
-# }
 
 # Styles
 TILESET_DIMENSIONS = (10, 5)
