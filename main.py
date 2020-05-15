@@ -3,9 +3,8 @@
 import json
 
 import pyglet
-from pyglet.window import key, mouse
-
 import pymunk.pyglet_util
+from pyglet.window import key, mouse
 
 import source
 from source import constants as c
@@ -40,6 +39,8 @@ class Application:
         self.zoom = 1
 
         self.world_camera = source.camera.Camera(0, 0, 1000)
+        self.camera_movement_x = 0
+        self.camera_movement_y = 0
         self.world_batch = pyglet.graphics.Batch()
         self.ui_batch = pyglet.graphics.Batch()
 
@@ -265,7 +266,7 @@ class Application:
             else:
                 self.world_camera.zoom = round(zoom*4)/4
 
-        self.positionCamera()
+        self.positionCamera(dt=dt)
         self.player.update(dt)
 
     def on_draw(self):
@@ -312,11 +313,12 @@ class Application:
 
         return world_x, world_y
 
-    def positionCamera(self, parallax=True):
+    def positionCamera(self, parallax=True, dt=1/60):
         x = (-self.window.width//2)/self.world_camera.zoom
         y = (-self.window.height//2)/self.world_camera.zoom
 
         if parallax:
+            # Player Position
             x -= (
                 (self.player.position.x) * -0.5 *
                 self.room.width/c.PARALLAX_X
@@ -325,6 +327,36 @@ class Application:
                 (self.player.position.y) * -0.5 *
                 self.room.height/c.PARALLAX_Y
             )
+
+            # Player Velocity
+            if self.camera_movement_x < self.player.vx:
+                self.camera_movement_x += c.PLAYER_SPEED*dt*3
+                self.camera_movement_x = min(
+                    self.player.vx,
+                    self.camera_movement_x
+                )
+            elif self.camera_movement_x > self.player.vx:
+                self.camera_movement_x -= c.PLAYER_SPEED*dt*3
+                self.camera_movement_x = max(
+                    self.player.vx,
+                    self.camera_movement_x
+                )
+
+            if self.camera_movement_y < self.player.vy:
+                self.camera_movement_y += c.PLAYER_SPEED*dt*3
+                self.camera_movement_y = min(
+                    self.player.vy,
+                    self.camera_movement_y
+                )
+            elif self.camera_movement_y > self.player.vy:
+                self.camera_movement_y -= c.PLAYER_SPEED*dt*3
+                self.camera_movement_y = max(
+                    self.player.vy,
+                    self.camera_movement_y
+                )
+
+            x += self.camera_movement_x/(200/(self.room.width/c.PARALLAX_X))
+            y += self.camera_movement_y/(200/(self.room.height/c.PARALLAX_Y))
 
         x = round(x)
         y = round(y)
