@@ -31,7 +31,8 @@ class Application:
         self.debug_mode = False
 
         self.key_handler = key.KeyStateHandler()
-        self.window.push_handlers(self.key_handler)
+        self.mouse_handler = mouse.MouseStateHandler()
+        self.window.push_handlers(self.key_handler, self.mouse_handler)
 
         self.fps_display = pyglet.window.FPSDisplay(window=self.window)
         self.zoom = 1
@@ -362,7 +363,7 @@ class Application:
             self.window = window
             self.window.set_minimum_size(*c.MIN_SIZE)
             self.window.push_handlers(self)
-            self.window.push_handlers(self.key_handler)
+            self.window.push_handlers(self.key_handler, self.mouse_handler)
             self.window.push_handlers(self.world.ui_map)
             self.window.push_handlers(self.transition)
             self.fps_display = pyglet.window.FPSDisplay(window=self.window)
@@ -384,7 +385,7 @@ class Application:
             self.window = window
             self.window.set_minimum_size(*c.MIN_SIZE)
             self.window.push_handlers(self)
-            self.window.push_handlers(self.key_handler)
+            self.window.push_handlers(self.key_handler, self.mouse_handler)
             self.window.push_handlers(self.world.ui_map)
             self.window.push_handlers(self.transition)
             self.fps_display = pyglet.window.FPSDisplay(window=self.window)
