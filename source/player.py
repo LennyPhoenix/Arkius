@@ -33,6 +33,8 @@ class Player(Basic):
         self.last_shadow = 0
         self.shadow_frequency = 1/50
 
+        self.vx, self.vy = 0, 0
+
     @property
     def state(self):
         return self._state
@@ -74,22 +76,22 @@ class Player(Basic):
         }
 
         # Position
-        vx, vy = 0, 0
+        self.vx, self.vy = 0, 0
         if controls["up"]:
-            vy += c.PLAYER_SPEED
+            self.vy += c.PLAYER_SPEED
         if controls["down"]:
-            vy -= c.PLAYER_SPEED
+            self.vy -= c.PLAYER_SPEED
         if controls["left"]:
-            vx -= c.PLAYER_SPEED
+            self.vx -= c.PLAYER_SPEED
         if controls["right"]:
-            vx += c.PLAYER_SPEED
+            self.vx += c.PLAYER_SPEED
 
         if (
-            vx != 0 and
-            vy != 0
+            self.vx != 0 and
+            self.vy != 0
         ):
-            vx /= 2**0.5
-            vy /= 2**0.5
+            self.vx /= 2**0.5
+            self.vy /= 2**0.5
 
         if self.state == "locked":
             return super().update(dt)
@@ -121,7 +123,7 @@ class Player(Basic):
                     self.state = "idle_right"
 
             self.apply_force_at_world_point(
-                self.dash_vel+pymunk.vec2d.Vec2d(vx, vy),
+                self.dash_vel+pymunk.vec2d.Vec2d(self.vx, self.vy),
                 (0, 0)
             )
             self.checkDoors()
@@ -160,15 +162,16 @@ class Player(Basic):
             controls["dash"] and
             self.dash_time >= self.dash_cooldown
         ):
-            if (vx, vy) != (0, 0):
+            if (self.vx, self.vy) != (0, 0):
                 self.dash_time = 0
-                self.dash_vel = pymunk.vec2d.Vec2d(vx, vy)*self.dash_multiplier
+                self.dash_vel = pymunk.vec2d.Vec2d(
+                    self.vx, self.vy)*self.dash_multiplier
                 self.state = "dashing"
         else:
             self.dash_time += dt
 
         self.apply_force_at_local_point(
-            pymunk.vec2d.Vec2d(vx, vy),
+            pymunk.vec2d.Vec2d(self.vx, self.vy),
             (0, 0)
         )
         self.checkDoors()
