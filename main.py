@@ -49,7 +49,7 @@ class Application:
         self.loadResources()
 
         self.transition = source.ui.transition.Transition(self)
-        self.world = source.dungeon.Dungeon(self, c.VOLCANO)
+        self.world = source.dungeon.Dungeon(self, c.HUB)
         self.player = source.player.Player(self)
 
     def createLayers(self):
