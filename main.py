@@ -338,6 +338,60 @@ class Application:
         self.player.room = pos
         room.visibility = True
 
+    @property
+    def borderless(self):
+        return self._borderless
+
+    @borderless.setter
+    def borderless(self, borderless):
+        if borderless == self.borderless:
+            return
+
+        if borderless:
+            self._pre_borderless_location = self.window.get_location()
+            self._pre_borderless_size = self.window.get_size()
+
+            window = pyglet.window.Window(
+                caption="Arkius",
+                vsync=True,
+                style=pyglet.window.Window.WINDOW_STYLE_BORDERLESS
+            )
+            self.window.close()
+            self.window = window
+            self.window.set_minimum_size(*c.MIN_SIZE)
+            self.window.push_handlers(self)
+            self.window.push_handlers(self.key_handler)
+            self.window.push_handlers(self.world.ui_map)
+            self.window.push_handlers(self.transition)
+            self.fps_display = pyglet.window.FPSDisplay(window=self.window)
+
+            self.window.set_location(0, 0)
+            screen = self.window.screen
+            self.window.set_size(
+                screen.width,
+                screen.height
+            )
+        else:
+            window = pyglet.window.Window(
+                caption="Arkius",
+                resizable=True,
+                vsync=True,
+                style=pyglet.window.Window.WINDOW_STYLE_DEFAULT
+            )
+            self.window.close()
+            self.window = window
+            self.window.set_minimum_size(*c.MIN_SIZE)
+            self.window.push_handlers(self)
+            self.window.push_handlers(self.key_handler)
+            self.window.push_handlers(self.world.ui_map)
+            self.window.push_handlers(self.transition)
+            self.fps_display = pyglet.window.FPSDisplay(window=self.window)
+
+            self.window.set_location(*self._pre_borderless_location)
+            self.window.set_size(*self._pre_borderless_size)
+
+        self._borderless = borderless
+
     def run(self):
         pyglet.clock.schedule_interval(self.update, c.UPDATE_SPEED)
         pyglet.app.run()
