@@ -7,11 +7,8 @@ from pyglet.window import key, mouse
 
 import pymunk.pyglet_util
 
+import source
 from source import constants as c
-from source import prefabs
-from source.camera import Camera
-from source.dungeon import Dungeon
-from source.ui.transition import Transition
 
 pyglet.image.Texture.default_mag_filter = pyglet.gl.GL_NEAREST
 pyglet.image.Texture.default_min_filter = pyglet.gl.GL_NEAREST
@@ -39,7 +36,7 @@ class Application:
         self.fps_display = pyglet.window.FPSDisplay(window=self.window)
         self.zoom = 1
 
-        self.world_camera = Camera(0, 0, 1000)
+        self.world_camera = source.camera.Camera(0, 0, 1000)
         self.world_batch = pyglet.graphics.Batch()
         self.ui_batch = pyglet.graphics.Batch()
 
@@ -48,9 +45,9 @@ class Application:
         self.createLayers()
         self.loadResources()
 
-        self.transition = Transition(self)
-        self.world = Dungeon(self, c.VOLCANO)
-        self.player = prefabs.Player(self)
+        self.transition = source.ui.transition.Transition(self)
+        self.world = source.dungeon.Dungeon(self, c.VOLCANO)
+        self.player = source.player.Player(self)
 
     def createLayers(self):
         self.layers = {}

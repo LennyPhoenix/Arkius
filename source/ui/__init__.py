@@ -1,7 +1,5 @@
-from . import map
-from . import transition
+from . import (map, transition)
 
 submodules = [
-    map,
-    transition
+    map, transition
 ]

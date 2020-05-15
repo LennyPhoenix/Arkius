@@ -1,8 +1,10 @@
 import random
+
 import pymunk
 
 from . import constants as c
-from . import prefabs, tilemaps
+from . import tilemaps
+from .tile import Tile
 
 
 class Room:
@@ -186,7 +188,7 @@ class Room:
         for x in range(-(self.width+3), self.width+4):
             for y in range(-(self.height+3), self.height+4):
                 if (x, y) in self.tilemap.keys():
-                    tile = prefabs.Tile(
+                    tile = Tile(
                         self.application,
                         self,
                         x, y
