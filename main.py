@@ -27,7 +27,6 @@ class Application:
             height=800
         )
         self.window.set_minimum_size(*c.MIN_SIZE)
-        self.window.push_handlers(self)
 
         self.debug_mode = False
 
