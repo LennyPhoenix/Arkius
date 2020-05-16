@@ -296,6 +296,10 @@ class Application:
             world_x, world_y = self.screenToWorld(x, y)
             self.player.position = (world_x-8, world_y)
 
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.mouse_handler["x"] = x
+        self.mouse_handler["y"] = y
+
     def on_resize(self, width, height):
         zoom = (
             (min(width, height) / c.MIN_SIZE[1]) *
@@ -324,12 +328,12 @@ class Application:
 
         if parallax:
             # Player Position
-            x -= (
-                (self.player.position.x) * -0.5 *
+            x += (
+                (self.player.position.x) * 0.5 *
                 self.room.width/c.PARALLAX_X
             )
-            y -= (
-                (self.player.position.y) * -0.5 *
+            y += (
+                (self.player.position.y) * 0.5 *
                 self.room.height/c.PARALLAX_Y
             )
 
@@ -362,6 +366,14 @@ class Application:
 
             x += self.camera_movement_x/(200/(self.room.width/c.PARALLAX_X))
             y += self.camera_movement_y/(200/(self.room.height/c.PARALLAX_Y))
+
+            # Mouse Position
+            m_x, m_y = self.screenToWorld(
+                self.mouse_handler["x"],
+                self.mouse_handler["y"]
+            )
+            x += m_x/16
+            y += m_y/16
 
         x = round(x)
         y = round(y)
