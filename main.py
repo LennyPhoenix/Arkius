@@ -319,8 +319,8 @@ class Application:
         return world_x, world_y
 
     def positionCamera(self, parallax=True, dt=1/60):
-        x = (-self.window.width//2)/self.world_camera.zoom
-        y = (-self.window.height//2)/self.world_camera.zoom
+        x = (-self.window.width//2 + 8)/self.world_camera.zoom
+        y = (-self.window.height//2 + 8)/self.world_camera.zoom
 
         if parallax:
             # Player Position
