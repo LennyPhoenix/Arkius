@@ -54,7 +54,7 @@ class Map:
 
         self.update_position()
         self.discover((0, 0))
-        self.application.window.push_handlers(self)
+        self.application.pushHandler(self)
 
     def update_position(self):
         scale = min(

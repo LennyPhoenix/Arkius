@@ -33,7 +33,6 @@ class Application:
 
         self.key_handler = key.KeyStateHandler()
         self.mouse_handler = mouse.MouseStateHandler()
-        self.window.push_handlers(self.key_handler, self.mouse_handler)
 
         self.fps_display = pyglet.window.FPSDisplay(window=self.window)
         self.zoom = 1
@@ -45,12 +44,17 @@ class Application:
         self.ui_batch = pyglet.graphics.Batch()
 
         self.particles = []
+        self.handlers = []
+
+        self.pushHandler(self)
+        self.pushHandler(self.key_handler)
+        self.pushHandler(self.mouse_handler)
 
         self.createLayers()
         self.loadResources()
 
         self.transition = source.ui.transition.Transition(self)
-        self.world = source.dungeon.Dungeon(self, c.HUB)
+        self.world = source.dungeon.Dungeon(self, c.VOLCANO)
         self.player = source.player.Player(self)
 
     def createLayers(self):
@@ -363,6 +367,10 @@ class Application:
 
         self.world_camera.position = (x, y)
 
+    def pushHandler(self, handler):
+        self.handlers.append(handler)
+        self.window.push_handlers(handler)
+
     @property
     def room(self):
         room = self.world.map[self.player.room]
@@ -391,16 +399,15 @@ class Application:
             window = pyglet.window.Window(
                 caption="Arkius",
                 vsync=True,
+                double_buffer=True,
                 style=pyglet.window.Window.WINDOW_STYLE_BORDERLESS
             )
             self.window.close()
             self.window = window
             self.window.set_minimum_size(*c.MIN_SIZE)
-            self.window.push_handlers(self)
-            self.window.push_handlers(self.key_handler, self.mouse_handler)
-            self.window.push_handlers(self.world.ui_map)
-            self.window.push_handlers(self.transition)
-            self.fps_display = pyglet.window.FPSDisplay(window=self.window)
+            self.fps_display = pyglet.window.FPSDisplay(window=window)
+            for handler in self.handlers:
+                self.window.push_handlers(handler)
 
             self.window.set_location(0, 0)
             screen = self.window.screen
@@ -418,15 +425,14 @@ class Application:
             self.window.close()
             self.window = window
             self.window.set_minimum_size(*c.MIN_SIZE)
-            self.window.push_handlers(self)
-            self.window.push_handlers(self.key_handler, self.mouse_handler)
-            self.window.push_handlers(self.world.ui_map)
-            self.window.push_handlers(self.transition)
-            self.fps_display = pyglet.window.FPSDisplay(window=self.window)
+            self.fps_display = pyglet.window.FPSDisplay(window=window)
+            for handler in self.handlers:
+                self.window.push_handlers(handler)
 
             self.window.set_location(*self._pre_borderless_location)
             self.window.set_size(*self._pre_borderless_size)
 
+        self.positionCamera(parallax=False)
         self._borderless = borderless
 
     def run(self):
