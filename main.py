@@ -398,7 +398,6 @@ class Application:
             window = pyglet.window.Window(
                 caption="Arkius",
                 vsync=True,
-                double_buffer=True,
                 style=pyglet.window.Window.WINDOW_STYLE_BORDERLESS
             )
             self.window.close()
@@ -408,12 +407,7 @@ class Application:
             for handler in self.handlers:
                 self.window.push_handlers(handler)
 
-            self.window.set_location(0, 0)
-            screen = self.window.screen
-            self.window.set_size(
-                screen.width,
-                screen.height
-            )
+            self.window.maximize()
         else:
             window = pyglet.window.Window(
                 caption="Arkius",
