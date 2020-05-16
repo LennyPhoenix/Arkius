@@ -288,6 +288,8 @@ class Application:
                 self.borderless = True
             elif self.borderless:
                 self.borderless = False
+        elif symbol == key.F3:
+            self.debug_mode = not self.debug_mode
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT and self.debug_mode:
