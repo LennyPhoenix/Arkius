@@ -37,6 +37,7 @@ class Application:
         self.zoom = 1
 
         self.world_camera = source.camera.Camera(0, 0, 1000)
+        self.lock_to_player = True
         self.camera_movement_x = 0
         self.camera_movement_y = 0
         self.world_batch = pyglet.graphics.Batch()
@@ -290,6 +291,8 @@ class Application:
                 self.borderless = False
         elif symbol == key.F3:
             self.debug_mode = not self.debug_mode
+        elif symbol == key.F5:
+            self.lock_to_player = not self.lock_to_player
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT and self.debug_mode:
@@ -328,14 +331,18 @@ class Application:
 
         if parallax:
             # Player Position
-            x += (
-                (self.player.position.x) * 0.5 *
-                self.room.width/c.PARALLAX_X
-            )
-            y += (
-                (self.player.position.y) * 0.5 *
-                self.room.height/c.PARALLAX_Y
-            )
+            if self.lock_to_player:
+                x += self.player.position.x+8
+                y += self.player.position.y
+            else:
+                x += (
+                    (self.player.position.x) * 0.5 *
+                    self.room.width/c.PARALLAX_X
+                )
+                y += (
+                    (self.player.position.y) * 0.5 *
+                    self.room.height/c.PARALLAX_Y
+                )
 
             # Player Velocity
             if self.camera_movement_x < self.player.vx:
