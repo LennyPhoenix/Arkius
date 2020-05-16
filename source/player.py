@@ -167,7 +167,9 @@ class Player(Basic):
                 self.dash_vel = pymunk.vec2d.Vec2d(
                     self.vx, self.vy)*self.dash_multiplier
                 self.state = "dashing"
-        else:
+        elif (
+            not controls["dash"]
+        ):
             self.dash_time += dt
 
         self.apply_force_at_local_point(
