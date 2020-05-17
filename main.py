@@ -37,7 +37,7 @@ class Application:
         self.zoom = 1
 
         self.world_camera = source.camera.Camera(0, 0, 1000)
-        self.lock_to_player = True
+        self.lock_to_player = False
         self.camera_movement_x = 0
         self.camera_movement_y = 0
         self.world_batch = pyglet.graphics.Batch()
