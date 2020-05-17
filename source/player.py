@@ -206,12 +206,12 @@ class Player(Basic):
                         self.application.room.map_data[
                             "door_info"
                         ][2]["pos"]*16,
-                        -(self.application.room.height+3)*16
+                        -(self.application.room.height+2.5)*16
                     )
                 else:
                     self.position = (
                         0 + offset,
-                        -(self.application.room.height+3)*16
+                        -(self.application.room.height+2.5)*16
                     )
             elif door == 1:  # Right
                 if self.application.room.map_data is not None:
@@ -229,7 +229,7 @@ class Player(Basic):
                 self.application.room.visibility = True
                 if self.application.room.map_data is not None:
                     self.position = (
-                        -(self.application.room.width+3)*16,
+                        -(self.application.room.width+2.5)*16,
                         (
                             offset +
                             self.application.room.map_data[
@@ -239,7 +239,7 @@ class Player(Basic):
                     )
                 else:
                     self.position = (
-                        -(self.application.room.width+3)*16,
+                        -(self.application.room.width+2.5)*16,
                         offset + 0
                     )
             elif door == 3:  # Left
@@ -261,7 +261,7 @@ class Player(Basic):
 
                 if self.application.room.map_data is not None:
                     self.position = (
-                        (self.application.room.width+3)*16,
+                        (self.application.room.width+2.5)*16,
                         (
                             offset +
                             self.application.room.map_data[
@@ -271,7 +271,7 @@ class Player(Basic):
                     )
                 else:
                     self.position = (
-                        (self.application.room.width+3)*16,
+                        (self.application.room.width+2.5)*16,
                         offset + 0
                     )
             elif door == 2:  # Bottom
@@ -295,12 +295,12 @@ class Player(Basic):
                         self.application.room.map_data[
                             "door_info"
                         ][0]["pos"]*16,
-                        (self.application.room.height+3)*16
+                        (self.application.room.height+2.5)*16
                     )
                 else:
                     self.position = (
                         0 + offset,
-                        (self.application.room.height+3)*16
+                        (self.application.room.height+2.5)*16
                     )
             self.application.room.space.add(self, self.collider)
             self.application.world.ui_map.discover(self.room)
@@ -310,7 +310,7 @@ class Player(Basic):
             self.state = self.pre_locked
 
         # Bottom Door
-        if self.position.y < -(self.application.room.height+3)*16:
+        if self.position.y <= -(self.application.room.height+3)*16:
             self.pre_locked = str(self.state)
             self.state = "locked"
             self.application.transition.begin(
@@ -318,7 +318,7 @@ class Player(Basic):
             )
 
         # Left Door
-        if self.position.x < -(self.application.room.width+3)*16:
+        if self.position.x <= -(self.application.room.width+3)*16:
             self.pre_locked = str(self.state)
             self.state = "locked"
             self.application.transition.begin(
@@ -326,7 +326,7 @@ class Player(Basic):
             )
 
         # Top Door
-        if self.position.y > (self.application.room.height+3)*16:
+        if self.position.y >= (self.application.room.height+3)*16:
             self.pre_locked = str(self.state)
             self.state = "locked"
             self.application.transition.begin(
@@ -334,7 +334,7 @@ class Player(Basic):
             )
 
         # Right Door
-        if self.position.x > (self.application.room.width+3)*16:
+        if self.position.x >= (self.application.room.width+3)*16:
             self.pre_locked = str(self.state)
             self.state = "locked"
             self.application.transition.begin(
