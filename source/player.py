@@ -155,9 +155,9 @@ class Player(Basic):
             (0, 0)
         )
 
-        if self.velocity.x < 0:
+        if self.vx < 0:
             self.flip = True
-        elif self.velocity.x > 0:
+        elif self.vx > 0:
             self.flip = False
 
         self.checkDoors()
