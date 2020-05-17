@@ -122,7 +122,6 @@ class Player(Basic):
                 self.dash_vel+pymunk.vec2d.Vec2d(self.vx, self.vy),
                 (0, 0)
             )
-            self.checkDoors()
             return super().update(dt)
 
         if (
@@ -161,10 +160,9 @@ class Player(Basic):
         elif self.vx > 0:
             self.flip = False
 
-        self.checkDoors()
         super().update(dt)
 
-    def checkDoors(self):
+    def triggerDoor(self, side):
         def on_black(door):
             self.state = "idle"
             while len(self.application.particles) > 0:
@@ -294,28 +292,28 @@ class Player(Basic):
             self.locked = False
 
         # Bottom Door
-        if self.position.y <= -(self.application.room.height+3)*16:
+        if side == 2:
             self.locked = True
             self.application.transition.begin(
                 on_black=on_black, on_black_args=[2], on_done=on_done
             )
 
         # Left Door
-        if self.position.x <= -(self.application.room.width+3)*16:
+        if side == 3:
             self.locked = True
             self.application.transition.begin(
                 on_black=on_black, on_black_args=[3], on_done=on_done
             )
 
         # Top Door
-        if self.position.y >= (self.application.room.height+3)*16:
+        if side == 0:
             self.locked = True
             self.application.transition.begin(
                 on_black=on_black, on_black_args=[0], on_done=on_done
             )
 
         # Right Door
-        if self.position.x >= (self.application.room.width+3)*16:
+        if side == 1:
             self.locked = True
             self.application.transition.begin(
                 on_black=on_black, on_black_args=[1], on_done=on_done

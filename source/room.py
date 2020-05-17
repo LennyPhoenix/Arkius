@@ -56,35 +56,68 @@ class Room:
             self.width = c.ROOM_INFO[self.type]["default_dimensions"][0]
             self.height = c.ROOM_INFO[self.type]["default_dimensions"][1]
 
-        self.border_colliders = {}
-        self.border_colliders["top"] = pymunk.Segment(
-            self.space.static_body,
-            (-(self.width+3)*16, (self.height+4)*16),
-            ((self.width+4)*16, (self.height+4)*16),
-            1
-        )
+        self.border_colliders = {
+            "top": pymunk.Segment(
+                self.space.static_body,
+                (-(self.width+3)*16, (self.height+4)*16),
+                ((self.width+4)*16, (self.height+4)*16),
+                1
+            ),
+            "right": pymunk.Segment(
+                self.space.static_body,
+                ((self.width+4)*16, -(self.height+3)*16),
+                ((self.width+4)*16, (self.height+4)*16),
+                1
+            ),
+            "bottom": pymunk.Segment(
+                self.space.static_body,
+                (-(self.width+3)*16, -(self.height+3)*16),
+                ((self.width+4)*16, -(self.height+3)*16),
+                1
+            ),
+            "left": pymunk.Segment(
+                self.space.static_body,
+                (-(self.width+3)*16, -(self.height+3)*16),
+                (-(self.width+3)*16, (self.height+4)*16),
+                1
+            )
+        }
+        self.border_colliders[
+            "top"
+        ].collision_type = c.COLLISION_TYPES["room_border"]
+        self.border_colliders[
+            "right"
+        ].collision_type = c.COLLISION_TYPES["room_border"]
+        self.border_colliders[
+            "bottom"
+        ].collision_type = c.COLLISION_TYPES["room_border"]
+        self.border_colliders[
+            "left"
+        ].collision_type = c.COLLISION_TYPES["room_border"]
         self.space.add(self.border_colliders["top"])
-        self.border_colliders["right"] = pymunk.Segment(
-            self.space.static_body,
-            ((self.width+4)*16, -(self.height+3)*16),
-            ((self.width+4)*16, (self.height+4)*16),
-            1
-        )
         self.space.add(self.border_colliders["right"])
-        self.border_colliders["bottom"] = pymunk.Segment(
-            self.space.static_body,
-            (-(self.width+3)*16, -(self.height+3)*16),
-            ((self.width+4)*16, -(self.height+3)*16),
-            1
-        )
         self.space.add(self.border_colliders["bottom"])
-        self.border_colliders["left"] = pymunk.Segment(
-            self.space.static_body,
-            (-(self.width+3)*16, -(self.height+3)*16),
-            (-(self.width+3)*16, (self.height+4)*16),
-            1
-        )
         self.space.add(self.border_colliders["left"])
+
+        def begin(arbiter, space, data):
+            shapes = arbiter.shapes
+            player = shapes[0].body
+            border = shapes[1]
+
+            ids = {
+                self.border_colliders["top"]: 0,
+                self.border_colliders["right"]: 1,
+                self.border_colliders["bottom"]: 2,
+                self.border_colliders["left"]: 3
+            }
+            player.triggerDoor(ids[border])
+
+            return True
+
+        h = self.space.add_collision_handler(
+            c.COLLISION_TYPES["player"], c.COLLISION_TYPES["room_border"]
+        )
+        h.begin = begin
 
         self.base = tilemaps.create_blank(
             self.width,
