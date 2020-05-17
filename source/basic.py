@@ -13,6 +13,7 @@ class Basic(pymunk.Body):
         x, y,
         image, card_sprite=False,
         collider=None,
+        collision_type=0,
         body_type=pymunk.Body.STATIC,
         space=None
     ):
@@ -56,6 +57,7 @@ class Basic(pymunk.Body):
                     radius=collider["radius"],
                     offset=collider["offset"]
                 )
+            self.collider.collision_type = collision_type
             space.add(self, self.collider)
 
         if card_sprite:

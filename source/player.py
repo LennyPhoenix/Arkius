@@ -19,6 +19,7 @@ class Player(Basic):
             anim,
             card_sprite=True,
             collider=c.PLAYER_COLLIDER,
+            collision_type=c.COLLISION_TYPES["player"],
             body_type=pymunk.Body.DYNAMIC,
             space=application.world.map[self.room].space
         )

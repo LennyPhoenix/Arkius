@@ -52,6 +52,7 @@ class Tile(Basic):
             image,
             card_sprite=self.type == c.WALL,
             collider=collider,
+            collision_type=c.COLLISION_TYPES["tile"],
             space=self.room.space
         )
         layer = self.application.layers["world"][c.TILES[self.type]["layer"]]

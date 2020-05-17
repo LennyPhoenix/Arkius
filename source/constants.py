@@ -17,6 +17,15 @@ PLAYER_COLLIDER = {
     "offset": (8, 5)
 }
 
+# Collider Types
+COLLISION_TYPES = {
+    "player": 1,
+    "tile": 2,
+    "enemy": 3,
+    "room_border": 4,
+    "projectile": 5
+}
+
 # Styles
 TILESET_DIMENSIONS = (10, 5)
 HUB = 0
