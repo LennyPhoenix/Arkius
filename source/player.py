@@ -242,8 +242,6 @@ class Player(Basic):
                     self.room[0]-1, self.room[1]
                 )
                 self.application.room.visibility = True
-                self.position.x = (self.application.room.width+3)*16
-
                 if self.application.room.map_data is not None:
                     self.position = (
                         (self.application.room.width+2.5)*16,
