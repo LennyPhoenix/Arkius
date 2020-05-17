@@ -84,6 +84,8 @@ class CardSprite(event.EventDispatcher):
     _opacity = 255
     _rgb = (255, 255, 255)
     _scale = 1.0
+    _scale_x = 1.0
+    _scale_y = 1.0
     _visible = True
     _vertex_list = None
 
@@ -296,6 +298,8 @@ class CardSprite(event.EventDispatcher):
     def _update_position(self):
         img = self._texture
         scale = self._scale
+        scale_x = self._scale_x
+        scale_y = self._scale_y
         top_z = self._tilt
         if not self._visible:
             vertices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -318,11 +322,11 @@ class CardSprite(event.EventDispatcher):
             dx = x1 * cr - y2 * sr + x
             dy = x1 * sr + y2 * cr + y
             vertices = [ax, ay, 0, bx, by, 0, cx, cy, top_z, dx, dy, top_z]
-        elif scale != 1.0:
-            x1 = self._x - img.anchor_x * scale
-            y1 = self._y - img.anchor_y * scale
-            x2 = x1 + img.width * scale
-            y2 = y1 + img.height * scale
+        elif scale != 1.0 or scale_x != 1.0 or scale_y != 1.0:
+            x1 = self._x - img.anchor_x * scale * scale_x
+            y1 = self._y - img.anchor_y * scale * scale_y
+            x2 = x1 + img.width * scale * scale_x
+            y2 = y1 + img.height * scale * scale_y
             vertices = [x1, y1, 0, x2, y1, 0, x2, y2, top_z, x1, y2, top_z]
         else:
             x1 = self._x - img.anchor_x
@@ -431,6 +435,24 @@ class CardSprite(event.EventDispatcher):
     @scale.setter
     def scale(self, scale):
         self._scale = scale
+        self._update_position()
+
+    @property
+    def scale_x(self):
+        return self._scale_x
+
+    @scale_x.setter
+    def scale_x(self, scale_x):
+        self._scale_x = scale_x
+        self._update_position()
+
+    @property
+    def scale_y(self):
+        return self._scale_y
+
+    @scale_y.setter
+    def scale_y(self, scale_y):
+        self._scale_y = scale_y
         self._update_position()
 
     def update(self, x=None, y=None, rotation=None, scale=None):

@@ -5,6 +5,7 @@ from .cardsprite import CardSprite
 
 
 class Basic(pymunk.Body):
+    _flip = False
 
     def __init__(
         self,
@@ -73,7 +74,30 @@ class Basic(pymunk.Body):
             )
 
     def update(self, dt):
-        self.sprite.update(
-            x=self.position.x,
-            y=self.position.y,
-        )
+        self._update_sprite()
+
+    def _update_sprite(self):
+        if self.flip:
+            self.sprite.update(
+                x=self.position.x+self.sprite.width,
+                y=self.position.y,
+            )
+        else:
+            self.sprite.update(
+                x=self.position.x,
+                y=self.position.y
+            )
+
+    @property
+    def flip(self):
+        return self._flip
+
+    @flip.setter
+    def flip(self, flip):
+        if self._flip != flip:
+            if flip:
+                self.sprite.scale_x = -(abs(self.sprite.scale_x))
+            else:
+                self.sprite.scale_x = abs(self.sprite.scale_x)
+            self._flip = flip
+            self._update_sprite()

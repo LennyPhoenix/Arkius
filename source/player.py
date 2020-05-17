@@ -7,12 +7,12 @@ from .basic import Basic
 
 
 class Player(Basic):
-    _state = "idle_right"
+    _state = "idle"
 
     def __init__(self, application):
         self.room = (0, 0)
 
-        anim = application.resources["player"]["idle_right"]
+        anim = application.resources["player"]["idle"]
         super().__init__(
             application,
             0, 0,
@@ -29,9 +29,12 @@ class Player(Basic):
         self.dash_length = 0.25
         self.dash_multiplier = 6
         self.dash_cooldown = 0.15
+        self.dash_cooldown_timer = 0
 
         self.last_shadow = 0
         self.shadow_frequency = 1/50
+
+        self.locked = False
 
         self.vx, self.vy = 0, 0
 
@@ -45,11 +48,6 @@ class Player(Basic):
             if state in self.application.resources["player"].keys():
                 anim = self.application.resources["player"][state]
                 self.sprite.image = anim
-            elif state == "locked":
-                if self._state == "walk_right":
-                    self.state = "idle_right"
-                elif self._state == "walk_left":
-                    self.state = "idle_left"
             self._state = state
 
     def update(self, dt):
@@ -93,34 +91,31 @@ class Player(Basic):
             self.vx /= 2**0.5
             self.vy /= 2**0.5
 
-        if self.state == "locked":
+        if self.locked:
             return super().update(dt)
 
         if self.state == "dashing":
             if self.last_shadow >= self.shadow_frequency:
+                self.last_shadow = 0
                 shadow_image = self.sprite.image.frames[
                     self.sprite._frame_index
                 ].image
-                particle.Shadow(
+                shadow = particle.Shadow(
                     self.application,
                     self.position.x, self.position.y,
                     shadow_image,
                     0.25,
                     128
                 )
-                self.last_shadow = 0
+                shadow.flip = self.flip
             else:
                 self.last_shadow += dt
 
             self.dash_time += dt
             if self.dash_time >= self.dash_length:
+                self.dash_cooldown_timer = 0
                 self.dash_time = 0
-                if self.dash_vel.x > 0:
-                    self.state = "idle_right"
-                elif self.dash_vel.x < 0:
-                    self.state = "idle_left"
-                else:
-                    self.state = "idle_right"
+                self.state = "idle"
 
             self.apply_force_at_world_point(
                 self.dash_vel+pymunk.vec2d.Vec2d(self.vx, self.vy),
@@ -130,39 +125,22 @@ class Player(Basic):
             return super().update(dt)
 
         if (
-            controls["up"] ^
-            controls["down"]
+            (self.vx, self.vy) != (0, 0) and
+            self.state == "idle"
         ):
-            if self.state == "idle_left":
-                self.state = "walk_left"
-            elif self.state == "idle_right":
-                self.state = "walk_right"
-
-        if (
-            controls["left"] ^
-            controls["right"]
+            self.state = "walk"
+        elif (
+            (self.vx, self.vy) == (0, 0) and
+            self.state == "walk"
         ):
-            if controls["left"] and self.state != "walk_left":
-                self.state = "walk_left"
-            if controls["right"] and self.state != "walk_right":
-                self.state = "walk_right"
-
-        if not (
-            controls["up"] or
-            controls["down"] or
-            controls["left"] or
-            controls["right"]
-        ):
-            if self.state == "walk_left":
-                self.state = "idle_left"
-            elif self.state == "walk_right":
-                self.state = "idle_right"
+            self.state = "idle"
 
         if (
             controls["dash"] and
-            self.dash_time >= self.dash_cooldown
+            self.dash_cooldown_timer >= self.dash_cooldown
         ):
             if (self.vx, self.vy) != (0, 0):
+                self.dash_cooldown_timer = 0
                 self.dash_time = 0
                 self.dash_vel = pymunk.vec2d.Vec2d(
                     self.vx, self.vy)*self.dash_multiplier
@@ -170,17 +148,24 @@ class Player(Basic):
         elif (
             not controls["dash"]
         ):
-            self.dash_time += dt
+            self.dash_cooldown_timer += dt
 
         self.apply_force_at_local_point(
             pymunk.vec2d.Vec2d(self.vx, self.vy),
             (0, 0)
         )
+
+        if self.velocity.x < 0:
+            self.flip = True
+        elif self.velocity.x > 0:
+            self.flip = False
+
         self.checkDoors()
         super().update(dt)
 
     def checkDoors(self):
         def on_black(door):
+            self.state = "idle"
             while len(self.application.particles) > 0:
                 self.application.particles[0].destroy()
             self.application.room.visibility = False
@@ -307,36 +292,32 @@ class Player(Basic):
             self.door = None
 
         def on_done():
-            self.state = self.pre_locked
+            self.locked = False
 
         # Bottom Door
         if self.position.y <= -(self.application.room.height+3)*16:
-            self.pre_locked = str(self.state)
-            self.state = "locked"
+            self.locked = True
             self.application.transition.begin(
                 on_black=on_black, on_black_args=[2], on_done=on_done
             )
 
         # Left Door
         if self.position.x <= -(self.application.room.width+3)*16:
-            self.pre_locked = str(self.state)
-            self.state = "locked"
+            self.locked = True
             self.application.transition.begin(
                 on_black=on_black, on_black_args=[3], on_done=on_done
             )
 
         # Top Door
         if self.position.y >= (self.application.room.height+3)*16:
-            self.pre_locked = str(self.state)
-            self.state = "locked"
+            self.locked = True
             self.application.transition.begin(
                 on_black=on_black, on_black_args=[0], on_done=on_done
             )
 
         # Right Door
         if self.position.x >= (self.application.room.width+3)*16:
-            self.pre_locked = str(self.state)
-            self.state = "locked"
+            self.locked = True
             self.application.transition.begin(
                 on_black=on_black, on_black_args=[1], on_done=on_done
             )
