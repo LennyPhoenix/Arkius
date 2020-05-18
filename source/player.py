@@ -164,7 +164,6 @@ class Player(Basic):
 
     def triggerDoor(self, side):
         def on_black(door):
-            self.state = "idle"
             while len(self.application.particles) > 0:
                 self.application.particles[0].destroy()
             self.application.room.visibility = False
@@ -294,6 +293,7 @@ class Player(Basic):
         # Bottom Door
         if side == 2:
             self.locked = True
+            self.state = "idle"
             self.application.transition.begin(
                 on_black=on_black, on_black_args=[2], on_done=on_done
             )
@@ -301,6 +301,7 @@ class Player(Basic):
         # Left Door
         if side == 3:
             self.locked = True
+            self.state = "idle"
             self.application.transition.begin(
                 on_black=on_black, on_black_args=[3], on_done=on_done
             )
@@ -308,6 +309,7 @@ class Player(Basic):
         # Top Door
         if side == 0:
             self.locked = True
+            self.state = "idle"
             self.application.transition.begin(
                 on_black=on_black, on_black_args=[0], on_done=on_done
             )
@@ -315,6 +317,7 @@ class Player(Basic):
         # Right Door
         if side == 1:
             self.locked = True
+            self.state = "idle"
             self.application.transition.begin(
                 on_black=on_black, on_black_args=[1], on_done=on_done
             )
