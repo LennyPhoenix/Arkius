@@ -59,26 +59,26 @@ class Room:
         self.border_colliders = {
             "top": pymunk.Segment(
                 self.space.static_body,
-                (-(self.width+3)*16, (self.height+4)*16),
-                ((self.width+4)*16, (self.height+4)*16),
+                (-(self.width+3)*c.TILE_SIZE, (self.height+4)*c.TILE_SIZE),
+                ((self.width+4)*c.TILE_SIZE, (self.height+4)*c.TILE_SIZE),
                 1
             ),
             "right": pymunk.Segment(
                 self.space.static_body,
-                ((self.width+4)*16, -(self.height+3)*16),
-                ((self.width+4)*16, (self.height+4)*16),
+                ((self.width+4)*c.TILE_SIZE, -(self.height+3)*c.TILE_SIZE),
+                ((self.width+4)*c.TILE_SIZE, (self.height+4)*c.TILE_SIZE),
                 1
             ),
             "bottom": pymunk.Segment(
                 self.space.static_body,
-                (-(self.width+3)*16, -(self.height+3)*16),
-                ((self.width+4)*16, -(self.height+3)*16),
+                (-(self.width+3)*c.TILE_SIZE, -(self.height+3)*c.TILE_SIZE),
+                ((self.width+4)*c.TILE_SIZE, -(self.height+3)*c.TILE_SIZE),
                 1
             ),
             "left": pymunk.Segment(
                 self.space.static_body,
-                (-(self.width+3)*16, -(self.height+3)*16),
-                (-(self.width+3)*16, (self.height+4)*16),
+                (-(self.width+3)*c.TILE_SIZE, -(self.height+3)*c.TILE_SIZE),
+                (-(self.width+3)*c.TILE_SIZE, (self.height+4)*c.TILE_SIZE),
                 1
             )
         }

@@ -48,7 +48,7 @@ class Tile(Basic):
 
         super().__init__(
             application,
-            x*16, y*16,
+            x*c.TILE_SIZE, y*c.TILE_SIZE,
             image,
             card_sprite=self.type == c.WALL,
             collider=collider,

@@ -34,12 +34,13 @@ class Application:
         self.mouse_handler = mouse.MouseStateHandler()
 
         self.fps_display = pyglet.window.FPSDisplay(window=self.window)
-        self.zoom = 1
 
         self.world_camera = source.camera.Camera(0, 0, 1000)
         self.lock_to_player = False
         self.camera_movement_x = 0
         self.camera_movement_y = 0
+        self.zoom = 1
+
         self.world_batch = pyglet.graphics.Batch()
         self.ui_batch = pyglet.graphics.Batch()
 
@@ -297,7 +298,7 @@ class Application:
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT and self.debug_mode:
             world_x, world_y = self.screenToWorld(x, y)
-            self.player.position = (world_x-8, world_y)
+            self.player.position = (world_x-c.TILE_SIZE/2, world_y)
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.mouse_handler["x"] = x
@@ -326,13 +327,13 @@ class Application:
         return world_x, world_y
 
     def positionCamera(self, parallax=True, dt=1/60):
-        x = (-self.window.width//2 + 8)/self.world_camera.zoom
-        y = (-self.window.height//2 + 8)/self.world_camera.zoom
+        x = (-self.window.width//2 + c.TILE_SIZE/2)/self.world_camera.zoom
+        y = (-self.window.height//2 + c.TILE_SIZE/2)/self.world_camera.zoom
 
         if parallax:
             # Player Position
             if self.lock_to_player:
-                x += self.player.position.x+8
+                x += self.player.position.x + c.TILE_SIZE/2
                 y += self.player.position.y
             else:
                 x += (
