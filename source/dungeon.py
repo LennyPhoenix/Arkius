@@ -17,33 +17,34 @@ class Dungeon:
             self.config = c.DUNGEON_BASE
         self.size = self.config["size"]
 
+        self.generateMap()
         self.generateRooms()
         self.map[(0, 0)].visibility = True
         self.ui_map = Map(self.application, self)
 
-    def generateRooms(self):
-        gen_map = {}
+    def generateMap(self):
+        self.gen_map = {}
         neighbours = {
             (1, 0): (1, 3),
             (-1, 0): (3, 1),
             (0, -1): (2, 0),
             (0, 1): (0, 2)
         }
-        gen_map[(0, 0)] = {
+        self.gen_map[(0, 0)] = {
             "type": c.START_ROOM,
             "doors": {i: False for i in range(4)}
         }
         config = self.config.copy()
         while len(config["rooms"]) > 0:
             room_type = random.choice(list(config["rooms"].keys()))
-            pos = random.choice(list(gen_map.keys()))
+            pos = random.choice(list(self.gen_map.keys()))
             x, y = random.choice(list(neighbours.keys()))
             n_x, n_y = pos[0] + x, pos[1] + y
             doors = neighbours[(x, y)]
 
             if (
                 room_type in c.ROOM_INFO[
-                    gen_map[pos]["type"]
+                    self.gen_map[pos]["type"]
                 ]["dont_connect"]
             ):
                 continue
@@ -54,9 +55,9 @@ class Dungeon:
             ):
                 continue
 
-            if (n_x, n_y) not in gen_map.keys():
-                gen_map[pos]["doors"][doors[0]] = True
-                gen_map[(n_x, n_y)] = {
+            if (n_x, n_y) not in self.gen_map.keys():
+                self.gen_map[pos]["doors"][doors[0]] = True
+                self.gen_map[(n_x, n_y)] = {
                     "type": room_type,
                     "doors": {i: (i == doors[1]) for i in range(4)}
                 }
@@ -66,27 +67,28 @@ class Dungeon:
 
         planted = 0
         while planted < self.config["connections"]:
-            pos = random.choice(list(gen_map.keys()))
+            pos = random.choice(list(self.gen_map.keys()))
             x, y = random.choice(list(neighbours.keys()))
             n_x, n_y = pos[0] + x, pos[1] + y
             doors = neighbours[(x, y)]
 
-            if (n_x, n_y) in gen_map.keys():
+            if (n_x, n_y) in self.gen_map.keys():
                 if (
-                    gen_map[pos]["type"] in c.ROOM_INFO[
-                        gen_map[(n_x, n_y)]["type"]
+                    self.gen_map[pos]["type"] in c.ROOM_INFO[
+                        self.gen_map[(n_x, n_y)]["type"]
                     ]["dont_connect"] or
-                    gen_map[(n_x, n_y)]["type"] in c.ROOM_INFO[
-                        gen_map[pos]["type"]
+                    self.gen_map[(n_x, n_y)]["type"] in c.ROOM_INFO[
+                        self.gen_map[pos]["type"]
                     ]["dont_connect"]
                 ):
                     continue
 
-                gen_map[pos]["doors"][doors[0]] = True
-                gen_map[(n_x, n_y)]["doors"][doors[1]] = True
+                self.gen_map[pos]["doors"][doors[0]] = True
+                self.gen_map[(n_x, n_y)]["doors"][doors[1]] = True
                 planted += 1
 
-        for pos, data in gen_map.items():
+    def generateRooms(self):
+        for pos, data in self.gen_map.items():
             self.map[pos] = Room(
                 self.application,
                 room_type=data["type"],
