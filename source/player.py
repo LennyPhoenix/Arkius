@@ -189,12 +189,12 @@ class Player(Basic):
                         self.application.room.map_data[
                             "door_info"
                         ][2]["pos"]*c.TILE_SIZE,
-                        -(self.application.room.height+2.5)*c.TILE_SIZE
+                        -(self.application.room.height+2)*c.TILE_SIZE
                     )
                 else:
                     self.position = (
                         0 + offset,
-                        -(self.application.room.height+2.5)*c.TILE_SIZE
+                        -(self.application.room.height+2)*c.TILE_SIZE
                     )
             elif door == 1:  # Right
                 if self.application.room.map_data is not None:
@@ -212,7 +212,7 @@ class Player(Basic):
                 self.application.room.visibility = True
                 if self.application.room.map_data is not None:
                     self.position = (
-                        -(self.application.room.width+2.5)*c.TILE_SIZE,
+                        -(self.application.room.width+2)*c.TILE_SIZE,
                         (
                             offset +
                             self.application.room.map_data[
@@ -222,7 +222,7 @@ class Player(Basic):
                     )
                 else:
                     self.position = (
-                        -(self.application.room.width+2.5)*c.TILE_SIZE,
+                        -(self.application.room.width+2)*c.TILE_SIZE,
                         offset + 0
                     )
             elif door == 3:  # Left
@@ -242,7 +242,7 @@ class Player(Basic):
                 self.application.room.visibility = True
                 if self.application.room.map_data is not None:
                     self.position = (
-                        (self.application.room.width+2.5)*c.TILE_SIZE,
+                        (self.application.room.width+2)*c.TILE_SIZE,
                         (
                             offset +
                             self.application.room.map_data[
@@ -252,7 +252,7 @@ class Player(Basic):
                     )
                 else:
                     self.position = (
-                        (self.application.room.width+2.5)*c.TILE_SIZE,
+                        (self.application.room.width+2)*c.TILE_SIZE,
                         offset + 0
                     )
             elif door == 2:  # Bottom
@@ -276,12 +276,12 @@ class Player(Basic):
                         self.application.room.map_data[
                             "door_info"
                         ][0]["pos"]*c.TILE_SIZE,
-                        (self.application.room.height+2.5)*c.TILE_SIZE
+                        (self.application.room.height+2)*c.TILE_SIZE
                     )
                 else:
                     self.position = (
                         0 + offset,
-                        (self.application.room.height+2.5)*c.TILE_SIZE
+                        (self.application.room.height+2)*c.TILE_SIZE
                     )
             self.application.room.space.add(self, self.collider)
             self.application.world.ui_map.discover(self.room)
