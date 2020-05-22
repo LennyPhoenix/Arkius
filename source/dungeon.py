@@ -108,3 +108,5 @@ class Dungeon:
             room = self.map[pos]
             room.delete()
         self.map = None
+        self.ui_map.delete()
+        self.ui_map = None

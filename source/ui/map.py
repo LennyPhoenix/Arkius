@@ -149,3 +149,12 @@ class Map:
 
     def on_resize(self, width, height):
         self.update_position()
+
+    def delete(self):
+        self.map_window.delete()
+        for pos in self.map_rooms.keys():
+            self.map_rooms[pos]["icon"].delete()
+            self.map_rooms[pos]["sprite"].delete()
+
+            self.map_rooms[pos]["icon"] = None
+            self.map_rooms[pos]["sprite"] = None
