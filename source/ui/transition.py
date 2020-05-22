@@ -8,9 +8,6 @@ class Transition:
     def __init__(self, application):
         self.application = application
 
-        self.player = None
-        self.door = None
-
         self.on_black = None
         self.on_black_args = None
         self.on_done = None
