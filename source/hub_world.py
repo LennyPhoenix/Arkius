@@ -1,3 +1,5 @@
+import copy
+
 from . import constants as c
 from .room import Room
 from .ui.map import Map

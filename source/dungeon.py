@@ -1,3 +1,4 @@
+import copy
 import random
 
 from . import constants as c
@@ -11,10 +12,10 @@ class Dungeon:
         self.application = application
         self.style = style
         self.map = {}
-        self.config = config
 
-        if self.config is None:
-            self.config = c.DUNGEON_BASE
+        if config is None:
+            config = c.DUNGEON_BASE
+        self.config = copy.deepcopy(config)
         self.size = self.config["size"]
 
         self.generateMap()
@@ -35,7 +36,8 @@ class Dungeon:
             "type": c.START_ROOM,
             "doors": {i: False for i in range(4)}
         }
-        config = self.config.copy()
+
+        config = copy.deepcopy(self.config)
         while len(config["rooms"]) > 0:
             room_type = random.choice(list(config["rooms"].keys()))
             pos = random.choice(list(self.gen_map.keys()))

@@ -1,3 +1,4 @@
+import copy
 import random
 
 import pymunk
@@ -48,7 +49,7 @@ class Room:
         self.map_data = random.choice(self.config["maps"])
 
         if self.map_data is not None:
-            self.map_data = self.map_data.copy()
+            self.map_data = copy.deepcopy(self.map_data)
             self.width = self.map_data["width"]
             self.height = self.map_data["height"]
         else:
@@ -161,7 +162,7 @@ class Room:
         active_doors = [key for key, value in self.doors.items() if value]
         possible = False
         while not possible:
-            self.tilemap = self.base.copy()
+            self.tilemap = copy.deepcopy(self.base)
             self.tilemap = tilemaps.generate(
                 self.type,
                 self.tilemap,

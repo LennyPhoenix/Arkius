@@ -1,3 +1,4 @@
+import copy
 import random
 
 from . import constants as c
@@ -133,7 +134,7 @@ def create_blank(width=7, height=7, tile_type=c.FLOOR):
 
 
 def generate(room_type, room_map, tile_options, map_data):
-    pre_generation = room_map.copy()
+    pre_generation = copy.deepcopy(room_map)
 
     if map_data is not None:
         width = map_data["width"]
@@ -215,7 +216,7 @@ def generate(room_type, room_map, tile_options, map_data):
             seeded < options["seed_amount"] and
             tries < 50
         ):
-            old_map = room_map.copy()
+            old_map = copy.deepcopy(room_map)
 
             horizontal = random.choice([True, False])
             if horizontal:
