@@ -359,6 +359,5 @@ class Room:
 
     def delete(self):
         for pos in self.tiles.keys():
-            tile = self.tiles[pos]
-            tile.sprite.delete()
-        self.tiles = None
+            self.tiles[pos].sprite.delete()
+        del self.tiles

@@ -155,6 +155,4 @@ class Map:
         for pos in self.map_rooms.keys():
             self.map_rooms[pos]["icon"].delete()
             self.map_rooms[pos]["sprite"].delete()
-
-            self.map_rooms[pos]["icon"] = None
-            self.map_rooms[pos]["sprite"] = None
+        del self.map_rooms

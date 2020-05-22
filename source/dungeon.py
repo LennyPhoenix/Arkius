@@ -107,6 +107,6 @@ class Dungeon:
         for pos in self.map.keys():
             room = self.map[pos]
             room.delete()
-        self.map = None
         self.ui_map.delete()
-        self.ui_map = None
+        del self.map
+        del self.ui_map
