@@ -19,6 +19,7 @@ class Dungeon:
 
         self.generateMap()
         self.generateRooms()
+        self.generateTiles()
         self.map[(0, 0)].visibility = True
         self.ui_map = Map(self.application, self)
 
@@ -95,6 +96,10 @@ class Dungeon:
                 style=self.style,
                 doors=data["doors"]
             )
+
+    def generateTiles(self):
+        for pos, room in self.map.items():
+            self.map[pos].createSprites()
 
     def delete(self):
         for pos in self.map.keys():

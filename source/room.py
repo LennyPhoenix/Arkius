@@ -268,8 +268,6 @@ class Room:
             else:
                 possible = True
 
-        self.createSprites()
-
     def createSprites(self):
         for x in range(-(self.width+3), self.width+4):
             for y in range(-(self.height+3), self.height+4):
