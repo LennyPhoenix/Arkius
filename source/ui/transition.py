@@ -2,10 +2,11 @@ import pyglet
 
 
 class Transition:
+    _visible = False
+    _state = "empty"
+
     def __init__(self, application):
         self.application = application
-        self._visible = False
-        self._state = "fade_in"
 
         self.player = None
         self.door = None
