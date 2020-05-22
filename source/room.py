@@ -358,6 +358,12 @@ class Room:
         self._visible = visible
 
     def delete(self):
+        self.space.remove(
+            *self.space.bodies,
+            *self.space.shapes
+        )
+        del self.space
         for pos in self.tiles.keys():
+            self.tiles[pos].unload()
             self.tiles[pos].sprite.delete()
         del self.tiles

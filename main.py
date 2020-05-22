@@ -47,15 +47,13 @@ class Application:
         self.particles = []
         self.handlers = []
 
-        self.pushHandler(self)
-        self.pushHandler(self.key_handler)
-        self.pushHandler(self.mouse_handler)
+        self.pushHandlers(self, self.key_handler, self.mouse_handler)
 
         self.createLayers()
         self.loadResources()
 
         self.transition = source.ui.transition.Transition(self)
-        self.world = source.hub_world.HubWorld(self)
+        self.world = source.dungeon.Dungeon(self, c.HUB)
         self.player = source.player.Player(self)
 
     def createLayers(self):
@@ -294,6 +292,21 @@ class Application:
             self.debug_mode = not self.debug_mode
         elif symbol == key.F5:
             self.lock_to_player = not self.lock_to_player
+        elif symbol == key.F1:
+            def on_black():
+                style = self.world.style
+                style += 1
+                if style > c.VOLCANO:
+                    style = c.HUB
+
+                self.world.delete()
+                del self.world
+                self.world = source.dungeon.Dungeon(self, style)
+                self.player.room = (0, 0)
+                self.player.position = (0, 0)
+                self.room.space.add(self.player, self.player.collider)
+
+            self.transition.begin(on_black=on_black)
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT and self.debug_mode:
@@ -388,9 +401,16 @@ class Application:
 
         self.world_camera.position = (x, y)
 
-    def pushHandler(self, handler):
-        self.handlers.append(handler)
-        self.window.push_handlers(handler)
+    def pushHandlers(self, *handlers):
+        for handler in handlers:
+            self.handlers.append(handler)
+            self.window.push_handlers(handler)
+
+    def removeHandlers(self, *handlers):
+        for handler in handlers:
+            if handler in self.handlers:
+                self.handlers.remove(handler)
+            self.window.remove_handlers(handler)
 
     @property
     def room(self):

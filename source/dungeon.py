@@ -69,7 +69,7 @@ class Dungeon:
                     del config["rooms"][room_type]
 
         planted = 0
-        while planted < self.config["connections"]:
+        while planted < config["connections"]:
             pos = random.choice(list(self.gen_map.keys()))
             x, y = random.choice(list(neighbours.keys()))
             n_x, n_y = pos[0] + x, pos[1] + y
