@@ -27,8 +27,7 @@ class Room:
         self.config = room_config
 
         self.space = pymunk.Space(threaded=True)
-        self.space.damping = 1/10**999
-        self.space.collision_slop = 0.4
+        self.space.damping = 0
 
         if self.style is None:
             self.style = self.application.world.style
