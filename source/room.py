@@ -8,6 +8,7 @@ from .tile import Tile
 
 
 class Room:
+    _visible = False
 
     def __init__(
         self,
@@ -22,7 +23,6 @@ class Room:
         self.tilemap = {}
         self.tiles = {}
         self.cleared = self.type == c.START_ROOM
-        self._visible = False
         self.style = style
         self.config = room_config
 
