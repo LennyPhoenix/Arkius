@@ -36,6 +36,7 @@ STYLES = [HUB, ICE, VOLCANO]
 
 # Tile Types
 TILE_SIZE = 16
+VOID = -1
 FLOOR = 0
 WALL = 1
 PIT = 2

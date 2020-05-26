@@ -10,7 +10,7 @@ def toMap(matrix):
     tilemap = {}
     for y in range(len(matrix)):
         for x in range(len(matrix[y])):
-            if matrix[y][x] != c.FLOOR:
+            if matrix[y][x] != c.VOID:
                 tilemap[(-width+x, height-y)] = matrix[y][x]
     return tilemap
 
