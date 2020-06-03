@@ -4,7 +4,7 @@ import random
 from . import constants as c
 
 
-def toMap(matrix):
+def to_map(matrix):
     height = len(matrix)//2
     width = len(matrix[0])//2
     tilemap = {}

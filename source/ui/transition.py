@@ -22,7 +22,7 @@ class Transition:
         )
         self.update_position()
 
-        self.application.pushHandlers(self)
+        self.application.push_handlers(self)
         self.sprite.push_handlers(self)
 
     def begin(

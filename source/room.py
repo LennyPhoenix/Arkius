@@ -134,7 +134,7 @@ class Room:
                 self.border_colliders["bottom"]: 2,
                 self.border_colliders["left"]: 3
             }
-            player.triggerDoor(ids[border])
+            player.trigger_door(ids[border])
 
             return True
 
@@ -152,7 +152,7 @@ class Room:
             self.map_data is not None and
             self.map_data["matrix"] is not None
         ):
-            self.base.update(tilemaps.toMap(self.map_data["matrix"]))
+            self.base.update(tilemaps.to_map(self.map_data["matrix"]))
             for i in range(4):
                 if type(self.map_data["door_info"][i]["pos"]) is tuple:
                     self.map_data["door_info"][i]["pos"] = random.randint(
@@ -269,7 +269,7 @@ class Room:
             else:
                 possible = True
 
-    def createSprites(self):
+    def create_sprites(self):
         for x in range(-(self.width+3), self.width+4):
             for y in range(-(self.height+3), self.height+4):
                 if (x, y) in self.tilemap.keys():
@@ -280,7 +280,7 @@ class Room:
                     )
                     self.tiles[(x, y)] = tile
 
-    def getImageIndex(self, x, y):
+    def get_image_index(self, x, y):
         tilemap = self.tilemap
         tileID = tilemap[(x, y)]
         value = 0

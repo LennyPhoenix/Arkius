@@ -54,7 +54,7 @@ class Map:
 
         self.update_position()
         self.discover((0, 0))
-        self.application.pushHandlers(self)
+        self.application.push_handlers(self)
 
     def update_position(self):
         scale = min(
@@ -151,7 +151,7 @@ class Map:
         self.update_position()
 
     def delete(self):
-        self.application.removeHandlers(self)
+        self.application.remove_handlers(self)
         self.map_window.delete()
         for pos in self.map_rooms.keys():
             self.map_rooms[pos]["icon"].delete()

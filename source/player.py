@@ -162,7 +162,7 @@ class Player(Basic):
 
         super().update(dt)
 
-    def triggerDoor(self, side):
+    def trigger_door(self, side):
         def on_black(door):
             while len(self.application.particles) > 0:
                 self.application.particles[0].destroy()

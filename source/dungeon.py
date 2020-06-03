@@ -18,13 +18,13 @@ class Dungeon:
         self.config = copy.deepcopy(config)
         self.size = self.config["size"]
 
-        self.generateMap()
-        self.generateRooms()
-        self.generateTiles()
+        self.generate_map()
+        self.generate_rooms()
+        self.generate_tiles()
         self.map[(0, 0)].visibility = True
         self.ui_map = Map(self.application, self)
 
-    def generateMap(self):
+    def generate_map(self):
         self.gen_map = {}
         neighbours = {
             (1, 0): (1, 3),
@@ -90,7 +90,7 @@ class Dungeon:
                 self.gen_map[(n_x, n_y)]["doors"][doors[1]] = True
                 planted += 1
 
-    def generateRooms(self):
+    def generate_rooms(self):
         for pos, data in self.gen_map.items():
             self.map[pos] = Room(
                 self.application,
@@ -99,9 +99,9 @@ class Dungeon:
                 doors=data["doors"]
             )
 
-    def generateTiles(self):
+    def generate_tiles(self):
         for pos, room in self.map.items():
-            self.map[pos].createSprites()
+            self.map[pos].create_sprites()
 
     def delete(self):
         for pos in self.map.keys():

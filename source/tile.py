@@ -24,7 +24,7 @@ class Tile(Basic):
                 ]
             )
         else:
-            index = self.room.getImageIndex(x, y)
+            index = self.room.get_image_index(x, y)
             image = application.resources[
                 "tiles"
             ][

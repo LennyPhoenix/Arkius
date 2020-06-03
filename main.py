@@ -47,16 +47,17 @@ class Application:
         self.particles = []
         self.handlers = []
 
-        self.pushHandlers(self, self.key_handler, self.mouse_handler)
+        self.push_handlers(self, self.key_handler, self.mouse_handler)
 
-        self.createLayers()
-        self.loadResources()
+        self.create_layers()
+        self.load_resources()
 
         self.transition = source.ui.transition.Transition(self)
+        # self.world = source.hub_world.HubWorld(self)
         self.world = source.dungeon.Dungeon(self, c.HUB)
         self.player = source.player.Player(self)
 
-    def createLayers(self):
+    def create_layers(self):
         self.layers = {}
 
         world = {}
@@ -79,7 +80,7 @@ class Application:
         ui["map_icons"] = pyglet.graphics.OrderedGroup(4)
         self.layers["ui"] = ui
 
-    def loadResources(self):
+    def load_resources(self):
         self.resources = {}
 
         tiles = {}
@@ -185,14 +186,15 @@ class Application:
         )
         with open("resources/sprites/player.json", "r") as f:
             data = json.load(f)
-        self.resources["player"] = self.loadAnimation(image, data)
+        self.resources["player"] = self.load_animation(image, data)
 
         image = pyglet.resource.image(
             "resources/tilesets/2/particles/bubble.png"
         )
         with open("resources/tilesets/2/particles/bubble.json", "r") as f:
             data = json.load(f)
-        self.resources["lava_bubble"] = self.loadAnimation(image, data)["main"]
+        anim = self.load_animation(image, data)
+        self.resources["lava_bubble"] = anim["main"]
 
         ui = {}
 
@@ -220,11 +222,11 @@ class Application:
         image = pyglet.resource.image("resources/transition.png")
         with open("resources/transition.json", "r") as f:
             data = json.load(f)
-        ui["transition"] = self.loadAnimation(image, data)
+        ui["transition"] = self.load_animation(image, data)
 
         self.resources["ui"] = ui
 
-    def loadAnimation(self, image, data):
+    def load_animation(self, image, data):
         sprite_sheet = pyglet.image.ImageGrid(
             image,
             len(data["animations"]),
@@ -269,7 +271,7 @@ class Application:
             else:
                 self.world_camera.zoom = round(zoom*4)/4
 
-        self.positionCamera(dt=dt)
+        self.position_camera(dt=dt)
         self.player.update(dt)
 
     def on_draw(self):
@@ -310,7 +312,7 @@ class Application:
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT and self.debug_mode:
-            world_x, world_y = self.screenToWorld(x, y)
+            world_x, world_y = self.screen_to_world(x, y)
             self.player.position = (world_x-c.TILE_SIZE/2, world_y)
 
     def on_mouse_motion(self, x, y, dx, dy):
@@ -327,7 +329,7 @@ class Application:
         else:
             self.world_camera.zoom = round(zoom*4)/4
 
-    def screenToWorld(self, x, y):
+    def screen_to_world(self, x, y):
         world_x = (
             (x+self.world_camera.offset_x*self.world_camera.zoom) /
             self.world_camera.zoom
@@ -339,7 +341,7 @@ class Application:
 
         return world_x, world_y
 
-    def positionCamera(self, parallax=True, dt=1/60):
+    def position_camera(self, parallax=True, dt=1/60):
         x = (-self.window.width//2 + c.TILE_SIZE/2)/self.world_camera.zoom
         y = (-self.window.height//2 + c.TILE_SIZE/2)/self.world_camera.zoom
 
@@ -399,12 +401,12 @@ class Application:
 
         self.world_camera.position = (x, y)
 
-    def pushHandlers(self, *handlers):
+    def push_handlers(self, *handlers):
         for handler in handlers:
             self.handlers.append(handler)
             self.window.push_handlers(handler)
 
-    def removeHandlers(self, *handlers):
+    def remove_handlers(self, *handlers):
         for handler in handlers:
             if handler in self.handlers:
                 self.handlers.remove(handler)
@@ -465,7 +467,7 @@ class Application:
             self.window.set_location(*self._pre_borderless_location)
             self.window.set_size(*self._pre_borderless_size)
 
-        self.positionCamera(parallax=False)
+        self.position_camera(parallax=False)
         self._borderless = borderless
 
     def run(self):
