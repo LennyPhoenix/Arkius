@@ -102,7 +102,7 @@ TILES = {
             "width": 16,
             "height": 16,
             "connective": True,
-            "connects": [WALL, PAVEMENT]
+            "connects": [PAVEMENT]
         },
         "collider": None,
         "layer": "ground"
