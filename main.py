@@ -389,12 +389,10 @@ class Application:
             y += self.camera_movement_y/(200/(self.room.height/c.PARALLAX_Y))
 
             # Mouse Position
-            m_x, m_y = self.screenToWorld(
-                self.mouse_handler["x"],
-                self.mouse_handler["y"]
-            )
-            x += m_x/16
-            y += m_y/16
+            m_x = self.mouse_handler["x"] - self.window.width//2
+            m_y = self.mouse_handler["y"] - self.window.height//2
+            x += m_x/self.world_camera.zoom/16
+            y += m_y/self.world_camera.zoom/16
 
         x = round(x)
         y = round(y)
