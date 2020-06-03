@@ -46,6 +46,7 @@ class Application:
 
         self.particles = []
         self.handlers = []
+        self.trigger_ids = []
 
         self.push_handlers(self, self.key_handler, self.mouse_handler)
 
