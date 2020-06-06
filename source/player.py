@@ -65,6 +65,8 @@ class Player(Basic):
 
         self.application.room.visibility = True
         self.application.room.space.add(self, self.collider)
+        self.application.world.ui_map.discover(self.room)
+        self.application.world.ui_map.player_location = self.room
 
     def update(self, dt):
         controls = {
@@ -179,12 +181,7 @@ class Player(Basic):
 
     def trigger_door(self, side):
         def on_black(door):
-            while len(self.application.particles) > 0:
-                self.application.particles[0].destroy()
-            self.application.room.visibility = False
-            self.application.room.space.remove(self, self.collider)
             if door == 0:  # Top
-                self.application.room.visibility = False
                 if self.application.room.map_data is not None:
                     offset = (
                         self.position.x -
@@ -197,7 +194,6 @@ class Player(Basic):
                 self.room = (
                     self.room[0], self.room[1]+1
                 )
-                self.application.room.visibility = True
                 if self.application.room.map_data is not None:
                     self.position = (
                         offset +
@@ -224,7 +220,6 @@ class Player(Basic):
                 self.room = (
                     self.room[0]+1, self.room[1]
                 )
-                self.application.room.visibility = True
                 if self.application.room.map_data is not None:
                     self.position = (
                         -(self.application.room.width+2)*c.TILE_SIZE,
@@ -241,7 +236,6 @@ class Player(Basic):
                         offset + 0
                     )
             elif door == 3:  # Left
-                self.application.room.visibility = False
                 if self.application.room.map_data is not None:
                     offset = (
                         self.position.y -
@@ -254,7 +248,6 @@ class Player(Basic):
                 self.room = (
                     self.room[0]-1, self.room[1]
                 )
-                self.application.room.visibility = True
                 if self.application.room.map_data is not None:
                     self.position = (
                         (self.application.room.width+2)*c.TILE_SIZE,
@@ -271,7 +264,6 @@ class Player(Basic):
                         offset + 0
                     )
             elif door == 2:  # Bottom
-                self.application.room.visibility = False
                 if self.application.room.map_data is not None:
                     offset = (
                         self.position.x -
@@ -284,7 +276,6 @@ class Player(Basic):
                 self.room = (
                     self.room[0], self.room[1]-1
                 )
-                self.application.room.visibility = True
                 if self.application.room.map_data is not None:
                     self.position = (
                         offset +
@@ -298,9 +289,6 @@ class Player(Basic):
                         0 + offset,
                         (self.application.room.height+2)*c.TILE_SIZE
                     )
-            self.application.room.space.add(self, self.collider)
-            self.application.world.ui_map.discover(self.room)
-            self.application.world.ui_map.player_location = self.room
             self.door = None
 
         def on_done():
