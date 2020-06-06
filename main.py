@@ -183,7 +183,16 @@ class Application:
         )
         with open("resources/sprites/player.json", "r") as f:
             data = json.load(f)
-        self.resources["player"] = self.load_animation(image, data)
+        anim = self.load_animation(image, data)
+        self.resources["player"] = anim
+
+        image = pyglet.resource.image(
+            "resources/sprites/portal_platform.png"
+        )
+        with open("resources/sprites/portal_platform.json", "r") as f:
+            data = json.load(f)
+        anim = self.load_animation(image, data)
+        self.resources["portal_platform"] = anim
 
         image = pyglet.resource.image(
             "resources/tilesets/2/particles/bubble.png"
