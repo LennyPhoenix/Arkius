@@ -5,6 +5,8 @@ from .. import constants as c
 
 
 class Map:
+    _player_location = (0, 0)
+
     def __init__(self, application, world, discover=False):
         self.application = application
         self.world = world
@@ -54,6 +56,7 @@ class Map:
 
         self.update_position()
         self.discover((0, 0))
+        self.player_location = (0, 0)
         self.application.push_handlers(self)
 
     def update_position(self):
@@ -121,11 +124,15 @@ class Map:
             (0, -1): 2,
             (0, 1): 0
         }
-        image = self.application.resources["ui"]["map"]["rooms"][(
-            0, self.map_rooms[pos]["room"].door_value
-        )]
+        if self.map_rooms[pos]["visited"]:
+            image = self.application.resources["ui"]["map"]["rooms"][(
+                1, self.map_rooms[pos]["room"].door_value
+            )]
+        else:
+            image = self.application.resources["ui"]["map"]["rooms"][(
+                2, self.map_rooms[pos]["room"].door_value
+            )]
         self.map_rooms[pos]["sprite"].image = image
-        self.map_rooms[pos]["visited"] = True
         self.map_rooms[pos]["icon"].visible = True
 
         for (x, y), door in neighbours.items():
@@ -149,6 +156,26 @@ class Map:
 
     def on_resize(self, width, height):
         self.update_position()
+
+    @property
+    def player_location(self):
+        return self._player_location
+
+    @player_location.setter
+    def player_location(self, player_location):
+        image = self.application.resources["ui"]["map"]["rooms"][(
+            1, self.map_rooms[self.player_location]["room"].door_value
+        )]
+        self.map_rooms[self.player_location]["sprite"].image = image
+
+        image = self.application.resources["ui"]["map"]["rooms"][(
+            0, self.map_rooms[player_location]["room"].door_value
+        )]
+        self.map_rooms[player_location]["sprite"].image = image
+        self.map_rooms[player_location]["visited"] = True
+        self.map_rooms[player_location]["icon"].visible = True
+
+        self._player_location = player_location
 
     def delete(self):
         self.application.remove_handlers(self)
