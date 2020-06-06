@@ -8,10 +8,9 @@ from .basic import Basic
 
 class Player(Basic):
     _state = "idle"
+    _room = (0, 0)
 
     def __init__(self, application):
-        self.room = (0, 0)
-
         anim = application.resources["player"]["idle"]
         super().__init__(
             application,
@@ -50,6 +49,22 @@ class Player(Basic):
                 anim = self.application.resources["player"][state]
                 self.sprite.image = anim
             self._state = state
+
+    @property
+    def room(self):
+        return self._room
+
+    @room.setter
+    def room(self, room):
+        while len(self.application.particles) > 0:
+            self.application.particles[0].destroy()
+        self.application.room.visibility = False
+        self.application.room.space.remove(self, self.collider)
+
+        self._room = room
+
+        self.application.room.visibility = True
+        self.application.room.space.add(self, self.collider)
 
     def update(self, dt):
         controls = {
