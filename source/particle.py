@@ -6,7 +6,7 @@ from .basic import Basic
 class Particle(Basic):
     def __init__(self, application, x, y, image, card_sprite=False):
         super().__init__(application, x, y, image, card_sprite=card_sprite)
-        self.sprite.group = self.application.layers["world"]["particles"]
+        self.sprite.group = self.application.layers["world"]["g_particles"]
         self.application.particles.append(self)
 
     def destroy(self):
@@ -52,7 +52,7 @@ class Shadow(TimedParticle):
             update=1/30,
             card_sprite=True
         )
-        self.sprite.group = self.application.layers["world"]["y_ordered"]
+        self.sprite.group = self.application.layers["world"]["a_particles"]
         self.initial_opacity = initial_opacity
         self.opacity_step = self.initial_opacity/self.lifetime
         self.sprite.opacity = self.initial_opacity

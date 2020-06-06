@@ -63,22 +63,18 @@ class Application:
 
         world = {}
         world["master"] = pyglet.graphics.Group()
-        world["ground"] = pyglet.graphics.OrderedGroup(
-            1, world["master"]
-        )
-        world["particles"] = pyglet.graphics.OrderedGroup(
-            2, world["master"]
-        )
-        world["y_ordered"] = pyglet.graphics.OrderedGroup(
-            3, world["master"]
-        )
+        for layer in c.WORLD_LAYERS:
+            world[layer] = pyglet.graphics.OrderedGroup(
+                c.WORLD_LAYERS.index(layer)+1, world["master"]
+            )
         self.layers["world"] = world
 
         ui = {}
-        ui["transition"] = pyglet.graphics.OrderedGroup(1)
-        ui["map_window"] = pyglet.graphics.OrderedGroup(2)
-        ui["map_rooms"] = pyglet.graphics.OrderedGroup(3)
-        ui["map_icons"] = pyglet.graphics.OrderedGroup(4)
+        ui["master"] = pyglet.graphics.Group()
+        for layer in c.UI_LAYERS:
+            ui[layer] = pyglet.graphics.OrderedGroup(
+                c.UI_LAYERS.index(layer)+1, ui["master"]
+            )
         self.layers["ui"] = ui
 
     def load_resources(self):

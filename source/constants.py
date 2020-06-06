@@ -9,6 +9,20 @@ PARALLAX_X = 70
 PARALLAX_Y = 15
 DEFAULT_WORLD_SIZE = 3
 
+WORLD_LAYERS = [
+    "ground",
+    "g_deco",
+    "g_particles",
+    "y_ordered",
+    "a_particles"
+]
+UI_LAYERS = [
+    "transition",
+    "map_window",
+    "map_rooms",
+    "map_icons",
+]
+
 # Player
 PLAYER_SPEED = 3200
 PLAYER_COLLIDER = {
