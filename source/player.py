@@ -285,6 +285,7 @@ class Player(Basic):
                     )
             self.application.room.space.add(self, self.collider)
             self.application.world.ui_map.discover(self.room)
+            self.application.world.ui_map.player_location = self.room
             self.door = None
 
         def on_done():
