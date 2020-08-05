@@ -1,3 +1,4 @@
 pip
 pyglet
 pymunk
+git+https://github.com/DoAltPlusF4/Jank-Engine.git
