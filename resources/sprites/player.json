@@ -1,0 +1,16 @@
+{
+    "animations": [
+        {
+            "alias": "idle",
+            "length": 2,
+            "frame_length": 0.5,
+            "loop": true
+        },
+        {
+            "alias": "walk",
+            "length": 4,
+            "frame_length": 0.1,
+            "loop": true
+        }
+    ]
+}

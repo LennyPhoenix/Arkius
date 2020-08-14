@@ -1,0 +1,10 @@
+{
+    "animations": [
+        {
+            "alias": "main",
+            "length": 16,
+            "frame_length": 0.35,
+            "loop": true
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+{
+    "animations": [
+        {
+            "alias": "fade_in",
+            "length": 9,
+            "frame_length": 0.02,
+            "loop": false
+        },
+        {
+            "alias": "black",
+            "length": 2,
+            "frame_length": 0.025,
+            "loop": false
+        },
+        {
+            "alias": "fade_out",
+            "length": 9,
+            "frame_length": 0.02,
+            "loop": false
+        },
+        {
+            "alias": "empty",
+            "length": 2,
+            "frame_length": 0.025,
+            "loop": false
+        }
+    ]
+}

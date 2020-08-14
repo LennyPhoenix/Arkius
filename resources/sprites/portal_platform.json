@@ -1,0 +1,16 @@
+{
+    "animations": [
+        {
+            "alias": "no_neon",
+            "length": 1,
+            "frame_length": 0,
+            "loop": false
+        },
+        {
+            "alias": "neon",
+            "length": 16,
+            "frame_length": 0.35,
+            "loop": true
+        }
+    ]
+}
