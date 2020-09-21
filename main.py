@@ -10,32 +10,29 @@ class Application(jank.Application):
 
     def __init__(self):
         config = source.Config()
-        super().__init__(config=config, debug_mode=True, show_fps=True)
+        super().__init__(config=config, debug_mode=False, show_fps=True)
         self.load_resources()
 
         self.wall = jank.Entity(
             position=(100, 0),
             body_type=jank.Entity.STATIC,
-            collider=jank.shapes.Rect(
+            collider=jank.colliders.Rect(
                 width=16,
-                height=64,
-                friction=1
+                height=16,
+                friction=0.5
             )
         )
+        self.wall.renderer = jank.renderer.RectRenderer(16, 16, batch=jank.get_app().world_batch)
+        self.wall_label = jank.renderer.TextRenderer(
+            "1 Tile ↓", font_size=8,
+            batch=self.world_batch
+        )
+        self.wall_label.update(position=self.wall.position)
+        self.wall_label.offset = (-16, 20)
         self.wall.space = self.physics_space
 
-        self.wall_dynamic = jank.Entity(
-            position=(-100, 0),
-            collider=jank.shapes.Rect(
-                width=16,
-                height=64,
-                friction=1
-            )
-        )
-        self.wall_dynamic.space = self.physics_space
-
         self.player = source.Player(jank.Vec2d(0, 0))
-        self.camera.zoom = 5
+        self.camera.zoom = 2
 
     def load_resources(self):
         self.resources = {}

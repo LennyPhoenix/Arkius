@@ -2,3 +2,4 @@ pip
 pyglet
 pymunk
 git+https://github.com/DoAltPlusF4/Jank-Engine.git
+https://github.com/nuitka/nuitka/archive/factory.zip

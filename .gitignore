@@ -144,5 +144,8 @@ cython_debug/
 # Aseprite
 *.aseprite
 
-# Project
-map.txt
+# Nuitka
+python38.dll 
+main.exe 
+main.build/
+main.dist/
