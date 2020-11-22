@@ -5,7 +5,11 @@
 
 An open source project.
 
-Arkius will be a top-down roguelite shooter, it has been in development since 06/02/2020.
+~~Arkius will be a top-down roguelite shooter, it has been in development since 06/02/2020.~~
+
+Arkius is now abandoned, maybe at some point I will revive it?
+
+RIP: 06/02/2020 - 21/09/2020 (Last Commit, Jank-Rewrite)
 
 ## Links
 
